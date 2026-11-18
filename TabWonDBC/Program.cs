@@ -1,5 +1,5 @@
 // TabWonDBC — conversor de arquivos .dbc do DATASUS para Apache Parquet
-// Copyright (C) 2026 Thiago Rodrigues
+// Copyright (C) 2026 Thiago Rodrigues (thiagusr)
 //
 // Este programa é software livre: você pode redistribuí-lo e/ou modificá-lo sob os termos
 // da Licença Pública Geral GNU (GNU GPL), versão 3, publicada pela Free Software Foundation.
@@ -10,7 +10,7 @@
 // LICENSE; se não, veja <https://www.gnu.org/licenses/>.
 //
 // Termo adicional (GPL-3.0, seção 7, alínea b): este aviso, com o nome do programa original
-// (TabWonDBC) e de seu autor (Thiago Rodrigues), deve ser mantido em todas as cópias e
+// (TabWonDBC) e de seu autor (Thiago Rodrigues - thiagusr), deve ser mantido em todas as cópias e
 // versões modificadas deste código-fonte. Veja o arquivo AVISO.md.
 //
 // SPDX-License-Identifier: GPL-3.0-only
@@ -27,8 +27,8 @@ namespace TabWonDBC
     class Program
     {
         const string Aviso =
-@"TabWonDBC 2.0 — conversor DBC (DATASUS) -> Parquet
-Programa original de Thiago Rodrigues. Copyright (C) 2026 Thiago Rodrigues.
+@"TabWonDBC 2.1 — conversor DBC (DATASUS) -> Parquet, DBC <-> DBF
+Programa original de Thiago Rodrigues (thiagusr). Copyright (C) 2026 Thiago Rodrigues.
 Software livre sob a licença GNU GPL versão 3 (arquivo LICENSE), SEM NENHUMA GARANTIA.
 ";
 
@@ -37,6 +37,8 @@ Software livre sob a licença GNU GPL versão 3 (arquivo LICENSE), SEM NENHUMA G
 Uso:
   TabWonDBC <entrada.dbc> <saida.parquet> [opções]
   TabWonDBC --lote <pasta_saida> <arquivo.dbc | pasta | curinga>... [opções]
+  TabWonDBC --para-dbf <entrada.dbc> <saida.dbf>   descompacta o DBC em DBF (confere o CRC)
+  TabWonDBC --para-dbc <entrada.dbf> <saida.dbc>   compacta o DBF no formato DBC do DATASUS
 
 Opções:
   --rowgroup N   linhas por row group do Parquet (padrão 1000000; 0 = um só, como a versão antiga)
@@ -47,6 +49,27 @@ Opções:
 
         static int Main(string[] args)
         {
+            if (args.Length >= 1 && (args[0].Equals("--para-dbf", StringComparison.OrdinalIgnoreCase) ||
+                                     args[0].Equals("--para-dbc", StringComparison.OrdinalIgnoreCase)))
+            {
+                if (args.Length < 3)
+                {
+                    Console.Error.WriteLine("Uso: TabWonDBC --para-dbf <entrada.dbc> <saida.dbf>  |  --para-dbc <entrada.dbf> <saida.dbc>");
+                    return 1;
+                }
+                try
+                {
+                    if (args[0].Equals("--para-dbf", StringComparison.OrdinalIgnoreCase)) DbfDbc.ParaDbf(args[1], args[2]);
+                    else DbfDbc.ParaDbc(args[1], args[2]);
+                    Console.WriteLine($"OK: {args[2]}");
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"ERRO: {ex.Message}");
+                    return 2;
+                }
+            }
             var opt = new ConvertOptions();
             string loteDir = null;
             int jobs = Math.Max(1, Environment.ProcessorCount / 2);

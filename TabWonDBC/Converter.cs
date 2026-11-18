@@ -1,5 +1,5 @@
 // TabWonDBC — conversor de arquivos .dbc do DATASUS para Apache Parquet
-// Copyright (C) 2026 Thiago Rodrigues
+// Copyright (C) 2026 Thiago Rodrigues (thiagusr)
 //
 // Este programa é software livre: você pode redistribuí-lo e/ou modificá-lo sob os termos
 // da Licença Pública Geral GNU (GNU GPL), versão 3, publicada pela Free Software Foundation.
@@ -10,7 +10,7 @@
 // LICENSE; se não, veja <https://www.gnu.org/licenses/>.
 //
 // Termo adicional (GPL-3.0, seção 7, alínea b): este aviso, com o nome do programa original
-// (TabWonDBC) e de seu autor (Thiago Rodrigues), deve ser mantido em todas as cópias e
+// (TabWonDBC) e de seu autor (Thiago Rodrigues - thiagusr), deve ser mantido em todas as cópias e
 // versões modificadas deste código-fonte. Veja o arquivo AVISO.md.
 //
 // SPDX-License-Identifier: GPL-3.0-only

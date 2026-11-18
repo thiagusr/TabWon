@@ -21,6 +21,8 @@ O código-fonte, a documentação e as atualizações do projeto estão disponí
 
 O repositório permite consultar o código-fonte, acompanhar o desenvolvimento, obter as versões mais recentes e contribuir para o aprimoramento do projeto.
 
+> **Novidade da versão 2.1:** além da conversão de `.dbc` para `.parquet`, o TabWonDBC passou a oferecer conversão direta de **DBC para DBF** e de **DBF para DBC**, por meio das opções `--para-dbf` e `--para-dbc`. Consulte a [seção 5.6](#56-conversão-direta-entre-dbc-e-dbf-versão-21).
+
 ## Sumário
 
 - [1. Guia rápido: compilar e usar no Windows](#1-guia-rápido-compilar-e-usar-no-windows)
@@ -201,6 +203,17 @@ TabWonDBC.exe "C:\dados\seu_arquivo.dbc" "C:\dados\seu_arquivo.parquet" --tempo
 
 Em caso de sucesso, o programa informa o nome do arquivo Parquet gerado. Verifique também se esse arquivo foi criado na pasta de destino.
 
+#### Conversões adicionais disponíveis na versão 2.1
+
+Além da conversão para Parquet, o executável atualizado permite descompactar um `.dbc` em `.dbf` ou compactar um `.dbf` em `.dbc`. Na pasta de publicação, execute conforme sua necessidade:
+
+```bat
+TabWonDBC.exe --para-dbf "C:\dados\seu_arquivo.dbc" "C:\dados\seu_arquivo.dbf"
+TabWonDBC.exe --para-dbc "C:\dados\seu_arquivo.dbf" "C:\dados\seu_arquivo.dbc"
+```
+
+O primeiro comando gera um arquivo DBF a partir do DBC. O segundo faz o caminho inverso. Os arquivos de entrada precisam existir; os destinos indicam onde serão gravadas as saídas. Para detalhes sobre a verificação de integridade, a gravação segura e o uso pelo TabWon, consulte a [seção 5.6](#56-conversão-direta-entre-dbc-e-dbf-versão-21).
+
 ### Passo 9 — Distribuir o módulo ou atualizar o TabWon
 
 A pasta `publish` é a pasta de **distribuição** do aplicativo. Na configuração de publicação em arquivo único prevista pelo projeto, o elemento principal é `TabWonDBC.exe`; em uma distribuição independente, mantenha também `README.md`, `LICENSE` e `AVISO.md`, além de qualquer outro arquivo que a publicação efetivamente exigir.
@@ -275,6 +288,8 @@ O desempenho depende do tamanho dos arquivos, da quantidade de colunas, da veloc
 | Entrada | `.dbc`: cabeçalho dBase III, 4 bytes de CRC e fluxo PKWare DCL implode |
 | Saída | Apache Parquet, formato versão 1, compressão Snappy e metadados em Thrift compact protocol |
 | Codificação de texto | Leitura Latin-1 (ISO-8859-1) e gravação UTF-8 |
+
+**Atualização da versão 2.1:** as linhas de entrada e saída acima descrevem o fluxo principal **DBC → Parquet**. Os novos modos **DBC → DBF** e **DBF → DBC** utilizam os parâmetros `--para-dbf` e `--para-dbc`, respectivamente, sem substituir o fluxo principal.
 
 Estas características descrevem a implementação documentada. Para saber quais opções estão ativas **na versão baixada**, confira `TabWonDBC.csproj` e o código-fonte correspondente.
 
@@ -428,6 +443,37 @@ df = pd.read_parquet(r"C:\dados\seu_arquivo.parquet")
 
 O exemplo exige Python e os pacotes `pandas` e um mecanismo de leitura de Parquet, como `pyarrow`; eles **não são necessários** para usar o `TabWonDBC.exe` diretamente.
 
+### 5.6 Conversão direta entre DBC e DBF (versão 2.1)
+
+A versão 2.1 acrescenta **dois modos independentes** à interface de linha de comando. Eles complementam a conversão já existente de DBC para Parquet:
+
+| Operação | Opção | Arquivo de entrada | Arquivo de saída |
+|---|---|---|---|
+| Descompactar | `--para-dbf` | `.dbc` | `.dbf` |
+| Compactar | `--para-dbc` | `.dbf` | `.dbc` |
+
+**1. Descompactar um DBC para DBF**
+
+```bat
+TabWonDBC.exe --para-dbf "C:\dados\seu_arquivo.dbc" "C:\dados\seu_arquivo.dbf"
+```
+
+O programa descompacta os registros e **confere o CRC-32 armazenado no DBC**. Segundo a documentação da versão 2.1, uma divergência nessa verificação gera um **aviso na saída de erros** (`stderr`).
+
+**2. Compactar um DBF para DBC**
+
+```bat
+TabWonDBC.exe --para-dbc "C:\dados\seu_arquivo.dbf" "C:\dados\seu_arquivo.dbc"
+```
+
+O programa produz o DBC com **cabeçalho dBase, CRC-32 calculado sobre o DBF inteiro e registros compactados com PKWare DCL implode**, utilizando dicionário de **4 KB**. Conforme a documentação da versão 2.1, o DBC gerado é compatível com o **TabWin**, com `blast`/`pyreaddbc` e com o próprio TabWonDBC.
+
+**Gravação segura:** nos dois modos, a saída é inicialmente escrita em um arquivo temporário com o sufixo `.tmp_tabwon` e somente depois renomeada para o destino final. Em caso de erro ou cancelamento, o temporário é apagado.
+
+**Integração com o TabWon:** o programa principal identifica a disponibilidade desses modos pela saída da ajuda (`-h`) e os utiliza na opção **⚙ → DBF ⟺ DBC**. Para utilizar o novo recurso na integração, é necessário atualizar o `TabWonDBC.exe` do diretório `TabWon_configs`, conforme o [passo 9 do guia rápido](#passo-9--distribuir-o-módulo-ou-atualizar-o-tabwon).
+
+**Importante:** `--para-dbc` converte DBF em DBC, não diretamente em Parquet. Para produzir Parquet, permanece disponível a conversão padrão a partir de um arquivo `.dbc`, descrita na [seção 5.1](#51-converter-um-arquivo).
+
 ## 6. Funcionamento interno
 
 ### 6.1 Organização do arquivo `.dbc`
@@ -526,6 +572,8 @@ TabWonDBC/
 |---|---|
 | `Main(string[] args)` | Ponto de entrada. Analisa os argumentos, escolhe entre conversão individual e lote, chama `Converter.Convert`, imprime mensagens e devolve o código de retorno. No lote, utiliza `Parallel.ForEach` para processar até `--jobs` entradas simultaneamente. |
 | `ExpandInputs(List<string> items)` | Expande entradas informadas como arquivos, diretórios ou curingas; remove duplicatas e ordena a lista resultante. |
+
+**Ampliação na versão 2.1:** a interface de linha de comando também reconhece `--para-dbf` e `--para-dbc`. O TabWon pode reconhecer essas opções por meio de `-h` e disponibilizá-las no menu de conversão **DBF ⟺ DBC**. Os nomes específicos dos métodos internos desses novos modos devem ser consultados no código-fonte da versão publicada.
 
 ### 7.2 `Converter.cs` — opções e pipeline
 
@@ -686,6 +734,8 @@ Conforme a documentação da implementação:
 - **Precisão numérica:** números com 19 ou mais dígitos significativos podem produzir pequenas diferenças de arredondamento na representação `DOUBLE` quando comparados com outros conversores.
 - **CRC do DBC:** os 4 bytes de CRC não são verificados. O descompactador detecta certas condições de truncamento ou corrupção do fluxo, mas isso não equivale a uma validação completa de integridade.
 
+> **Esclarecimento da versão 2.1 sobre CRC:** a limitação acima descreve o comportamento documentado do fluxo **DBC → Parquet**. No novo modo **DBC → DBF** (`--para-dbf`), a implementação passou a conferir o CRC-32 e emitir um aviso em `stderr` quando houver divergência, conforme a documentação recebida da versão 2.1.
+
 Antes de utilizar os arquivos convertidos em fluxos críticos, valide uma amostra dos resultados, incluindo número de linhas, tipos de colunas e valores esperados.
 
 ## 11. Perguntas frequentes
@@ -707,6 +757,8 @@ dotnet publish -c Release -p:SelfContained=false -p:PublishSingleFile=false
 ### O TabWonDBC converte arquivos `.dbf` não compactados?
 
 Não diretamente. A interface descrita foi desenvolvida para receber arquivos `.dbc`.
+
+**Atualização — versão 2.1:** a resposta anterior refere-se à interface de conversão padrão para Parquet. Agora existe um modo específico para arquivos DBF: `--para-dbc` compacta `.dbf` em `.dbc`, e `--para-dbf` faz a conversão inversa. Veja a [seção 5.6](#56-conversão-direta-entre-dbc-e-dbf-versão-21).
 
 ### Posso usar o código em outro projeto C#?
 
