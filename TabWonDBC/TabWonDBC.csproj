@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <Version>2.0.0</Version>
+    <Product>TabWonDBC</Product>
+    <Authors>Thiago Rodrigues</Authors>
+    <Copyright>Copyright (C) 2026 Thiago Rodrigues — GPL-3.0-only</Copyright>
+    <Description>Conversor de arquivos .dbc do DATASUS para Apache Parquet</Description>
+
+    <!-- Runtime: GC e globalização ajustados para conversão em lote -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <TieredPGO>true</TieredPGO>
+
+    <!-- Publicação: um único .exe autocontido para Windows x64, pré-compilado (ReadyToRun) -->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- DbcToDbf e Parquet.Net não são mais necessários: só a compressão Snappy vem de fora -->
+    <PackageReference Include="Snappier" Version="1.1.1" />
+  </ItemGroup>
+
+</Project>
