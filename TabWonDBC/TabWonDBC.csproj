@@ -9,7 +9,7 @@
     <Optimize>true</Optimize>
     <Version>2.1.0</Version>
     <Product>TabWonDBC</Product>
-    <Authors>Thiago Rodrigues - thiagusr</Authors>
+    <Authors>Thiago Rodrigues (thiagusr) (thiagusr)</Authors>
     <Copyright>Copyright (C) 2026 Thiago Rodrigues (thiagusr) — GPL-3.0-only</Copyright>
     <Description>Conversor de arquivos .dbc do DATASUS para Apache Parquet</Description>
 

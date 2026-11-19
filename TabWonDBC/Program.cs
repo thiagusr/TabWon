@@ -28,7 +28,7 @@ namespace TabWonDBC
     {
         const string Aviso =
 @"TabWonDBC 2.1 — conversor DBC (DATASUS) -> Parquet, DBC <-> DBF
-Programa original de Thiago Rodrigues (thiagusr). Copyright (C) 2026 Thiago Rodrigues.
+Programa original de Thiago Rodrigues (thiagusr). Copyright (C) 2026 Thiago Rodrigues (thiagusr).
 Software livre sob a licença GNU GPL versão 3 (arquivo LICENSE), SEM NENHUMA GARANTIA.
 ";
 
