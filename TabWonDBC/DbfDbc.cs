@@ -75,57 +75,101 @@ namespace TabWonDBC
         private const int Chunk = 4 << 20;
 
         // ------------------------------------------------------------------ DBC -> DBF
-        public static void ParaDbf(string dbcPath, string dbfPath)
+        /// <summary>Resultado da descompactação/verificação de um DBC.</summary>
+        public sealed class Teste
+        {
+            public uint CrcGravado, CrcCalculado;
+            public long Bytes, BytesEsperados;
+            public uint Registros;
+            public bool CrcOk => CrcGravado == 0 || CrcGravado == CrcCalculado;
+            public bool TamanhoOk => Bytes == BytesEsperados || Bytes == BytesEsperados - 1;
+        }
+
+        /// <summary>
+        /// Descompacta o DBC calculando o CRC-32; se <paramref name="saida"/> não for nulo, grava ali o DBF
+        /// (com o terminador 0x0D no fim do cabeçalho).
+        /// </summary>
+        private static Teste Descompactar(string dbcPath, Stream? saida)
         {
             long len = new FileInfo(dbcPath).Length;
             if (len < 34) throw new InvalidDataException("arquivo DBC vazio ou truncado");
             if (len > int.MaxValue) throw new InvalidDataException("DBC maior que 2 GB não é suportado");
+            var r = new Teste();
+            using var mmf = MemoryMappedFile.CreateFromFile(dbcPath, FileMode.Open, null, 0, MemoryMappedFileAccess.Read);
+            using var view = mmf.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
+            byte* p = null;
+            view.SafeMemoryMappedViewHandle.AcquirePointer(ref p);
+            try
+            {
+                p += view.PointerOffset;
+                int n = (int)len;
+                var all = new ReadOnlySpan<byte>(p, n);
+                var hdr = DbfHeader.Parse(all);
+                int hl = hdr.HeaderLength;
+                if (hl + 4 > n) throw new InvalidDataException("arquivo DBC truncado");
+                r.Registros = hdr.RecordCount;
+                r.BytesEsperados = (long)hdr.RecordCount * hdr.RecordLength + 1;
+                r.CrcGravado = BinaryPrimitives.ReadUInt32LittleEndian(all.Slice(hl, 4));
+                if (saida != null)
+                {
+                    var cab = all.Slice(0, hl).ToArray();
+                    cab[hl - 1] = 0x0D;
+                    saida.Write(cab);
+                }
+                uint crc = Crc32.Update(0, all.Slice(0, hl));
+                var dec = new BlastDecoder(p, hl + 4, n - hl - 4);
+                var buf = GC.AllocateUninitializedArray<byte>(Hist + Chunk + BlastDecoder.MaxOverrun, pinned: true);
+                int pos = Hist;
+                fixed (byte* o = buf)
+                {
+                    while (!dec.Finished)
+                    {
+                        int antes = pos;
+                        pos = dec.Decode(o, pos, Hist + Chunk);
+                        if (pos == antes && !dec.Finished) throw new InvalidDataException("dados comprimidos truncados");
+                        var parte = new ReadOnlySpan<byte>(o + Hist, pos - Hist);
+                        saida?.Write(parte);
+                        crc = Crc32.Update(crc, parte);
+                        r.Bytes += parte.Length;
+                        Buffer.MemoryCopy(o + pos - Hist, o, Hist, Hist);
+                        pos = Hist;
+                    }
+                }
+                r.CrcCalculado = crc;
+            }
+            finally { view.SafeMemoryMappedViewHandle.ReleasePointer(); }
+            return r;
+        }
+
+        public static void ParaDbf(string dbcPath, string dbfPath)
+        {
             string tmp = dbfPath + ".tmp_tabwon";
             try
             {
-            using (var mmf = MemoryMappedFile.CreateFromFile(dbcPath, FileMode.Open, null, 0, MemoryMappedFileAccess.Read))
-            using (var view = mmf.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read))
-            {
-                byte* p = null;
-                view.SafeMemoryMappedViewHandle.AcquirePointer(ref p);
-                try
-                {
-                    p += view.PointerOffset;
-                    int n = (int)len;
-                    var all = new ReadOnlySpan<byte>(p, n);
-                    var hdr = DbfHeader.Parse(all);
-                    int hl = hdr.HeaderLength;
-                    uint crcEsperado = BinaryPrimitives.ReadUInt32LittleEndian(all.Slice(hl, 4));
-                    using var fs = new FileStream(tmp, FileMode.Create, FileAccess.Write, FileShare.None, 1 << 20);
-                    var cab = all.Slice(0, hl).ToArray();
-                    cab[hl - 1] = 0x0D;
-                    fs.Write(cab);
-                    uint crc = Crc32.Update(0, all.Slice(0, hl));
-                    var dec = new BlastDecoder(p, hl + 4, n - hl - 4);
-                    var buf = GC.AllocateUninitializedArray<byte>(Hist + Chunk + BlastDecoder.MaxOverrun, pinned: true);
-                    int pos = Hist;
-                    fixed (byte* o = buf)
-                    {
-                        while (!dec.Finished)
-                        {
-                            int antes = pos;
-                            pos = dec.Decode(o, pos, Hist + Chunk);
-                            if (pos == antes && !dec.Finished) throw new InvalidDataException("dados comprimidos truncados");
-                            var parte = new ReadOnlySpan<byte>(o + Hist, pos - Hist);
-                            fs.Write(parte);
-                            crc = Crc32.Update(crc, parte);
-                            Buffer.MemoryCopy(o + pos - Hist, o, Hist, Hist);
-                            pos = Hist;
-                        }
-                    }
-                    if (crcEsperado != 0 && crc != crcEsperado)
-                        Console.Error.WriteLine($"AVISO: CRC do DBC não confere (esperado {crcEsperado:X8}, obtido {crc:X8}).");
-                }
-                finally { view.SafeMemoryMappedViewHandle.ReleasePointer(); }
-            }
-            File.Move(tmp, dbfPath, true);
+                Teste r;
+                using (var fs = new FileStream(tmp, FileMode.Create, FileAccess.Write, FileShare.None, 1 << 20))
+                    r = Descompactar(dbcPath, fs);
+                if (!r.CrcOk)
+                    Console.Error.WriteLine($"AVISO: CRC do DBC não confere (gravado {r.CrcGravado:X8}, calculado {r.CrcCalculado:X8}).");
+                File.Move(tmp, dbfPath, true);
             }
             catch { try { File.Delete(tmp); } catch { } throw; }
+        }
+
+        /// <summary>Verifica a integridade do DBC sem gravar nada. Retorna 0 se íntegro, 3 se houver falha.</summary>
+        public static int Testar(string dbcPath)
+        {
+            Teste r;
+            try { r = Descompactar(dbcPath, null); }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"FALHA erro=\"{ex.Message}\"");
+                return 3;
+            }
+            bool ok = r.CrcOk && r.TamanhoOk;
+            Console.WriteLine($"{(ok ? "OK" : "FALHA")} registros={r.Registros} bytes={r.Bytes} esperado={r.BytesEsperados} " +
+                              $"crc_gravado={r.CrcGravado:X8} crc_calculado={r.CrcCalculado:X8}");
+            return ok ? 0 : 3;
         }
 
         // ------------------------------------------------------------------ DBF -> DBC

@@ -23,6 +23,8 @@ O repositório permite consultar o código-fonte, acompanhar o desenvolvimento, 
 
 > **Novidade da versão 2.1:** além da conversão de `.dbc` para `.parquet`, o TabWonDBC passou a oferecer conversão direta de **DBC para DBF** e de **DBF para DBC**, por meio das opções `--para-dbf` e `--para-dbc`. Consulte a [seção 5.6](#56-conversão-direta-entre-dbc-e-dbf-versão-21).
 
+> **Novidade da versão 2.2:** o comando `--testar` verifica a integridade de um ou mais arquivos `.dbc` **sem gerar arquivos de saída**. Ele confere o **CRC-32** e o **tamanho esperado dos registros descompactados**, emitindo `OK` ou `FALHA` para cada arquivo. Veja a [seção 5.7](#57-verificar-a-integridade-de-arquivos-dbc-versão-22).
+
 ## Sumário
 
 - [1. Guia rápido: compilar e usar no Windows](#1-guia-rápido-compilar-e-usar-no-windows)
@@ -214,6 +216,22 @@ TabWonDBC.exe --para-dbc "C:\dados\seu_arquivo.dbf" "C:\dados\seu_arquivo.dbc"
 
 O primeiro comando gera um arquivo DBF a partir do DBC. O segundo faz o caminho inverso. Os arquivos de entrada precisam existir; os destinos indicam onde serão gravadas as saídas. Para detalhes sobre a verificação de integridade, a gravação segura e o uso pelo TabWon, consulte a [seção 5.6](#56-conversão-direta-entre-dbc-e-dbf-versão-21).
 
+#### Verificar a integridade de arquivos DBC (versão 2.2)
+
+Para conferir um arquivo `.dbc` **sem convertê-lo nem criar outros arquivos**, execute na mesma pasta do `TabWonDBC.exe`:
+
+```bat
+TabWonDBC.exe --testar "C:\dados\seu_arquivo.dbc"
+```
+
+Também é possível verificar vários arquivos em uma única execução:
+
+```bat
+TabWonDBC.exe --testar "C:\dados\seu_arquivo.dbc" "C:\dados\outro_arquivo.dbc"
+```
+
+O programa descompacta os dados apenas para a verificação e informa `OK` ou `FALHA` para cada arquivo. O código de retorno é **0** quando todos passam no teste e **3** quando pelo menos um falha. A explicação completa está na [seção 5.7](#57-verificar-a-integridade-de-arquivos-dbc-versão-22).
+
 ### Passo 9 — Distribuir o módulo ou atualizar o TabWon
 
 A pasta `publish` é a pasta de **distribuição** do aplicativo. Na configuração de publicação em arquivo único prevista pelo projeto, o elemento principal é `TabWonDBC.exe`; em uma distribuição independente, mantenha também `README.md`, `LICENSE` e `AVISO.md`, além de qualquer outro arquivo que a publicação efetivamente exigir.
@@ -256,6 +274,7 @@ O `.dbc` é um formato de arquivo dBase (`.dbf`) compactado com o algoritmo **PK
 - **Execução em etapas sobrepostas:** descompactação, conversão de campos e gravação podem trabalhar simultaneamente.
 - **Paralelismo:** utiliza múltiplas threads na conversão e codificação das colunas.
 - **Modo lote:** processa vários arquivos ou uma pasta inteira, com conversões paralelas.
+- **Verificação de integridade (versão 2.2):** o comando `--testar` confere o CRC-32 e a quantidade esperada de bytes descompactados em um ou mais arquivos DBC, sem gravar arquivos de saída.
 - **Publicação autocontida:** na configuração padrão documentada, o Windows recebe um executável que dispensa a instalação separada do .NET Runtime.
 - **Dependência NuGet declarada:** biblioteca [Snappier](https://www.nuget.org/packages/Snappier), para compressão Snappy da saída.
 
@@ -290,6 +309,8 @@ O desempenho depende do tamanho dos arquivos, da quantidade de colunas, da veloc
 | Codificação de texto | Leitura Latin-1 (ISO-8859-1) e gravação UTF-8 |
 
 **Atualização da versão 2.1:** as linhas de entrada e saída acima descrevem o fluxo principal **DBC → Parquet**. Os novos modos **DBC → DBF** e **DBF → DBC** utilizam os parâmetros `--para-dbf` e `--para-dbc`, respectivamente, sem substituir o fluxo principal.
+
+**Atualização da versão 2.2:** o modo `--testar` aceita arquivos `.dbc` e realiza somente uma verificação de integridade; ele não cria `.dbf`, `.parquet` nem outros arquivos de saída.
 
 Estas características descrevem a implementação documentada. Para saber quais opções estão ativas **na versão baixada**, confira `TabWonDBC.csproj` e o código-fonte correspondente.
 
@@ -405,6 +426,7 @@ TabWonDBC.exe --lote C:\parquet "C:\dados\*.dbc" --jobs 4
 | `--threads N` | Número de núcleos | Define quantas threads são utilizadas na conversão de cada arquivo. |
 | `--lote <pasta>` | — | Ativa o modo lote e informa a pasta de saída. |
 | `--jobs N` | Núcleos ÷ 2 | Define quantos arquivos podem ser processados ao mesmo tempo no modo lote. |
+| `--testar <arquivo.dbc> [outro.dbc ...]` | — | Verifica integridade de um ou mais DBC sem gerar saída: confere CRC-32 e tamanho esperado dos registros. Disponível a partir da versão 2.2. |
 | `--versao` | — | Exibe informações de versão, autoria e licença. |
 | `-h`, `--help` | — | Exibe a ajuda do programa. |
 
@@ -416,6 +438,8 @@ TabWonDBC.exe --lote C:\parquet "C:\dados\*.dbc" --jobs 4
 | Argumentos inválidos | Instruções de uso em `stderr` | `1` |
 | Erro na conversão | `ERRO: <mensagem>` em `stderr` | `2` |
 | Lote com uma ou mais falhas | `ERRO: <entrada>: <mensagem>` por falha | `2` |
+| `--testar`: todos os arquivos íntegros | Uma linha `OK ...` por arquivo | `0` |
+| `--testar`: um ou mais arquivos reprovados | Uma linha `OK ...` ou `FALHA ...` por arquivo | `3` |
 
 No Prompt do Windows, é possível consultar o código retornado pelo último comando com `echo %ERRORLEVEL%`. De acordo com o comportamento documentado, um arquivo Parquet incompleto é apagado se a conversão falhar.
 
@@ -473,6 +497,38 @@ O programa produz o DBC com **cabeçalho dBase, CRC-32 calculado sobre o DBF int
 **Integração com o TabWon:** o programa principal identifica a disponibilidade desses modos pela saída da ajuda (`-h`) e os utiliza na opção **⚙ → DBF ⟺ DBC**. Para utilizar o novo recurso na integração, é necessário atualizar o `TabWonDBC.exe` do diretório `TabWon_configs`, conforme o [passo 9 do guia rápido](#passo-9--distribuir-o-módulo-ou-atualizar-o-tabwon).
 
 **Importante:** `--para-dbc` converte DBF em DBC, não diretamente em Parquet. Para produzir Parquet, permanece disponível a conversão padrão a partir de um arquivo `.dbc`, descrita na [seção 5.1](#51-converter-um-arquivo).
+
+### 5.7 Verificar a integridade de arquivos DBC (versão 2.2)
+
+A versão 2.2 acrescenta o modo **`--testar`**, destinado a verificar se arquivos `.dbc` apresentam a integridade esperada **sem produzir arquivos convertidos ou temporários**. Diferentemente de `--para-dbf`, que gera um DBF, esse modo apenas descompacta os dados necessários à conferência.
+
+**Sintaxe:**
+
+```text
+TabWonDBC.exe --testar <arquivo.dbc> [outro_arquivo.dbc ...]
+```
+
+**Exemplos no Prompt de Comando do Windows:**
+
+```bat
+TabWonDBC.exe --testar "C:\dados\seu_arquivo.dbc"
+TabWonDBC.exe --testar "C:\dados\seu_arquivo.dbc" "C:\dados\outro_arquivo.dbc"
+```
+
+**O que é conferido:**
+
+- **CRC-32:** comparação com o valor de verificação registrado no arquivo DBC.
+- **Tamanho descompactado:** comparação entre a quantidade de bytes obtida e o tamanho esperado, calculado por **número de registros × tamanho de cada registro**, segundo o cabeçalho do arquivo.
+
+**Como interpretar os resultados:** o programa exibe uma linha com `OK ...` ou `FALHA ...` para **cada arquivo informado**. Ao término, retorna o código **`0`** quando todos passaram e **`3`** se pelo menos um falhou. O comando não cria arquivos `.dbf`, `.dbc` ou `.parquet` como resultado do teste.
+
+Para consultar o código de retorno imediatamente depois da execução, digite:
+
+```bat
+echo %ERRORLEVEL%
+```
+
+> **Importante:** a verificação de CRC-32 e tamanho ajuda a identificar problemas de integridade do arquivo DBC; ela não substitui a avaliação da consistência dos dados, dos campos e dos valores após a conversão. A versão 2.2 documenta o código de saída `3` especificamente para falhas no modo `--testar`.
 
 ## 6. Funcionamento interno
 
@@ -574,6 +630,8 @@ TabWonDBC/
 | `ExpandInputs(List<string> items)` | Expande entradas informadas como arquivos, diretórios ou curingas; remove duplicatas e ordena a lista resultante. |
 
 **Ampliação na versão 2.1:** a interface de linha de comando também reconhece `--para-dbf` e `--para-dbc`. O TabWon pode reconhecer essas opções por meio de `-h` e disponibilizá-las no menu de conversão **DBF ⟺ DBC**. Os nomes específicos dos métodos internos desses novos modos devem ser consultados no código-fonte da versão publicada.
+
+**Ampliação na versão 2.2:** a interface também reconhece `--testar` e processa uma lista de arquivos DBC para conferir CRC-32 e tamanho descompactado, informando o resultado individual de cada teste e retornando `0` (todos íntegros) ou `3` (alguma falha). A documentação recebida não identifica os nomes dos métodos internos desse recurso; consulte o código-fonte da versão publicada para esses detalhes.
 
 ### 7.2 `Converter.cs` — opções e pipeline
 
@@ -736,6 +794,8 @@ Conforme a documentação da implementação:
 
 > **Esclarecimento da versão 2.1 sobre CRC:** a limitação acima descreve o comportamento documentado do fluxo **DBC → Parquet**. No novo modo **DBC → DBF** (`--para-dbf`), a implementação passou a conferir o CRC-32 e emitir um aviso em `stderr` quando houver divergência, conforme a documentação recebida da versão 2.1.
 
+> **Esclarecimento da versão 2.2 sobre integridade:** a limitação referente ao fluxo DBC → Parquet **não se aplica ao comando específico `--testar`**. Esse modo confere o **CRC-32** e o **tamanho esperado dos registros descompactados**, informa `OK` ou `FALHA` para cada DBC e utiliza código de retorno `3` se algum arquivo falhar. Consulte a [seção 5.7](#57-verificar-a-integridade-de-arquivos-dbc-versão-22).
+
 Antes de utilizar os arquivos convertidos em fluxos críticos, valide uma amostra dos resultados, incluindo número de linhas, tipos de colunas e valores esperados.
 
 ## 11. Perguntas frequentes
@@ -759,6 +819,10 @@ dotnet publish -c Release -p:SelfContained=false -p:PublishSingleFile=false
 Não diretamente. A interface descrita foi desenvolvida para receber arquivos `.dbc`.
 
 **Atualização — versão 2.1:** a resposta anterior refere-se à interface de conversão padrão para Parquet. Agora existe um modo específico para arquivos DBF: `--para-dbc` compacta `.dbf` em `.dbc`, e `--para-dbf` faz a conversão inversa. Veja a [seção 5.6](#56-conversão-direta-entre-dbc-e-dbf-versão-21).
+
+### Como verificar um arquivo DBC antes de convertê-lo?
+
+A partir da versão 2.2, utilize `TabWonDBC.exe --testar "C:\dados\seu_arquivo.dbc"`. O teste não cria arquivos de saída e verifica CRC-32 e tamanho esperado dos registros. Para conferir vários arquivos, informe seus caminhos em sequência. O código `0` indica que todos passaram; `3` indica pelo menos uma falha. Consulte a [seção 5.7](#57-verificar-a-integridade-de-arquivos-dbc-versão-22).
 
 ### Posso usar o código em outro projeto C#?
 

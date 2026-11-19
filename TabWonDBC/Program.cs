@@ -27,7 +27,7 @@ namespace TabWonDBC
     class Program
     {
         const string Aviso =
-@"TabWonDBC 2.1 — conversor DBC (DATASUS) -> Parquet, DBC <-> DBF
+@"TabWonDBC 2.2 — conversor DBC (DATASUS) -> Parquet, DBC <-> DBF
 Programa original de Thiago Rodrigues (thiagusr). Copyright (C) 2026 Thiago Rodrigues (thiagusr).
 Software livre sob a licença GNU GPL versão 3 (arquivo LICENSE), SEM NENHUMA GARANTIA.
 ";
@@ -39,6 +39,7 @@ Uso:
   TabWonDBC --lote <pasta_saida> <arquivo.dbc | pasta | curinga>... [opções]
   TabWonDBC --para-dbf <entrada.dbc> <saida.dbf>   descompacta o DBC em DBF (confere o CRC)
   TabWonDBC --para-dbc <entrada.dbf> <saida.dbc>   compacta o DBF no formato DBC do DATASUS
+  TabWonDBC --testar <arquivo.dbc>...             verifica a integridade (CRC e tamanho) sem gravar nada
 
 Opções:
   --rowgroup N   linhas por row group do Parquet (padrão 1000000; 0 = um só, como a versão antiga)
@@ -49,6 +50,17 @@ Opções:
 
         static int Main(string[] args)
         {
+            if (args.Length >= 1 && args[0].Equals("--testar", StringComparison.OrdinalIgnoreCase))
+            {
+                if (args.Length < 2) { Console.Error.WriteLine("Uso: TabWonDBC --testar <arquivo.dbc>..."); return 1; }
+                int pior = 0;
+                for (int k = 1; k < args.Length; k++)
+                {
+                    if (args.Length > 2) Console.Write(args[k] + ": ");
+                    pior = Math.Max(pior, DbfDbc.Testar(args[k]));
+                }
+                return pior;
+            }
             if (args.Length >= 1 && (args[0].Equals("--para-dbf", StringComparison.OrdinalIgnoreCase) ||
                                      args[0].Equals("--para-dbc", StringComparison.OrdinalIgnoreCase)))
             {

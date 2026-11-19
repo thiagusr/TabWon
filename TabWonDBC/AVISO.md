@@ -49,6 +49,10 @@ A licença zlib é compatível com a GNU GPL v3. O aviso de origem do `blast.c` 
 
 A partir da versão 2.1, o TabWonDBC também disponibiliza conversões diretas **DBC → DBF** (`--para-dbf`) e **DBF → DBC** (`--para-dbc`), além da conversão **DBC → Parquet**. Esses modos integram o mesmo projeto e estão abrangidos pelos avisos de autoria, créditos e condições de distribuição descritos neste documento. As instruções de uso constam no [README.md](README.md).
 
+### Abrangência do modo de verificação de integridade (versão 2.2)
+
+A partir da versão 2.2, o TabWonDBC também disponibiliza o comando **`--testar`**, que verifica o CRC-32 e o tamanho esperado dos registros de arquivos DBC sem gerar arquivos de saída. Essa funcionalidade integra o mesmo programa e está sujeita aos **mesmos avisos de autoria, créditos e condições de licenciamento e distribuição** já descritos neste documento; sua inclusão não cria exigências adicionais de licença. Consulte o [README.md](README.md) para o modo de uso e os códigos de retorno.
+
 ## 4. Texto da licença e ausência de garantia
 
 A GNU GPL v3 concede direitos e estabelece condições que não são integralmente reproduzidos neste aviso. Em caso de dúvida, consulte o texto integral em [LICENSE](LICENSE).
