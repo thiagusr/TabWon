@@ -39,9 +39,6 @@ TabWon_configs/TabWon_cache_pasta.txt
 *.csv
 *.zip
 
-# --- Telas do README: ficam no branch "prints", nao no principal ---
-Prints/
-
 # --- Sistema e editores ---
 Thumbs.db
 desktop.ini
