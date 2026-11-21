@@ -1,0 +1,47 @@
+ÍCONES DO TABWON
+================
+
+Copie os arquivos .png desta pasta para TabWon_configs\icones
+(substituindo os antigos). Em Configurações > Aparência > Ícones
+escolha o modelo; a prévia aparece logo abaixo.
+
+Cada modelo tem 3 arquivos:
+  <modelo>_claro.png    botões no modo claro
+  <modelo>_escuro.png   botões no modo escuro (e automático à noite)
+  <modelo>_alertas.png  ícones dos avisos e perguntas
+
+Arquivos de botões: grade de 8 colunas, quadros de 24 x 24 pixels,
+fundo transparente, em três partes de 12 linhas cada (mesma ordem):
+  Parte A (linhas 1 a 12): desenhos para botões de fundo claro/neutro.
+  Parte B (linhas 13 a 24): desenhos brancos para botões escuros.
+  Parte C (linhas 25 a 36): desenhos escuros para botões coloridos
+  claros (laranja, amarelo).
+  O TabWon escolhe a parte pela cor de cada botão.
+
+Ordem dos 90 ícones (da esquerda para a direita):
+  linha 1: soma, subtracao, multiplicacao, divisao, porcentagem, datas, funcoes, estatistica
+  linha 2: grafico, busca, desfazer, refazer, claro, escuro, automatico, menu
+  linha 3: baixados, xlsx, csv, copiar, nova_consulta, coluna_mais, editar_mover, excluir
+  linha 4: detalhes, lista, limpar, inicio, ok, editar, salvar, executar
+  linha 5: pasta, pasta_aberta, arquivo, aviso, fechar, paleta, anterior, adicionar
+  linha 6: marcar, desmarcar, descer, subir, novo, gerar, ver, fixar
+  linha 7: exportar, idioma, usuario, cadeado, novidades, teclado, ajuda, info
+  linha 8: dica, numeros, sql, virar, conversor, atualizar, mover, imagem
+  linha 9: autoajustar, processando, recentes, importar, cancelar, proximo, g_barras_verticais, g_barras_horizontais
+  linha 10: g_pizza, g_area, g_scatter, g_barras_empilhadas, g_barras_100, g_linhas, g_series_multi, g_histograma
+  linha 11: g_pareto, g_heatmap, g_circular_bar, g_velocimetro, g_linear_gauge, g_boxplot, g_dispersao, g_piramide
+  linha 12: g_rosca, g_treemap
+
+Arquivo de alertas: 4 quadros de 48 x 48, nesta ordem:
+  informação, aviso, erro, pergunta
+
+Modelos incluídos (20):
+  Linear, Linear Grafite, Linear Colorido, Fino, Fino Preto, Grosso,
+  Grosso Colorido, Solido, Solido Colorido, Solido Terra, Duotone,
+  Duotone Colorido, Circular, Circular Colorido, Arredondado,
+  Arredondado Colorido, Arredondado Pastel, Sombra, Gradiente, Neon
+
+Para criar um modelo novo, siga a mesma grade e salve como
+Novo_claro.png, Novo_escuro.png e Novo_alertas.png. Para ele aparecer
+na lista, inclua o nome em [icones] modelos= do TabWon_configs.ini
+(ou em Configurações avançadas, aba Cores).

@@ -1,0 +1,70 @@
+Floresta
+# Verdes de mata, com neutros esverdeados.
+# Formato: nome_da_cor = R,G,B do modo claro ; R,G,B do modo escuro
+# Linhas iniciadas por # são comentários. Altere os números para personalizar.
+
+
+[janela]
+fundo                = 241,244,240 ;  32, 37, 31    # Fundo principal das telas
+fundo_sistema        = 236,240,235 ;  41, 46, 40    # Fundo padrão de janelas e botões sem cor própria
+fundo_campo          = 252,253,252 ;  38, 44, 37    # Fundo de campos, listas, tabelas e painéis brancos
+fundo_alternativo    = 247,249,246 ;  37, 41, 36    # Fundos levemente diferentes do principal
+fundo_travado        = 231,237,230 ;  52, 59, 50    # Fundo de campos travados
+divisoria            = 215,224,213 ;  69, 79, 67    # Divisórias e bordas
+fundo_escuro         =   0,  0,  0 ;  12, 14, 12    # Fundos pretos
+
+[texto]
+principal            =   0,  0,  0 ; 233,237,232    # Texto principal
+suave                =  48, 56, 46 ; 218,225,217    # Texto principal um pouco mais suave
+secundario           =  80, 93, 77 ; 188,201,186    # Textos de apoio e dicas
+apagado              = 110,128,106 ; 152,172,148    # Textos apagados (versão, rodapés)
+desabilitado         = 145,171,140 ; 119,135,115    # Textos desabilitados e separadores
+titulo               =  31,120, 76 ; 138,248,193    # Títulos de seções
+link                 =  20,164, 92 ; 130,255,193    # Destaques azuis e links
+aviso                = 230, 81,  0 ; 255,183, 77    # Textos de aviso
+erro                 = 198, 40, 40 ; 239,154,154    # Textos de erro
+sucesso              =  79,125, 46 ; 158,199,129    # Textos de sucesso
+destaque_roxo        = 142, 36,170 ; 206,147,216    # Textos roxos (funções, superlog)
+sobre_cor            = 255,255,255 ; 255,255,255    # Texto sobre botões coloridos e cabeçalhos
+cabecalho_apoio      =  66,118, 92 ; 180,201,190    # Texto de apoio em cabeçalhos
+
+[cabecalho]
+fundo                =  31,120, 76 ;  22, 79, 51    # Faixa de título das janelas
+fundo_grafico        = 192,105, 43 ; 150, 81, 32    # Faixa de título do modal de gráfico
+
+[botoes]
+primario             =  21,173, 97 ;  25,149, 87    # Botões principais (azul)
+primario_escuro      =  19,175, 97 ;  20,153, 87    # Botões principais escuros
+sucesso              = 117,175, 76 ;  92,142, 56    # Botões de confirmar/salvar (verde)
+sucesso_escuro       =  92,142, 56 ;  69,110, 40    # Botões verdes escuros (Excel, salvar como)
+perigo               = 244, 67, 54 ; 211, 47, 47    # Botões de excluir (vermelho)
+perigo_escuro        = 211, 47, 47 ; 170, 30, 30    # Botões vermelhos escuros
+aviso                = 255,152,  0 ; 222,120,  0    # Botões laranja
+aviso_escuro         = 239,108,  0 ; 190, 85,  0    # Botões laranja escuros
+neutro               = 145,171,140 ;  92,104, 90    # Botões neutros (fechar, cancelar)
+inativo              = 179,197,175 ;  63, 71, 61    # Botões desabilitados
+secundario           =  84,110, 97 ;  73, 96, 84    # Botões secundários (cinza-azulado)
+turquesa             =   0,150,150 ;   0,121,121    # Botões turquesa
+marrom               = 121, 85, 72 ;  93, 64, 55    # Botões marrons
+roxo                 = 142, 36,170 ; 123, 31,162    # Botões roxos
+dourado              = 255,215,  0 ; 196,160,  0    # Botão Nova Consulta
+icone                = 218,227,216 ;  60, 68, 58    # Botões de ícone (tema, menu)
+icone_ativo          = 200,213,198 ;  79, 89, 77    # Botões de ícone ao passar o mouse
+
+[tabela]
+zebra                = 222,230,221 ;  51, 58, 49    # Linhas intercaladas de tabelas e listas
+selecao              = 187,251,219 ;  30,120, 75    # Linha selecionada / item ativo
+cabecalho            = 225,232,224 ;  59, 67, 57    # Cabeçalho de painéis sanfona
+painel               = 239,243,238 ;  45, 51, 43    # Fundo de painéis e menus laterais
+margem_editor        = 234,239,233 ;  47, 53, 46    # Margem de números de linha nos editores
+
+[destaques]
+azul                 = 227,253,240 ;  25, 70, 48    # Destaque azul claro
+laranja              = 255,243,224 ;  70, 48, 20    # Destaque laranja claro
+amarelo              = 255,253,231 ;  64, 60, 30    # Destaque amarelo claro (dicas)
+amarelo_forte        = 255,245,157 ; 100, 90, 20    # Destaque amarelo (busca, linha encontrada)
+verde                = 232,245,233 ;  28, 56, 32    # Destaque verde claro
+rosa                 = 252,228,236 ;  70, 30, 45    # Destaque rosa claro
+lilas                = 243,229,245 ;  55, 35, 65    # Destaque lilás claro
+ciano                = 224,247,250 ;  20, 60, 66    # Destaque ciano claro
+salmao               = 251,233,231 ;  72, 40, 32    # Destaque salmão claro

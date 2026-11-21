@@ -1,0 +1,1183 @@
+TabWon — Guia de Ajuda
+
+Versão: 1.00.0
+
+
+=== Sobre este guia
+
+Este é o guia completo do TabWon. Cada seção começa com o nome do
+recurso e, em seguida, a explicação. Trechos importantes aparecem
+destacados entre *asteriscos*.
+
+O guia está organizado na mesma ordem em que você usa o programa:
+primeiro a tela inicial, depois a tabulação, depois o resultado, os
+cálculos, os gráficos, a exportação, as ferramentas do menu ⚙ e por fim
+dicas e solução de problemas.
+
+Você pode navegar pelas seções pelo menu à esquerda desta janela ou
+digitar uma palavra em *🔎 Localizar na ajuda*: ficam só as seções que
+a contêm, as ocorrências aparecem destacadas e o Enter vai para a
+próxima.
+
+O guia é um arquivo de texto simples, editável — se quiser acrescentar
+algo específico da sua equipe, é só editar o arquivo
+*TabWon_configs/TabWon_ajuda.txt*.
+
+*Guia em outros idiomas:* se existir um arquivo com o código do idioma
+no nome, como *TabWon_ajuda_ENUS.txt* ou *TabWon_ajuda_ESES.txt*, ele é
+aberto no lugar deste quando o TabWon estiver nesse idioma. O mesmo vale
+para *TabWon_sobre.txt*.
+
+
+=== Primeiros passos
+
+Fluxo básico para fazer uma tabulação:
+
+  a) Escolher um arquivo DEF no seletor superior;
+  b) Selecionar uma variável em Linhas;
+  c) Selecionar uma variável em Colunas (ou deixar "Não ativa");
+  d) Selecionar um Incremento ("Frequencia" ou uma variável numérica);
+  e) Marcar pelo menos um arquivo DBC em "Arquivos";
+  f) Clicar em "Executar Tabulação" (ou F5 / Ctrl+Enter);
+  g) Ajustar o resultado (operações, funções, estatística, formatação,
+     gráficos);
+  h) Exportar (XLSX, CSV, copiar ou imagem).
+
+*Na primeira vez* que você abre o TabWon, ele pergunta como deve te
+chamar. O nome aparece na saudação da tela inicial e pode ser trocado
+depois em *⚙ → Configurações*.
+
+*Atalhos de teclado* estão logo na seção seguinte; a lista também abre
+com *F1* ou em *⚙ → Atalhos de teclado*.
+
+*Se algo der errado*, veja a seção *Problemas comuns* no fim do guia.
+
+
+=== Atalhos de teclado
+
+A lista completa também está em *⚙ → Atalhos de teclado* (F1).
+
+*Tela de seleção*
+
+  a) *F5* ou *Ctrl+Enter* — executar a tabulação.
+
+*Resultado*
+
+  a) *Ctrl+N* — nova consulta;
+  b) *Ctrl+S* — salvar consulta;
+  c) *Ctrl+E* — exportar XLSX;  *Ctrl+Shift+E* — exportar CSV;
+  d) *Ctrl+G* — criar gráfico;
+  e) *Ctrl+D* — detalhes da tabulação;
+  f) *Ctrl+M* — Funções (ƒ);
+  g) *Ctrl+F* — buscar na tabela;  *F3* — buscar o próximo;
+  h) *Ctrl+Z / Ctrl+Y* — desfazer / refazer;
+  i) *Ctrl + / Ctrl − / Ctrl+0* — zoom da tabela.
+
+*Geral*
+
+  a) *F1* — lista de atalhos;
+  b) *Ctrl+,* — Configurações;
+  c) *Ctrl+Shift+L* — rodar consultas em lote;
+  d) *Shift + clique na ⚙* — Configurações avançadas;
+  e) *Esc* — fecha a janela aberta.
+
+*Com o mouse*
+
+  a) *Duplo clique no título da tabela* — abre o modal de Detalhes;
+  b) *Duplo clique em uma coluna em "Editar / Mover colunas"* — aplica
+     formatação;
+  c) *Duplo clique em uma consulta salva* — carrega a consulta.
+
+
+=== Exemplo prático de tabulação
+
+Suponha que você quer contar atendimentos por sexo e faixa etária:
+
+  1. DEF: escolha o DEF de atendimentos;
+  2. Linhas: selecione "Sexo";
+  3. Colunas: selecione "Faixa etária";
+  4. Incremento: selecione "Frequencia" (contagem);
+  5. Arquivos: marque os DBCs do período desejado;
+  6. Clique em "Executar Tabulação".
+
+O resultado será uma tabela com uma linha por sexo e uma coluna por
+faixa etária, mostrando a contagem em cada cruzamento.
+
+Se quiser *somar valores* em vez de contar, basta trocar o Incremento de
+"Frequencia" por uma variável numérica (ex.: "Valor do procedimento").
+
+
+=== Tela inicial
+
+Ao abrir o TabWon você vê a tela inicial com o logotipo, uma saudação
+("Bom dia", "Boa tarde" ou "Boa noite", com o seu nome) e uma frase de
+boas-vindas, que muda a cada abertura. A partir dela há três caminhos:
+
+  a) Escolher um arquivo DEF no seletor superior;
+  b) Carregar uma consulta salva no seletor "Consultas salvas";
+  c) Colar um log ou superlog na caixa de texto.
+
+A caixa de colar log se expande quando você clica nela.
+*Cole o log inteiro*, incluindo a seção *[Ajustes]* se houver, e clique
+em "Aplicar Log".
+
+*Logs do TabWin* também podem ser colados. O TabWon entende descrições
+cortadas (o TabWin limita a 50 caracteres), espaços duplicados e
+descrições com o código na frente.
+
+*Log inconsistente* significa que o DEF citado no log não existe na
+pasta do TabWon ou que o log está mal formatado. Confira o nome do
+arquivo DEF.
+
+*Botões do canto superior direito:*
+
+  a) *⬇ Baixados* — lista dos arquivos salvos (aparece quando há algum);
+  b) *⚙* — abre o menu com Configurações, Últimas pesquisas, editores,
+     Consultor SQL, conversor, lote, relatório de problema, atalhos,
+     novidades, Sobre e Ajuda. *Shift + clique* na ⚙ abre as
+     Configurações avançadas.
+
+O modo de cor (claro, escuro ou automático) é escolhido em
+*⚙ → Configurações → Aparência*.
+
+*Curiosidade:* dê um duplo clique no logotipo.
+
+
+=== Arquivo DEF
+
+O DEF é o arquivo que descreve a estrutura da tabulação: quais variáveis
+serão usadas como linhas, colunas, incrementos e seleções (filtros).
+
+Ao escolher um DEF no seletor superior, o TabWon carrega automaticamente:
+
+  a) As listas de Linhas, Colunas, Incrementos, Seleções e Arquivos;
+  b) Os arquivos DBC referenciados no DEF;
+  c) As cores de cada grupo (definidas no próprio DEF).
+
+*O DEF é a base de tudo.* Sem ele, não é possível executar uma tabulação.
+
+Se o DEF não aparece na lista, verifique se ele está na mesma pasta do
+TabWon e se termina com a extensão *.def* (minúscula).
+
+
+=== Arquivos DBC e CNV
+
+Os *arquivos DBC* contêm os dados propriamente ditos. O DEF apenas
+aponta quais DBCs usar; a leitura real é feita na hora de executar a
+tabulação.
+
+Os *arquivos CNV* são tabelas de-para: cada linha associa um código
+(ex.: 01) a uma descrição (ex.: "Masculino"). Quando o DEF aponta um CNV
+para uma variável, o TabWon troca os códigos pelas descrições
+automaticamente, deixando a tabela muito mais legível.
+
+Você não precisa se preocupar com o CNV: se o DEF já aponta o arquivo, o
+TabWon aplica sozinho.
+*Basta garantir que o .cnv esteja na mesma pasta do .def*.
+
+*Dica:* na primeira leitura de um DBC, o TabWon cria um cache (veja a
+seção *Cache de DBC*). As próximas leituras são muito mais rápidas.
+
+
+=== Linhas
+
+A lista de Linhas contém as variáveis que aparecerão como
+*linhas da tabela final*. Você deve selecionar *exatamente uma* variável
+nesta lista.
+
+Se a variável tiver um CNV associado no DEF, os códigos serão
+automaticamente convertidos em descrições legíveis.
+
+*Exemplo:* se você escolher "Sexo" em Linhas, a tabela terá uma linha
+para "Masculino", outra para "Feminino", etc.
+
+*Categorias vazias:* se você não marcar "Ignorar zerados", as categorias
+sem registro aparecem com 0. Isso pode ser útil para mostrar "cobertura
+completa" de um domínio.
+
+
+=== Colunas
+
+A lista de Colunas contém as variáveis que aparecerão como
+*colunas da tabela final*. A opção "Não ativa" (primeira da lista)
+indica tabulação de frequência simples, sem cruzamento.
+
+*Regra importante:* quando uma Coluna está ativa, o Incremento aceita
+*apenas uma seleção* — a Frequencia ou uma variável numérica.
+
+*Exemplo:* se você escolher "Faixa etária" em Colunas, cada faixa vira
+uma coluna da tabela, e as linhas continuam sendo a variável de Linhas.
+
+
+=== Incremento
+
+O Incremento define *o que será somado* em cada célula da tabela. Pode
+ser:
+
+  a) *Frequencia* — conta o número de registros;
+  b) Uma variável numérica — soma os valores daquela variável.
+
+*Com Colunas em "Não ativa"*, você pode selecionar quantos incrementos
+quiser com Ctrl+clique. Nesse caso, a tabela terá uma coluna de
+resultado para cada incremento (inclusive a Frequencia).
+
+*Com uma Coluna ativa*, o Incremento aceita *apenas uma seleção*
+(qualquer uma): a Frequencia conta os registros e uma variável numérica
+soma os valores em cada cruzamento de linha e coluna.
+
+*Exemplo:* se você escolher "Valor" em Incremento, cada célula da tabela
+mostrará a soma dos valores, não a contagem.
+
+
+=== Seleções (filtros)
+
+As Seleções permitem filtrar os registros antes da tabulação. O fluxo é:
+
+  a) Escolha uma seleção em "Disponíveis";
+  b) Clique em "▼ Incluir" para movê-la para "Ativas";
+  c) Dê *duplo clique* em uma seleção ativa para configurar os valores
+     que deseja incluir (filtro por descrição do CNV).
+
+As seleções ativas aparecem com o sufixo *[Filtrado]* quando já têm
+filtros configurados.
+
+*Dica:* filtros muito restritivos podem zerar a tabela. Se a tabulação
+não retornar nada, revise os filtros.
+
+*Filtros múltiplos são combinados com E (interseção):* se você filtrar
+"Sexo = Masculino" e "Faixa = 20 a 29", só aparecerão homens de 20 a 29
+anos.
+
+*Como remover um filtro:* selecione a seleção em "Ativas", clique em "▲
+Excluir". Ela volta para "Disponíveis" sem filtro.
+
+*Não classificados:* ao lado do log, escolha como tratar os registros
+cujos códigos não estão previstos no CNV:
+
+  a) *Ignorar* — descarta esses registros (padrão);
+  b) *Incluir* — conta todos juntos em uma única linha ou coluna
+     "Não classificados";
+  c) *Discriminar* — conta e mostra cada código não reconhecido
+     separadamente, útil para achar erros de digitação ou códigos
+     obsoletos.
+
+A escolha é gravada no log (*Não_Classificados=0, 1 ou 2*), como no
+TabWin, e vale também para consultas salvas e superlogs.
+
+
+=== Ignorar zerados
+
+As caixas "Ignorar zerados" (em Linhas e em Colunas) controlam se
+linhas/colunas com soma zero devem aparecer na tabela final.
+
+*Deixe marcado* para tabelas mais limpas. Desmarque apenas se precisar
+visualizar categorias que não tiveram registros.
+
+*Exemplo:* se uma categoria tem 0 registros e você não marcou "Ignorar
+zerados", ela aparece com 0 em todas as colunas. Marcado, ela é omitida.
+
+
+=== Executar Tabulação
+
+Depois de escolher Linha, Coluna (ou "Não ativa"), Incremento e pelo
+menos um DBC, o botão "Executar Tabulação" fica verde e habilitado.
+
+Clique nele (ou use *F5* ou *Ctrl+Enter*) para processar os dados.
+Durante o processamento, uma tela de progresso mostra o tempo decorrido
+e frases de status. Você pode *cancelar a qualquer momento* clicando em
+"Cancelar".
+
+*Salvar registros:* marque a caixa "💾 Salvar registros" antes de
+executar para, ao final, escolher campos dos arquivos DBC e gravar os
+registros em XLSX (veja a seção *Salvar registros*).
+
+*Se o botão estiver cinza*, veja a seção *Problemas comuns*.
+
+
+=== Tela de progresso
+
+Enquanto o TabWon processa os dados, aparece uma tela com:
+
+  a) O logotipo do TabWon;
+  b) Uma barra de progresso animada (não indica percentual, apenas que
+     o programa está trabalhando);
+  c) Frases rotativas ("Analisando os registros...", "Cruzando
+     informações...");
+  d) O tempo decorrido (contado em tempo real);
+  e) Um botão "Cancelar" que interrompe o processamento.
+
+*Não feche a janela durante o processamento.* Se fechar, o resultado é
+perdido.
+
+A primeira tabulação costuma ser mais demorada porque o TabWon está
+criando o cache dos DBCs. As próximas vezes são bem mais rápidas.
+
+
+=== Tela de resultado
+
+Após a tabulação, você vê:
+
+  a) A tabela com as linhas e colunas calculadas;
+  b) A linha TOTAL (se ativada);
+  c) A barra de ferramentas de exportação e ajustes;
+  d) O log da consulta na parte inferior;
+  e) O botão "Nova Consulta" no canto direito.
+
+*Duplo clique no título da tabela* abre o modal de detalhes (título, cor
+do texto, mostrar/ocultar TOTAL).
+
+
+=== Como ler a tabela
+
+A tabela resultante é uma *tabela cruzada*:
+
+  a) *Linhas* = categorias da variável escolhida em Linhas;
+  b) *Colunas* = categorias da variável escolhida em Colunas (ou uma só
+     coluna "Frequencia" se "Não ativa");
+  c) *Células* = o resultado do Incremento (contagem ou soma) para
+     aquela combinação.
+
+*Exemplo:* linha "Masculino", coluna "20 a 29 anos", Incremento
+"Frequencia" → a célula mostra quantos homens de 20 a 29 anos existem na
+base.
+
+Se você escolheu mais de um incremento (possível com Colunas em "Não
+ativa"), a tabela terá uma coluna para cada incremento.
+
+*Dica:* ordene uma coluna clicando no cabeçalho. O TabWon alterna entre
+crescente e decrescente a cada clique.
+
+
+=== Linha TOTAL
+
+A última linha da tabela, chamada *TOTAL*, mostra a soma de cada coluna.
+Ela é útil para conferir totais e conferir se a tabulação faz sentido.
+
+Você pode:
+
+  a) *Ocultar* a linha TOTAL (menu de contexto → "Ocultar linha TOTAL",
+     ou pelo modal de Detalhes);
+  b) *Mostrar* de novo (mesmo caminho);
+  c) *Excluir permanentemente* pelo menu "Excluir".
+
+*Cuidado:* se você fizer operações depois de excluir o TOTAL, o total
+não é recalculado automaticamente. Use a opção "Detalhes" → "Mostrar
+linha TOTAL" para recalcular.
+
+
+=== Barra de ferramentas (resultado)
+
+Na barra superior do resultado você encontra:
+
+  a) *XLSX* — exporta a tabela e o log como planilha Excel (Ctrl+E);
+  b) *CSV* — exporta como CSV separado por ponto e vírgula
+     (Ctrl+Shift+E);
+  c) *Copiar ▼* — copia a tabela em três formatos (formatado, texto
+     puro, imagem PNG);
+  d) *Operações* — soma, subtração, multiplicação, divisão,
+     porcentagem e diferença entre datas (📅);
+  e) *ƒ* — Funções (Ctrl+M);
+  f) *Ø* — Estatística;
+  g) *🔎* — Buscar na tabela (Ctrl+F), logo depois do refazer;
+  h) *📊* — cria um gráfico (Ctrl+G);
+  i) *Formatar* — botões de adicionar coluna, editar/mover colunas,
+     excluir linhas/colunas e detalhes (Ctrl+D);
+  j) *↶ / ↷* — desfazer / refazer (atalhos Ctrl+Z e Ctrl+Y);
+  k) *✖ Limpar destaques* e *⬆ Subir / ⬇ Descer destacados* — aparecem
+     depois de uma busca com "Destacar linhas";
+  l) *Ver gráficos* — abre o painel de gráficos (aparece só quando há
+     gráficos e o painel está recolhido);
+  m) *Nova Consulta* — volta à tela de seleção mantendo o superlog
+     (Ctrl+N).
+
+*Zoom da tabela:* *Ctrl +* aumenta, *Ctrl −* diminui e *Ctrl+0* restaura
+o tamanho da letra da tabela. O tamanho escolhido fica salvo.
+
+
+=== Operações (colunas calculadas)
+
+O botão de operações abre um modal para criar uma nova coluna a partir
+de cálculo entre colunas existentes:
+
+  a) *Soma (+)* — soma os valores das colunas selecionadas;
+  b) *Subtração (−)* — subtrai na ordem em que você clicar;
+  c) *Multiplicação (×)* — multiplica os valores;
+  d) *Divisão (÷)* — divide a primeira pela segunda coluna;
+  e) *Porcentagem (%)* — (A ÷ B) × 100;
+  f) *Diferença entre datas* — dias entre duas datas, ou shift de uma
+     data (ex.: +30 dias, +1 mês).
+
+*A ordem de clique importa:* o primeiro selecionado é o operando A.
+
+Você também pode informar um valor fixo opcional para combinar com as
+colunas.
+
+*Resultado:* a nova coluna é adicionada à direita da tabela, com o nome
+que você escolher. Ela participa dos totais e dos gráficos normalmente.
+
+*Exemplo:* para calcular a diferença entre duas datas, selecione a data
+maior primeiro (operando A) e depois a data menor (operando B). O
+resultado será o número de dias entre elas.
+
+
+=== Adicionar coluna
+
+Cria uma coluna nova a partir de um valor fixo, com opção de repetir em
+todas as linhas ou usar autoincremento (número ou data).
+
+*Útil para* adicionar ano, mês de referência, marcadores etc.
+
+*Exemplo:* criar uma coluna "Ano" repetindo 2024 em todas as linhas, ou
+uma coluna "Mês" em autoincremento a partir de janeiro.
+
+
+=== Editar / Mover colunas
+
+Permite:
+
+  a) Subir/descer colunas na ordem da tabela;
+  b) Renomear colunas (os gráficos que usam a coluna são atualizados
+     automaticamente);
+  c) Alterar a formatação (número, moeda, data, texto);
+  d) Duplo clique em uma coluna aplica formatação diretamente.
+
+*Todas as alterações ficam registradas no log* e podem ser desfeitas com
+Ctrl+Z.
+
+
+=== Excluir
+
+Permite excluir linhas ou colunas específicas da tabela resultante.
+
+As exclusões ficam registradas no log e podem ser desfeitas com Ctrl+Z.
+
+*Cuidado:* excluir uma coluna que está sendo usada por um gráfico fará o
+gráfico aparecer com "(Necessário editar)".
+
+*Detalhes (⚙ Detalhes, Ctrl+D):* além do título, do nome da primeira
+coluna, da linha TOTAL e da cor do texto, há a opção
+*Trocar as linhas pelas colunas* — as categorias das linhas viram
+colunas e vice-versa. Desmarque para voltar à disposição original. A
+troca entra no superlog.
+
+
+=== Formatação de colunas
+
+Cada coluna numérica ou de data pode ter sua formatação personalizada:
+
+  a) *Número* — casas decimais, milhar, porcentagem;
+  b) *Moeda* — R$, casas decimais, milhar;
+  c) *Data* — vários formatos (dd/mm/aaaa, aaaa-mm-dd, etc.);
+  d) *Texto* — sem formatação numérica.
+
+A formatação aparece tanto na tela quanto nas exportações Excel/CSV.
+
+*Exemplo:* formatar a coluna de valores como "Moeda, R$, 2 casas" mostra
+*R$ 1.234,56* em vez de *1234.56*.
+
+
+=== Desfazer / Refazer
+
+O TabWon guarda *até 60 alterações* da tabela atual. Você pode desfazer
+e refazer:
+
+  a) Pelo botão *↶* (desfazer) ou *↷* (refazer) na barra de ferramentas;
+  b) Pelos atalhos *Ctrl+Z* (desfazer) e *Ctrl+Y* (refazer).
+
+As alterações incluem: operações, colunas adicionadas, formatações,
+ordenações, exclusões, alterações de título e de cor, gráficos criados
+ou excluídos.
+
+*Limitação:* o desfazer não volta entre tabulações. Se você executar uma
+nova tabulação, o histórico é zerado.
+
+
+=== Funções (ƒ)
+
+O botão *ƒ* (Ctrl+M) abre as Funções, que criam colunas novas a partir
+das existentes. Escolha a função à esquerda; a explicação aparece à
+direita, junto com as colunas e as opções de cada uma:
+
+  a) *Sequência* — numera as linhas de 1 até a última;
+  b) *Acumular* — soma progressiva linha a linha;
+  c) *Normalizar* — põe colunas em uma mesma escala (% do total,
+     mínimo-máximo, escore z etc.), uma coluna nova para cada escolhida;
+  d) *Absoluto* — transforma negativos em positivos;
+  e) *Inteiro* — descarta as casas decimais sem arredondar;
+  f) *Arredondar* — arredonda para as casas escolhidas;
+  g) *Calcular indicador* — numerador ÷ denominador × escala (ex.:
+     óbitos ÷ nascidos vivos × 1.000). No TOTAL, o indicador é
+     recalculado com os totais;
+  h) *Mínimo* e *Máximo* — menor ou maior valor entre colunas, por linha;
+  i) *Posição (ranking)* — 1º para o maior ou para o menor;
+  j) *Variação entre linhas* — diferença ou variação % em relação à
+     linha de cima;
+  k) *Esquerda, Direita e Meio* — pegam parte do texto ou dos dígitos
+     (também na 1ª coluna, a das categorias);
+  l) *Concatenar* — junta colunas e textos digitados, na ordem que você
+     montar. A opção "Colocar espaço entre valores" vem desmarcada.
+
+*Nomes repetidos* recebem 2, 3, 4... no fim. Todas as funções entram no
+superlog e podem ser desfeitas com Ctrl+Z.
+
+
+=== Estatística (Ø)
+
+O botão *Ø* abre a Estatística, dividida em dois grupos:
+
+  a) *Por linha — cria coluna:* média aritmética, ponderada, geométrica,
+     harmônica, aparada e dos extremos, trimédia, mediana, moda,
+     quartis, percentis, intervalo interquartil, desvio padrão,
+     variância, coeficiente de variação e intervalos de confiança;
+  b) *Entre colunas — relatório:* correlação (Pearson ou Spearman),
+     regressão linear, testes de hipóteses (t pareado, t de Welch, t de
+     uma amostra e qui-quadrado) e análise bayesiana de taxas.
+
+*A ordem de clique nas colunas importa* (por exemplo, A = casos e B =
+total). Cada cálculo mostra o que exige antes de calcular.
+
+Os relatórios abrem em uma janela própria, com o botão
+*📋 Copiar relatório*. Regressão e análise bayesiana também podem criar
+colunas (valores previstos, resíduos, taxa bayesiana e intervalo de
+credibilidade).
+
+
+=== Buscar na tabela
+
+O botão *🔎* (Ctrl+F) abre a busca. Digite o texto e clique em *Próximo*
+(ou F3): a célula encontrada fica selecionada.
+
+  a) *Busca cíclica* (marcada) — ao chegar ao fim, volta ao início;
+  b) *De trás para frente* — busca de baixo para cima;
+  c) *Destacar linhas* — pinta todas as linhas que têm o valor. Cada
+     nova busca destacada usa outra cor.
+
+Maiúsculas, minúsculas, acentos e pontos de milhar são ignorados (assim
+"202609" encontra "202.609").
+
+Depois de destacar, use *✖ Limpar destaques* ou *⬆ Subir destacados*
+(leva as linhas destacadas para o topo; clique de novo para levá-las ao
+fim).
+
+
+=== Gráfico: tipos disponíveis
+
+O botão *📊* (Ctrl+G) abre o modal de criação de gráfico. Tipos
+disponíveis (passe o mouse sobre um tipo desabilitado para saber o que
+ele exige):
+
+  a) *📊 Barras V* e *📊 Barras H* — comparam categorias;
+  b) *🍕 Pizza* e *🍩 Rosca* — participação de cada categoria no total;
+  c) *🌄 Área* e *📈 Linhas (colunas)* — tendência ao longo das
+     categorias;
+  d) *🔵 Dispersão* — um ponto por categoria;
+  e) *📊 Empilhadas* e *📊 100%* — composição de cada categoria;
+  f) *📉 Séries múltiplas* — cada linha da tabela vira uma série;
+  g) *📶 Histograma* — colunas selecionadas como faixas;
+  h) *📐 Pareto* — barras decrescentes com % acumulado e marca de 80%;
+  i) *🟧 Mapa de calor* — linhas × colunas com cor proporcional;
+  j) *🎯 Circular bar* — uma barra circular por linha;
+  k) *⏱ Velocímetro* e *📏 Linear gauge* — mostradores de 0 a 100%, por
+     linha, por coluna ou com a soma das colunas; 100% pode ser uma meta;
+  l) *📦 Boxplot* — quartis, mediana, média e valores atípicos;
+  m) *🔵 Regressão X×Y* — reta de regressão com r, R² e valor-p;
+  n) *🔺 Pirâmide* — duas séries espelhadas (ex.: masculino ×
+     feminino);
+  o) *🧱 Treemap* — retângulos proporcionais ao valor.
+
+
+=== Gráfico: eixos e opções
+
+No modal de criação, além do tipo, você configura:
+
+  a) *Título do gráfico* — padrão "Gráfico N", sem repetir nomes;
+  b) *Eixo X* — variável que será a categoria no eixo horizontal;
+  c) *Eixos Y* — uma ou mais colunas numéricas para os valores
+     (Ctrl+clique para múltiplos);
+  d) *Escala logarítmica* — útil quando os valores variam muito;
+  e) *Mostrar valores* — exibe o número sobre cada ponto/barra;
+  f) *Inverter séries e categorias* — troca o que é série e o que é
+     categoria;
+  g) *Ø Estatística no gráfico* — linha da média, da mediana, faixa de
+     ±1 desvio padrão e linha de tendência (com R²);
+  h) *Rodapé* — texto livre que aparece abaixo do gráfico. Use
+     "Texto:" no início para negrito.
+
+*Dica:* o rodapé é copiado junto com a imagem do gráfico (veja a seção
+*Copiar gráfico com legenda*).
+
+
+=== Gráfico: modo Séries múltiplas
+
+É a opção correta para ver
+*variações ao longo de meses, procedimentos, categorias, etc.*
+
+Como funciona:
+
+  a) *Cada linha da tabela* (ex.: "Masculino", "Feminino") vira uma
+     série do gráfico;
+  b) *O eixo X* são as colunas numéricas que você selecionar (ex.:
+     meses "Jan", "Fev", "Mar"...);
+  c) *O eixo Y* é o valor (contagem ou soma).
+
+Você escolhe quais colunas numéricas aparecem como séries na seção
+*Colunas numéricas a exibir como séries*. Se não escolher nenhuma, todas
+as numéricas são usadas.
+
+*Exemplo:* tabela com linhas = sexo, colunas = meses, valores =
+atendimentos. No modo Séries múltiplas, você verá uma linha para
+"Masculino" e outra para "Feminino", cruzando os meses.
+
+*Diferença em relação a "Linhas (colunas)":* em "Linhas (colunas)", o
+eixo X é a variável de Linhas (ex.: sexo), e cada coluna numérica vira
+uma série. Em "Séries múltiplas", é o contrário: cada linha vira uma
+série, e o eixo X são as colunas da tabela.
+
+
+=== Painel de gráficos
+
+O painel de gráficos fica ao lado da tabela e tem
+*605 pixels de largura*. Ele fica *oculto por padrão* e só abre
+automaticamente se existirem gráficos ao final de uma tabulação.
+
+Você pode:
+
+  a) Recolher o painel pelo botão "▶ Recolher" no topo;
+  b) Reabrir pelo botão *Ver gráficos* (na barra de ferramentas);
+  c) Rolar o conteúdo do painel com o scroll do mouse.
+
+Cada gráfico aparece em um card com cabeçalho clicável (fecha/abre),
+botão ✎ (editar) e botão ✕ (excluir).
+
+*Clique com o botão direito* em um gráfico para o menu de contexto
+(editar, copiar imagem, excluir).
+
+Quando todos os gráficos estão minimizados, cada card fica só com o
+cabeçalho. O título mantém a largura padrão para facilitar a leitura.
+
+
+=== Copiar gráfico com legenda
+
+Cada card tem a opção *📋 Copiar imagem com legenda* (menu de contexto ou
+botão na barra). O TabWon:
+
+  a) Gera uma imagem PNG do gráfico com bbox ajustado (sem áreas
+     vazias);
+  b) Anexa o rodapé digitado abaixo do gráfico, em *texto preto*;
+  c) Copia para a área de transferência (requer *pywin32* no Windows).
+
+Se o pywin32 não estiver instalado, a imagem é salva em um arquivo
+temporário e aberta automaticamente.
+
+*Dica:* se quiser, salve o PNG em local definitivo (Ctrl+S na janela que
+abrir) antes de fechar.
+
+
+=== Log
+
+O log fica na parte inferior da tela de resultado e registra:
+
+  a) O DEF escolhido;
+  b) As opções (linha, coluna, incrementos);
+  c) As seleções ativas;
+  d) Os arquivos DBC utilizados;
+  e) As estatísticas (registros processados e tempo).
+
+Use *Copiar Log* para copiar o log simples (sem a seção [Ajustes]), ou *Copiar Super Log* para
+incluir também os ajustes e gráficos.
+
+*O log é a receita da tabulação.* Se você salvar o log e colar depois, o
+TabWon reproduz exatamente a mesma consulta.
+
+
+=== Superlog
+
+Um superlog é um log que contém, além das opções originais,
+*todos os ajustes feitos depois da tabulação* (colunas criadas,
+formatações, ordenações, gráficos, etc.).
+
+Quando você cola um superlog no TabWon,
+*ele reaplica todos os ajustes automaticamente* sobre a nova tabulação.
+É útil para reproduzir uma consulta inteira a partir de outra base.
+
+*O superlog também guarda a configuração de gráficos*, incluindo as
+colunas do modo Séries múltiplas.
+
+*Como copiar:* o botão *Copiar Super Log* fica no canto direito da linha
+"Log:". Ele só aparece quando há ajustes ou gráficos criados.
+
+*Como aplicar:* cole o superlog na caixa da tela inicial e clique em
+"Aplicar Log". O TabWon carrega o DEF, aplica os ajustes e recria os
+gráficos.
+
+*Fluxo do superlog:*
+
+  1. Você faz a tabulação;
+  2. Faz ajustes (operações, formatações, gráficos);
+  3. Clica em "Copiar Super Log";
+  4. Cola em outro lugar (bloco de notas, e-mail);
+  5. Depois, cola na tela inicial e clica em "Aplicar Log";
+  6. O TabWon refaz a tabulação com todos os ajustes.
+
+
+=== Salvar consulta
+
+O botão "Salvar consulta" abre um modal onde você dá um *nome único*
+para a consulta. Há duas opções:
+
+  a) *Salvar seleção de DBC* — inclui os arquivos escolhidos no log;
+  b) *Salvar Super Log* — inclui os ajustes e gráficos.
+
+Consultas salvas ficam em *TabWon_configs/TabWon_logs.log* e podem ser
+recarregadas pelo seletor "Consultas salvas".
+
+*Nomes repetidos são bloqueados.* Se já existir uma consulta com o mesmo
+nome, o TabWon pede para escolher outro.
+
+*Dica:* use nomes descritivos. Ex.: "Atendimentos por sexo 2024",
+"Produção ambulatorial março", etc.
+
+*Identificador:* se a sua instalação tiver identificadores configurados
+(nomes de equipes, por exemplo), escolha um ao salvar. O nome final fica
+"Identificador - Nome", o que organiza a lista de consultas salvas.
+
+*Proteção:* o arquivo de consultas salvas é protegido contra gravação
+simultânea (vários usuários na mesma pasta de rede) e, a cada alteração,
+o TabWon guarda uma cópia de segurança em
+*TabWon_configs/.backups_consultas/* (as 40 mais recentes).
+
+
+=== Gerenciar consultas salvas
+
+O botão "⚙ Gerenciar" abre uma janela com todas as consultas salvas.
+Você pode:
+
+  a) *Carregar* (ou *duplo clique* / Enter);
+  b) Renomear;
+  c) Excluir;
+  d) *✎ Editar SQL* — abre uma consulta SQL no Consultor SQL.
+
+Cada consulta é marcada com *S ▶* (superlog), *L ▶* (log simples) ou
+*Q ▶* (consulta SQL, que executa e vai direto ao resultado). Os nomes
+ficam alinhados, qualquer que seja a letra.
+
+Renomear e excluir podem ser ocultados pelas Configurações avançadas.
+
+
+=== Nova Consulta
+
+O botão "Nova Consulta" volta à tela de seleção
+*mantendo o superlog atual*. Gráficos já criados são preservados, mesmo
+que você troque o DEF ou os arquivos DBC.
+
+Se, ao reexecutar a tabulação, um gráfico apontar para colunas que não
+existem mais, ele aparece marcado com *"(Necessário editar)"*.
+
+*Para começar do zero*, use "Limpar seleções" (na tela de seleção) —
+isso apaga ajustes, gráficos e seleções, voltando ao estado inicial do
+DEF.
+
+
+=== Exportação XLSX
+
+Exporta a tabela e o log como planilha Excel. A formatação das colunas é
+preservada (número, moeda, data). O título da tabulação aparece no topo
+da planilha.
+
+*Recomendado* para relatórios e envio por e-mail.
+
+*Dica:* a aba do Excel terá o nome da tabulação. Se o nome tiver
+caracteres inválidos, o TabWon os remove automaticamente.
+
+
+=== Exportação CSV
+
+Exporta a tabela e o log como CSV separado por ponto e vírgula
+(codificação UTF-8 com BOM, compatível com Excel brasileiro).
+
+*Recomendado* para reuso em outros programas e análise estatística.
+
+*Atenção:* o CSV usa *ponto e vírgula* como separador (padrão
+brasileiro). Se seu programa espera vírgula, ajuste na importação.
+
+
+=== Copiar tabela
+
+O botão *Copiar ▼* oferece três modos:
+
+  a) *Formatado (Tabela + log)* — HTML rico, colável no Word e no Excel
+     com cores e formatação;
+  b) *Texto puro (sem log)* — cada linha vira um bloco vertical (útil
+     para WhatsApp e e-mail);
+  c) *Imagem (print da tabela)* — gera um PNG com a tabela e o log.
+
+*Dica:* para WhatsApp, use "Texto puro" — o resultado fica legível e sem
+formatação estranha.
+
+
+=== Salvar registros
+
+Com a caixa *💾 Salvar registros* marcada (ela vem desmarcada e não vai
+para o log), ao fim da tabulação abre a janela *Escolhe Campos*:
+
+  a) À esquerda, os campos dos arquivos DBC; à direita, os campos que
+     serão gravados;
+  b) Use os botões, o arraste ou o duplo clique para passar campos de um
+     lado para o outro e para mudar a ordem;
+  c) Cada campo escolhido vira uma coluna do XLSX, na ordem definida.
+
+São gravados *todos os registros selecionados pela consulta* (com os
+mesmos filtros), com a formatação padrão do TabWon. Ao terminar, você
+pode abrir o arquivo ou a pasta.
+
+
+=== Cache de DBC
+
+Na primeira leitura de um DBC, o TabWon converte o arquivo para Parquet
+e guarda em cache. As próximas leituras são *muito mais rápidas*.
+
+Se o DBC for alterado (data/hora ou tamanho diferente), o cache é
+automaticamente invalidado e o arquivo é convertido de novo.
+
+Os arquivos ficam em *TabWon_configs/.cache_dbc/* e o índice em
+*TabWon_configs/.cache_dbc/_index.json*.
+
+*Para limpar o cache manualmente:* apague a pasta *.cache_dbc/*. Na
+próxima vez que você tabular, o TabWon recria o cache do zero.
+
+
+=== Configurações
+
+Em *⚙ → Configurações* (Ctrl+,) cada usuário escolhe:
+
+  a) *🎨 Aparência* — paleta de cores (com prévia), modo claro, escuro
+     ou automático e modelo de ícones (com exemplo). As cores são aplicadas na hora, conforme você
+     escolhe; "Aplicar e salvar" guarda como sua preferência e, se
+     fechar sem salvar, as cores anteriores voltam;
+  b) *🌐 Idioma* — o idioma da interface (veja a seção *Idioma*);
+  c) *👤 Minhas configurações* — o seu nome (até 50 caracteres; não pode
+     ficar em branco) e o botão para excluir as suas preferências (as
+     consultas salvas são mantidas).
+
+As preferências ficam em *TabWon_configs/.usuarios/<usuário>.ini* e
+valem só para o seu usuário do Windows.
+
+
+=== Idioma
+
+O TabWon pode ser usado em *português (Brasil)*, *inglês (EUA)* e
+*espanhol (América Latina)*. Os textos ficam em arquivos na pasta
+*TabWon_configs*:
+
+  a) *TabWon_lng_PTBR.lng* — Português (Brasil);
+  b) *TabWon_lng_ENUS.lng* — English (United States);
+  c) *TabWon_lng_ESES.lng* — Español (Latinoamérica).
+
+*Para trocar o seu idioma:* ⚙ → Configurações → 🌐 Idioma → escolha e
+clique em "✓ Aplicar idioma". A troca é imediata e fica salva só para
+você. "Padrão da instalação" segue o idioma definido pelo administrador.
+
+*Idioma padrão da instalação:* Shift + clique na ⚙ → aba Idioma. Ali
+também se escolhe quais idiomas aparecem para os usuários. Fica gravado
+na seção *[idioma]* do *TabWon_configs.ini*:
+
+  idiomas = TabWon_lng_PTBR.lng,TabWon_lng_ENUS.lng,TabWon_lng_ESES.lng
+  idiomapadrao = TabWon_lng_PTBR.lng
+
+*Sem nenhum arquivo .lng*, o TabWon funciona normalmente em português.
+
+*Traduzir para outro idioma:* copie um dos arquivos com outro código
+(ex.: *TabWon_lng_FRFR.lng*), troque *Idioma_nome* e traduza somente o
+texto entre aspas. As marcas {1}, {2}... devem ser mantidas. O cabeçalho
+de cada arquivo explica o formato. Depois, inclua o arquivo na lista de
+idiomas.
+
+*O que não é traduzido:* os dados (nomes de colunas, categorias, CNVs),
+os logs e superlogs (que continuam compatíveis entre idiomas) e algumas
+listas de opções internas.
+
+
+=== Últimas pesquisas
+
+O TabWon guarda sozinho as *10 últimas tabulações* de cada usuário,
+com todos os ajustes feitos no resultado (colunas, operações,
+transpor, títulos, gráficos etc.). Cada ajuste é salvo na hora, sem
+precisar fazer nada.
+
+Em *⚙ → Últimas pesquisas* aparece a lista com a data, o DEF e a
+consulta. *▶ Executar* (ou duplo clique) refaz a tabulação e vai
+direto ao resultado, sem passar pela tela de opções. Para mudar as
+opções depois, use o botão de nova consulta. *✖ Tirar da lista*
+remove a pesquisa.
+
+=== Baixados
+
+Quando você salva arquivos pelo TabWon (XLSX, CSV, registros, consultas
+em lote, resultado do Consultor SQL ou relatório de problema), aparece o
+botão *⬇ Baixados* no alto, ao lado da ⚙, e também na tela da
+tabulação, ao lado do botão de nova consulta.
+
+Ele abre a lista dos arquivos salvos, do mais recente para o mais
+antigo:
+
+  a) *📂 Abrir arquivo* (ou duplo clique);
+  b) *📁 Abrir pasta*;
+  c) *✖ Tirar da lista* e *🧹 Limpar lista* — não apagam os arquivos.
+
+A lista é de cada usuário e guarda os 40 últimos arquivos. Arquivos que
+foram movidos ou apagados aparecem em cinza.
+
+
+=== Ícones
+
+Os botões do TabWon usam *imagens PNG*. Os mais usados ficam só com o
+ícone (exportar XLSX, CSV e copiar; nova consulta; formatar; operações;
+gerenciar, limpar seleções e início) e os demais mostram ícone + texto.
+Passe o mouse sobre um botão para ver o que ele faz. Os avisos e
+perguntas também mostram um ícone PNG.
+
+Em *⚙ → Configurações → Aparência → Ícones* escolha um dos 20 modelos
+ou *Emoji (texto)*, que volta aos símbolos de texto. Abaixo da lista
+aparece um exemplo de como ficam os ícones no modo de cor atual, em
+fundo neutro e em botões coloridos.
+
+*Modelos:* Linear, Linear Grafite, Linear Colorido, Fino, Fino Preto,
+Grosso, Grosso Colorido, Solido, Solido Colorido, Solido Terra,
+Duotone, Duotone Colorido, Circular, Circular Colorido, Arredondado,
+Arredondado Colorido, Arredondado Pastel, Sombra, Gradiente, Neon.
+
+Os modelos ficam na pasta *TabWon_configs/icones*, em três arquivos
+cada: *<modelo>_claro.png*, *<modelo>_escuro.png* (modo escuro e
+automático à noite) e *<modelo>_alertas.png* (avisos).
+
+*Criar um modelo novo:* cada PNG de botões é uma grade de 8 colunas com
+quadros de 24 × 24 pixels e fundo transparente, em três partes, cada
+uma com 12 linhas na mesma ordem: a parte A para botões de fundo claro
+ou neutro, a parte B com desenhos brancos para botões escuros e a
+parte C com desenhos escuros para botões coloridos claros (laranja,
+amarelo). O TabWon escolhe a parte pela cor de cada botão.
+O arquivo de alertas tem 4 quadros de 48 × 48: informação, aviso, erro
+e pergunta. Ordem dos ícones:
+
+  soma, subtracao, multiplicacao, divisao, porcentagem, datas, funcoes,
+  estatistica, grafico, busca, desfazer, refazer, claro, escuro,
+  automatico, menu, baixados, xlsx, csv, copiar, nova_consulta,
+  coluna_mais, editar_mover, excluir, detalhes, lista, limpar, inicio,
+  ok, editar, salvar, executar, pasta, pasta_aberta, arquivo, aviso,
+  fechar, paleta, anterior, adicionar, marcar, desmarcar, descer,
+  subir, novo, gerar, ver, fixar, exportar, idioma, usuario, cadeado,
+  novidades, teclado, ajuda, info, dica, numeros, sql, virar,
+  conversor, atualizar, mover, imagem, autoajustar, processando,
+  recentes, importar, cancelar, proximo, g_barras_verticais,
+  g_barras_horizontais, g_pizza, g_area, g_scatter,
+  g_barras_empilhadas, g_barras_100, g_linhas, g_series_multi,
+  g_histograma, g_pareto, g_heatmap, g_circular_bar, g_velocimetro,
+  g_linear_gauge, g_boxplot, g_dispersao, g_piramide, g_rosca,
+  g_treemap.
+
+O modelo padrão da instalação e a lista de modelos ficam na seção
+*[icones]* do *TabWon_configs.ini* (Shift + clique na ⚙ → aba Cores).
+
+
+=== Configurações avançadas
+
+*Shift + clique na ⚙* abre as definições globais, gravadas em
+*TabWon_configs.ini* e válidas para todos os usuários da instalação:
+
+  a) *Menu e consultas* — exibir ou ocultar no menu os editores de DEF e
+     CNV, o Consultor SQL e o conversor; permitir renomear e excluir
+     consultas salvas; lista de identificadores (um por linha);
+  b) *Cores* — paletas disponíveis (marque e ordene), paleta padrão e
+     modo padrão;
+  c) *Usuários* — lista de quem tem preferências salvas, com a opção de
+     excluí-las;
+  d) *Idioma* — idiomas disponíveis e idioma padrão.
+
+Clique em "💾 Salvar no INI" para gravar.
+
+
+=== Editor de DEF e editor de CNV
+
+No menu ⚙ há dois editores (podem ser ocultados nas Configurações
+avançadas):
+
+*Editar / Criar DEF*
+
+  a) Abre um DEF da pasta do TabWon ou de qualquer pasta, ou começa um
+     em branco; "🧩 Gerar de um DBC" cria um DEF com todos os campos;
+  b) O painel "➕ Inserir linha" monta cada linha (L, C, S, T, D, I, X,
+     A) e a insere na posição do cursor;
+  c) Os números da margem podem ser arrastados para mover linhas;
+  d) "🔍 Analisar DEF" confere arquivos, campos e CNVs e oferece
+     correções automáticas;
+  e) *O DEF é sempre salvo na pasta do TabWon.*
+
+*Editar / Criar CNV*
+
+  a) Lista os CNVs usados pelo DEF escolhido;
+  b) Edita linha a linha (sequencial, subtotal, descrição até 50
+     caracteres, códigos e faixas);
+  c) Gera um CNV a partir de um campo do DBC ou de uma tabela DBF;
+  d) "✔ Validar" aponta problemas e oferece correção guiada.
+
+
+=== Consultor SQL
+
+O *🧮 Consultor SQL* (menu ⚙) consulta os DBCs em SQL, *somente leitura*
+— nenhum arquivo é alterado.
+
+  a) *Início* — começar do zero ou a partir de uma consulta salva ou de
+     um log colado;
+  b) *1 · Arquivos* — os DBCs viram tabelas (com mais de um, as linhas
+     são empilhadas);
+  c) *2 · Colunas* — escolha, renomeie, agregue (SOMA, CONTAGEM...) e
+     troque códigos por descrições de um CNV ou DBF;
+  d) *3 · Condições* — filtros, inclusive pela descrição do CNV;
+  e) *4 · Ordem e limite* — inclusive "ordem do CNV", como no TabWin;
+  f) *SQL e resultado* — "⚙ Montar SQL", ▶ Executar (F5), exportar,
+     salvar no histórico ou como consulta salva (Q ▶).
+
+"📄 Sugerir DEF" e "↪ Virar consulta salva" transformam o que foi montado
+em uma tabulação normal do TabWon.
+
+
+=== Conversor DBF ⟺ DBC
+
+O *⟺ Conversor DBF ⟺ DBC* (menu ⚙) lista os arquivos das pastas de dados
+indicadas na linha A dos DEFs da pasta do TabWon:
+
+  a) *DBF → DBC* compacta no formato do DATASUS; *DBC → DBF*
+     descompacta. O arquivo convertido fica na mesma pasta do original e
+     aparece selecionado do outro lado;
+  b) *Auto testar CRC* (marcado) confere a integridade de cada DBC
+     gerado;
+  c) *🔍 Verificar integridade* testa DBCs existentes sem gravar nada;
+  d) Arquivos *em laranja* têm nome fora do padrão da pasta: use
+     "⚠ Corrigir local…" para mover, renomear ou excluir;
+  e) Importar, renomear, copiar, mover e excluir arquivos;
+  f) Clique nos cabeçalhos para ordenar (os mais novos vêm primeiro).
+
+A conversão rápida usa o *TabWonDBC.exe 2.2* (pasta TabWon_configs). Sem
+ele, a conversão é feita em Python, bem mais lenta.
+
+
+=== Rodar consultas em lote
+
+Em *⚙ → Rodar consultas em lote* (Ctrl+Shift+L):
+
+  a) Marque as consultas salvas desejadas;
+  b) Escolha a pasta de destino (fica lembrada);
+  c) Clique em "▶ Rodar".
+
+Cada consulta é executada e gravada em um XLSX (com log), com o nome da
+consulta. É possível parar depois da consulta atual. Ao final, um resumo
+mostra o que foi gravado e o que teve problema (por exemplo, DEF ou
+arquivos não encontrados).
+
+
+=== Relatório de problema
+
+Em *⚙ → Relatório de problema*, o TabWon gera um arquivo ZIP com:
+
+  a) Informações do ambiente (versões, pasta de configurações, modo de
+     cor e paleta);
+  b) O registro de eventos da sessão;
+  c) A consulta atual (log).
+
+Envie o ZIP para quem dá suporte ao TabWon na sua equipe. Nenhum dado
+das tabelas é incluído.
+
+
+=== Perguntas frequentes
+
+*Posso usar os mesmos arquivos do TabWin?*
+Sim. O TabWon lê DEF, DBC e CNV no mesmo formato e também aceita os
+logs do TabWin. Basta apontar o DEF na tela inicial.
+
+*Preciso de internet?*
+Não. O TabWon funciona 100% offline. Nenhum dado ou tabulação é
+transmitido para servidores externos.
+
+*O TabWon substitui o TabWin?*
+Não. O TabWon é uma alternativa *aberta e livre*, inspirada no TabWin e
+sem vínculo institucional com o DATASUS, feita para ser usada em
+paralelo.
+
+*Posso editar os textos de Sobre, Ajuda e da interface?*
+Sim. Sobre e Ajuda são arquivos TXT e os textos da interface ficam nos
+arquivos .lng, todos na pasta *TabWon_configs/*.
+
+*Como faço backup das minhas consultas salvas?*
+O TabWon já guarda cópias automáticas em
+*TabWon_configs/.backups_consultas/*. Para uma cópia extra, copie o
+arquivo *TabWon_configs/TabWon_logs.log*.
+
+*Onde ficam os gráficos?*
+Ficam em memória e são salvos junto com o superlog. Se quiser
+preservá-los em imagem, use "Copiar imagem com legenda" ou salve a
+tabela + log em XLSX.
+
+*Posso rodar no Linux ou Mac?*
+Sim. Sem o TabWonDBC.exe, a leitura dos DBCs é feita em Python, mais
+lenta na primeira vez; depois o cache acelera as próximas leituras.
+
+*Como troco o idioma?*
+⚙ → Configurações → 🌐 Idioma. Veja a seção *Idioma*.
+
+
+=== Problemas comuns
+
+  a) *"Nenhum DBC pôde ser lido"* — verifique se os arquivos existem no
+     caminho informado e se *TabWonDBC.exe* está na pasta de
+     configurações. No Linux/Mac, a leitura é feita em Python (mais
+     lenta na primeira vez).
+
+  b) *"Após os filtros, não restaram registros"* — revise as Seleções
+     ativas; algum filtro está restritivo demais.
+
+  c) *"Log inconsistente"* — o DEF informado no log não existe ou o log
+     está mal formatado.
+
+  d) *Gráfico "(Necessário editar)"* — alguma coluna usada pelo gráfico
+     não existe mais na tabela atual. Edite o gráfico e reescolha as
+     colunas.
+
+  e) *Botão "Executar Tabulação" cinza* — falta escolher Linha, DBC ou
+     Incremento, ou há mais de um Incremento com uma Coluna ativa. Passe
+     o mouse sobre o botão para ver as pendências.
+
+  f) *Gráfico não aparece* — clique em "Ver gráficos" na barra de
+     ferramentas. O painel abre por padrão quando há gráficos, mas pode
+     estar recolhido.
+
+  g) *Números com vírgula ou ponto errados* — ajuste a formatação da
+     coluna (menu "Formatar" → "Editar / Mover colunas" → duplo clique).
+
+  h) *Resultado muito lento na primeira vez* — é o cache sendo criado.
+     As próximas tabulações serão mais rápidas.
+
+  i) *Aviso de que o TabWonDBC perdeu funções* — a pasta tem uma versão
+     antiga do TabWonDBC.exe. Atualize para a 2.2; enquanto isso, o
+     TabWon oferece fazer o teste em Python ou converter sem testar.
+
+  j) *A interface ficou em outro idioma* — ⚙ → Configurações → 🌐
+     Idioma. Se nenhum arquivo .lng existir, o TabWon fica em português.
+
+  k) *Uma seleção do log do TabWin não foi reconhecida* — confira se o
+     CNV é o mesmo usado pelo TabWin; descrições cortadas e com código
+     na frente já são tratadas automaticamente.
+
+
+=== Dicas finais
+
+  a) *Use o superlog* para reproduzir consultas completas;
+  b) *Prefira DBC em cache* para tabulações rápidas;
+  c) *Explore os gráficos de Séries múltiplas* para visualizar
+     variações ao longo do tempo;
+  d) *Sempre revise* a linha TOTAL antes de exportar;
+  e) *Ajuste a formatação* antes de exportar (evita retrabalho);
+  f) *Salve consultas frequentes* com nomes claros (ex.: "Atendimentos
+     por sexo 2024") e rode várias de uma vez com o lote;
+  g) *Use os atalhos* (F1 mostra todos);
+  h) *Contribua com o projeto:* o TabWon é código aberto e aceita
+     sugestões, correções, traduções e novos recursos.
