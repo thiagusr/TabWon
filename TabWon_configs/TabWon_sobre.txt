@@ -1,0 +1,99 @@
+TabWon — Tabulador Livre
+
+Versão: 1.00.0
+
+=== Sobre o programa
+
+O TabWon é um programa de tabulação de dados inspirado nas funcionalidades
+do TabWin, mantido pelo DATASUS. Trabalha com arquivos DEF, DBC, DBF e CNV,
+utilizados em processos de tabulação, e permite gerar tabelas cruzadas,
+aplicar filtros, criar colunas calculadas e produzir gráficos.
+
+Além da tabulação, reúne funções estatísticas aplicadas aos resultados,
+busca em tabelas, consultas SQL, editores de arquivos DEF e CNV,
+conversão entre DBF e DBC, verificação de integridade de arquivos DBC
+e execução de consultas em lote. A interface está disponível em
+português, inglês e espanhol.
+
+O TabWon é um *projeto independente, livre e de código aberto*, distribuído
+sob a *GNU General Public License, versão 3 (GPL-3.0-only)*. Não possui
+vínculo institucional com o DATASUS nem constitui uma versão oficial
+do TabWin.
+
+O processamento dos dados e das tabulações é realizado localmente, no
+computador do usuário, sem envio desses conteúdos para servidores externos.
+
+=== Proposta do projeto
+
+O TabWon busca oferecer uma alternativa aberta para quem realiza
+tabulações em sistemas e bases de dados que utilizam arquivos DBC,
+preservando a familiaridade com os recursos do TabWin e ampliando
+as possibilidades de trabalho.
+
+A proposta é evoluir continuamente, com *novos recursos*, *leiaute moderno*
+e *navegação mais amigável*, tornando as rotinas de tabulação, exploração
+e análise de dados mais práticas e acessíveis.
+
+O desenvolvimento é independente e aberto a melhorias, correções e
+contribuições da comunidade. A inspiração no TabWin reconhece sua
+importância como referência para esse tipo de trabalho, sem representar
+vínculo institucional, parceria ou endosso do DATASUS.
+
+=== Desenvolvimento
+
+*Desenvolvido originalmente por Thiago Rodrigues (thiagusr)*, como projeto
+independente, a partir de experiência prática com tabulação e
+processamento de dados.
+
+A leitura, a gravação e a verificação dos arquivos DBC contam com o
+*TabWonDBC*, módulo integrante do projeto, também de código aberto.
+
+O TabWon parte das necessidades observadas na utilização cotidiana de
+ferramentas de tabulação e busca reunir transparência, flexibilidade
+e facilidade de uso em um mesmo ambiente.
+
+=== Código aberto e licença
+
+O código-fonte do TabWon está disponível publicamente sob a licença
+*GNU GPL v3 (GPL-3.0-only)*, permitindo, nos termos dessa licença:
+
+  * Estudar e auditar o funcionamento do programa;
+  * Utilizar, copiar, modificar e redistribuir o software;
+  * Corrigir erros e propor novos recursos;
+  * Adaptar o programa a diferentes necessidades;
+  * Contribuir com traduções e melhorias de acessibilidade.
+
+A interface está disponível em *português (Brasil)*, *inglês (EUA)* e
+*espanhol (América Latina)*. Para criar uma nova tradução, é possível
+usar como referência um dos arquivos *TabWon_lng_XXXX.lng* da pasta
+TabWon_configs; o cabeçalho desses arquivos apresenta orientações.
+
+*Contribuições são bem-vindas.* Desenvolvedores, profissionais que
+trabalham com tabulação, pesquisadores e demais usuários podem participar
+por meio de sugestões, relatos de problemas e contribuições ao código.
+
+Consulte os arquivos de licença e avisos de autoria do repositório para
+conhecer as condições aplicáveis à distribuição e às modificações.
+
+=== Agradecimentos
+
+Ao *Ministério da Saúde* e ao *DATASUS*, pelo desenvolvimento e pela
+manutenção do TabWin, referência que inspirou este projeto.
+
+Às pessoas que colaboram com testes em situações reais, sugestões de
+melhorias, traduções e identificação de problemas.
+
+O botão *Relatório de problema*, no menu ⚙, auxilia na reunião das
+informações necessárias para comunicar falhas ou dificuldades.
+
+E a você, que utiliza o TabWon e contribui para seu aperfeiçoamento.
+
+=== Repositório e contribuições
+
+Repositório oficial do projeto, com código-fonte e documentação:
+https://github.com/thiagusr/TabWon
+
+Para enviar sugestões, relatar erros ou propor alterações, utilize as
+issues e os pull requests do repositório, conforme as orientações do
+projeto. Para informações sobre o uso do programa, consulte também
+o arquivo TabWon_ajuda.txt.

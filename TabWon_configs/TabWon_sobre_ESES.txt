@@ -1,0 +1,101 @@
+TabWon — Tabulador Libre
+
+Versión: 1.00.0
+
+=== Acerca del programa
+
+TabWon es un programa de tabulación de datos que trabaja con los mismos
+tipos de archivos de TabWin (DEF, DBC, CNV), y permite generar tablas
+cruzadas, aplicar filtros, crear columnas calculadas y armar gráficos a
+partir de bases como DATASUS/SUS (el sistema público de salud de
+Brasil).
+
+Además de la tabulación, reúne funciones y estadística sobre el
+resultado, búsqueda en la tabla, consultas en SQL, editores de DEF y
+CNV, conversión entre DBF y DBC con prueba de integridad, ejecución de
+consultas en lote e interfaz en portugués, inglés y español.
+
+Es un *software libre e independiente*, inspirado en TabWin y
+*sin vínculo institucional con DATASUS*. Funciona 100% en tu
+computadora: ningún dato o tabulación se envía a servidores externos.
+
+El objetivo es ser una alternativa abierta, gratuita y mejorada
+continuamente por la comunidad, sin depender de binarios cerrados ni de
+licencias restrictivas.
+
+=== Origen del nombre
+
+TabWin significa *Tabulador para Windows*. TabWon nació como un juego
+con ese nombre: en inglés, *Win* es presente (ganar) y *Won* es pasado
+(ganó) — una forma ligera de decir que, con código abierto,
+*quien gana es la comunidad*. El sonido también recuerda a "TabOne", el
+tabulador número uno. 😄
+
+Bromas aparte, el nombre lleva una historia real: una vez se solicitó al
+Ministerio de Salud de Brasil el código fuente de TabWin, y el pedido
+fue negado. En lugar de desistir, la respuesta fue desarrollar, desde
+cero y con código abierto, un tabulador que hiciera el mismo trabajo — y
+que cualquier persona pudiera usar, estudiar y mejorar.
+
+*Un agradecimiento especial al Ministerio de Salud*, que creó TabWin y
+definió los formatos DEF, DBC y CNV. Sin ese legado, TabWon no
+existiría. La idea no es competir, sino sumar: TabWon existe porque
+TabWin abrió el camino.
+
+=== Desarrollo
+
+*Desarrollado originalmente por Thiago Rodrigues (thiagusr)*, a partir
+de una necesidad real del Equipo de Procesamiento SIA/SMS de Porto
+Alegre/RS, Brasil.
+
+La lectura y la grabación de los archivos DBC las realiza *TabWonDBC*,
+programa compañero de TabWon, también de código abierto.
+
+El proyecto nació de la práctica: quien tabula datos del SUS todos los
+días sabe cuánto ayuda una herramienta libre, transparente y adaptable.
+
+=== Código abierto
+
+TabWon es *software de código abierto*. Todo el código fuente está
+disponible públicamente para que la comunidad pueda:
+
+  * Auditar su funcionamiento;
+  * Corregir errores;
+  * Agregar nuevos recursos;
+  * Adaptar el programa a realidades locales;
+  * Traducirlo a otros idiomas.
+
+La interfaz ya está disponible en *portugués (Brasil)*,
+*inglés (EE. UU.)* y *español (América Latina)*. Para crear una nueva
+traducción, basta copiar uno de los archivos *TabWon_lng_XXXX.lng* de la
+carpeta TabWon_configs y traducir los textos — el encabezado de cada
+archivo explica cómo.
+
+*Las contribuciones son bienvenidas.* Si eres desarrollador, tabulador,
+investigador o simplemente alguien que usa TabWon en el día a día, tu
+ayuda es fundamental para que el proyecto siga creciendo.
+
+=== Agradecimientos
+
+Al *Ministerio de Salud*, por TabWin y por los formatos abiertos (DEF,
+DBC, CNV) que hacen posible este trabajo.
+
+Al Equipo de Procesamiento SIA/SMS de Porto Alegre/RS, por el apoyo y
+por las pruebas en escenarios reales.
+
+A quienes contribuyan con traducciones, sugerencias e informes de
+problemas — el botón *Informe de problema*, en el menú ⚙, ayuda a reunir
+la información necesaria.
+
+A la comunidad de DATASUS, por los archivos de dominio público que
+alimentan los análisis.
+
+Y a ti, que usas TabWon: *gracias por ser parte de esta historia*.
+
+=== Contacto y contribuciones
+
+Código fuente, issues y pull requests:
+*próximamente, en el repositorio oficial del desarrollador.*
+
+Dudas, sugerencias e informes de errores:
+*consulta el archivo TabWon_ajuda.txt o abre un issue en el repositorio.*
