@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="TabWon\_configs/TabWon\_logo.png" alt="TabWon" width="420">
+  <img src="TabWon_configs\TabWon_logo.png" alt="TabWon" width="420">
 </p>
 
 <h3 align="center">Tabulador Livre de dados do SUS</h3>
