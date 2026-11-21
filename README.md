@@ -38,21 +38,21 @@ O **TabWon** é um programa de tabulação de dados que trabalha com os mesmos a
 aplicar filtros, criar colunas calculadas, gerar gráficos e estatísticas e exportar os
 resultados, a partir das bases do SUS como SIA, SIH, SIM, SINASC e outras.
 
-**Inspiração e vínculo.** O TabWon é **inspirado no TabWin** e **não tem nenhum vínculo com o
+**Inspiração e vínculo:** O TabWon é **inspirado no TabWin** e **não tem nenhum vínculo com o
 DATASUS** nem com o Ministério da Saúde. É um projeto independente, feito por quem tabula dados
 do SUS no dia a dia.
 
-**Por que os mesmos formatos.** A ideia original é **somar**: oferecer novos recursos ao SUS e
-às análises com tabulação de dados sem obrigar ninguém a refazer seu trabalho. Por isso o TabWon
-lê os mesmos DEFs, CNVs, DBFs e DBCs que já existem nas secretarias, nos hospitais e nas
+**Por que os mesmos formatos?** A ideia original é **somar**: oferecer novos recursos ao SUS e
+às análises com tabulação de dados sem obrigar a refazer seu trabalho. Por isso o TabWon
+lê os mesmos DEFs, CNVs, DBFs e DBCs que já existem nas secretarias, em diversos estabelecimentos de saúde e nas
 universidades.
 
-**Por que código aberto.** O TabWin tem recursos que o TabWon ainda não incorporou, como a
-integração com o R. Assim como o TabWon oferece facilidades que o TabWin não possui, como salvar log e tabular apenas colando um. O TabWon é aberto justamente para que a comunidade possa estudá-lo,
+**Por que código aberto:** O TabWin tem recursos que o TabWon ainda não incorporou, como a
+integração com o R. Assim como o TabWon oferece facilidades que o TabWin não possui, como salvar log ou tabular apenas colando um log copiado do TabWin. O TabWon é aberto justamente para que a comunidade possa estudá-lo,
 corrigi-lo, adaptá-lo à sua realidade e contribuir com novos recursos, **fortalecendo ainda mais
 o SUS**.
 
-**Agradecimento.** Ao Ministério da Saúde e ao DATASUS, que criaram o TabWin, definiram os
+**Agradecimento:** Ao Ministério da Saúde e ao DATASUS, que criaram o TabWin, definiram os
 formatos DEF, CNV e disponibilizam as bases públicas. Sem esse legado, o TabWon não
 existiria.
 
