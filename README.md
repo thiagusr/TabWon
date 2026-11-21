@@ -355,17 +355,17 @@ configurações, consultas salvas e preferências são preservadas.
 
 |||
 |-|-|
-|**Tela inicial** !\[Tela inicial](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/01.png)|**Seleção da tabulação** !\[Seleção da tabulação](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/02.png)|
-|**Criar gráfico** !\[Criar gráfico](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/03.png)|**Funções** !\[Funções](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/04.png)|
-|**Estatística** !\[Estatística](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/05.png)|**Conversor DBF ⟺ DBC** !\[Conversor DBF ⟺ DBC](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/06.png)|
-|**Consultor SQL** !\[Consultor SQL](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/07.png)|**Editor de DEF** !\[Editor de DEF](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/08.png)|
-|**Configurações** !\[Configurações](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/09.png)|**Tela inicial no modo escuro** !\[Tela inicial no modo escuro](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/10.png)|
-|**Consultas salvas (modo escuro)** !\[Consultas salvas (modo escuro)](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/11.png)|**Detalhes da tabulação (modo escuro)** !\[Detalhes da tabulação (modo escuro)](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/12.png)|
-|**Últimas pesquisas (modo escuro)** !\[Últimas pesquisas (modo escuro)](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/13.png)|**Editor de CNV (modo escuro)** !\[Editor de CNV (modo escuro)](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/14.png)|
+|**Tela inicial** !\[Tela inicial](https://raw.githubusercontent.com/thiagusr/TabWon/Prints/01.png)|**Seleção da tabulação** !\[Seleção da tabulação](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/02.png)|
+|**Criar gráfico** !\[Criar gráfico](https://raw.githubusercontent.com/thiagusr/TabWon/Prints/03.png)|**Funções** !\[Funções](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/04.png)|
+|**Estatística** !\[Estatística](https://raw.githubusercontent.com/thiagusr/TabWon/Prints/05.png)|**Conversor DBF ⟺ DBC** !\[Conversor DBF ⟺ DBC](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/06.png)|
+|**Consultor SQL** !\[Consultor SQL](https://raw.githubusercontent.com/thiagusr/TabWon/Prints/07.png)|**Editor de DEF** !\[Editor de DEF](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/08.png)|
+|**Configurações** !\[Configurações](https://raw.githubusercontent.com/thiagusr/TabWon/Prints/09.png)|**Tela inicial no modo escuro** !\[Tela inicial no modo escuro](https://raw.githubusercontent.com/thiagusr/TabWon/Prints/10.png)|
+|**Consultas salvas (modo escuro)** !\[Consultas salvas (modo escuro)](https://raw.githubusercontent.com/thiagusr/TabWon/Prints/11.png)|**Detalhes da tabulação (modo escuro)** !\[Detalhes da tabulação (modo escuro)](https://raw.githubusercontent.com/thiagusr/TabWon/Prints/12.png)|
+|**Últimas pesquisas (modo escuro)** !\[Últimas pesquisas (modo escuro)](https://raw.githubusercontent.com/thiagusr/TabWon/Prints/13.png)|**Editor de CNV (modo escuro)** !\[Editor de CNV (modo escuro)](https://raw.githubusercontent.com/thiagusr/TabWon/Prints/14.png)|
 
 **Os 20 tipos de gráfico:**
 
-!\[Tipos de gráfico](https://raw.githubusercontent.com/thiagusr/TabWon/prints/Prints/15.png)
+!\[Tipos de gráfico](https://raw.githubusercontent.com/thiagusr/TabWon/Prints/15.png)
 
 Os dados das telas são de teste e não representam informações reais.
 
