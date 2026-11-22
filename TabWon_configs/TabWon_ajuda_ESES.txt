@@ -1,6 +1,6 @@
 TabWon — Guía de Ayuda
 
-Versión: 1.00.0
+Versión: 1.00.1
 
 
 === Acerca de esta guía
@@ -135,7 +135,7 @@ descripciones cortadas (TabWin las limita a 50 caracteres), espacios
 dobles y descripciones con el código adelante.
 
 *Log inconsistente* significa que el DEF citado en el log no existe en
-la carpeta de TabWon o que el log está mal formado. Revisa el nombre
+la carpeta de TabWin o que el log está mal formado. Revisa el nombre
 del archivo DEF.
 
 *Botones de la esquina superior derecha:*
@@ -150,6 +150,44 @@ El modo de color (claro, oscuro o automático) se elige en
 *⚙ → Configuración → Apariencia*.
 
 *Curiosidad:* haz doble clic en el logotipo.
+
+
+=== Carpeta de TabWin
+
+La *carpeta de TabWin* es donde están los DEF y los CNV. En ella,
+dentro de *TabWon_configs*, TabWon también guarda las consultas
+guardadas, las últimas búsquedas, las descargas y las preferencias de
+cada usuario.
+
+  a) *TabWon en la misma carpeta de TabWin* (local o de red): la
+     carpeta de TabWin es la propia carpeta de TabWon y no hay nada que
+     configurar;
+  b) *TabWon en otra carpeta* (por ejemplo, instalado en cada
+     computadora): si no hay ningún DEF junto a TabWon, en la primera
+     apertura pregunta *¿Dónde están los archivos de TabWin?*. Indica la
+     carpeta, que puede estar en la red. La elección queda grabada en la
+     sección *[pastas]* de *TabWon_configs.ini* y vale para todos los
+     usuarios de la computadora.
+
+Así, todos los que usan la misma carpeta de TabWin comparten las mismas
+consultas guardadas, ya sea que TabWon se ejecute desde la red o esté
+instalado en cada computadora.
+
+*Para cambiar la carpeta:* Shift + clic en ⚙ → pestaña *Carpeta de
+TabWin*. Al cambiarla, TabWon copia tus preferencias y ofrece copiar
+las consultas guardadas, si la nueva carpeta todavía no tiene.
+
+*Si la carpeta de red no está accesible* al abrir TabWon, avisa y
+permite elegir otra carpeta o seguir, por ahora, con la carpeta del
+propio TabWon.
+
+*Archivos de datos (DBC):* vale siempre la ruta escrita en la línea A
+de cada DEF, sin distinguir mayúsculas y minúsculas. Solo cuando esa
+carpeta no existe en la computadora, TabWon busca los mismos nombres
+en la carpeta del DEF.
+
+La caché de los DBC sigue en la carpeta del propio TabWon (ver la
+sección *Caché de DBC*).
 
 
 === Archivo DEF
@@ -167,8 +205,8 @@ Al elegir un DEF en el selector superior, TabWon carga automáticamente:
 *El DEF es la base de todo.* Sin él, no es posible ejecutar una
 tabulación.
 
-Si el DEF no aparece en la lista, verifica que esté en la misma carpeta
-de TabWon y que termine con la extensión *.def* (minúscula).
+Si el DEF no aparece en la lista, verifica que esté en la carpeta de
+TabWin (ver la sección *Carpeta de TabWin*) y que termine en *.def*.
 
 
 === Archivos DBC y CNV
@@ -764,8 +802,9 @@ un *nombre único*. Hay dos opciones:
      log;
   b) *Guardar Super Log* — incluye los ajustes y gráficos.
 
-Las consultas guardadas quedan en *TabWon_configs/TabWon_logs.log* y
-pueden volver a cargarse en el selector "Consultas guardadas".
+Las consultas guardadas quedan en *TabWon_configs/TabWon_logs.log*, en
+la carpeta de TabWin, y pueden volver a cargarse en el selector
+"Consultas guardadas".
 
 *Los nombres repetidos se bloquean.* Si ya existe una consulta con el
 mismo nombre, TabWon pide elegir otro.
@@ -879,8 +918,8 @@ y lo guarda en caché. Las lecturas siguientes son *mucho más rápidas*.
 Si el DBC cambia (fecha/hora o tamaño diferente), la caché se invalida
 automáticamente y el archivo se convierte de nuevo.
 
-Los archivos quedan en *TabWon_configs/.cache_dbc/* y el índice en
-*TabWon_configs/.cache_dbc/_index.json*.
+Los archivos quedan en *TabWon_configs/.cache_dbc/*, en la carpeta del
+propio TabWon, y el índice en *TabWon_configs/.cache_dbc/_index.json*.
 
 *Para limpiar la caché manualmente:* borra la carpeta *.cache_dbc/*. La
 próxima vez que tabules, TabWon recrea la caché desde cero.
@@ -900,8 +939,8 @@ En *⚙ → Configuración* (Ctrl+,) cada usuario elige:
      quedar en blanco) y el botón para eliminar tus preferencias (las
      consultas guardadas se mantienen).
 
-Las preferencias quedan en *TabWon_configs/.usuarios/<usuario>.ini* y
-valen solo para tu usuario de Windows.
+Las preferencias quedan en *TabWon_configs/.usuarios/<usuario>.ini*, en
+la carpeta de TabWin, y valen solo para tu usuario de Windows.
 
 
 === Idioma
@@ -1030,15 +1069,18 @@ Colores).
 *TabWon_configs.ini* y válidas para todos los usuarios de la
 instalación:
 
-  a) *Menú y consultas* — mostrar u ocultar en el menú los editores de
+  a) *Carpeta de TabWin* — la carpeta de los DEF, CNV, consultas
+     guardadas y preferencias de los usuarios (ver la sección *Carpeta
+     de TabWin*);
+  b) *Menú y consultas* — mostrar u ocultar en el menú los editores de
      DEF y CNV, el Consultor SQL y el conversor; permitir renombrar y
      eliminar consultas guardadas; lista de identificadores (uno por
      línea);
-  b) *Colores* — paletas disponibles (marca y ordena), paleta
+  c) *Colores* — paletas disponibles (marca y ordena), paleta
      predeterminada y modo predeterminado;
-  c) *Usuarios* — lista de quién tiene preferencias guardadas, con la
+  d) *Usuarios* — lista de quién tiene preferencias guardadas, con la
      opción de eliminarlas;
-  d) *Idioma* — idiomas disponibles e idioma predeterminado.
+  e) *Idioma* — idiomas disponibles e idioma predeterminado.
 
 Haz clic en "💾 Guardar en el INI" para grabar.
 
@@ -1050,7 +1092,7 @@ avanzada):
 
 *Editar / Crear DEF*
 
-  a) Abre un DEF de la carpeta de TabWon o de cualquier carpeta, o
+  a) Abre un DEF de la carpeta de TabWin o de cualquier carpeta, o
      empieza uno en blanco; "🧩 Generar de un DBC" crea un DEF con
      todos los campos;
   b) El panel "➕ Insertar línea" arma cada línea (L, C, S, T, D, I, X,
@@ -1058,7 +1100,7 @@ avanzada):
   c) Los números del margen pueden arrastrarse para mover líneas;
   d) "🔍 Analizar DEF" revisa archivos, campos y CNV y ofrece
      correcciones automáticas;
-  e) *El DEF siempre se guarda en la carpeta de TabWon.*
+  e) *El DEF siempre se guarda en la carpeta de TabWin.*
 
 *Editar / Crear CNV*
 
@@ -1092,7 +1134,7 @@ que se armó en una tabulación normal de TabWon.
 === Conversor DBF ⟺ DBC
 
 El *⟺ Conversor DBF ⟺ DBC* (menú ⚙) lista los archivos de las carpetas
-de datos indicadas en la línea A de los DEF de la carpeta de TabWon:
+de datos indicadas en la línea A de los DEF de la carpeta de TabWin:
 
   a) *DBF → DBC* comprime en el formato de DATASUS; *DBC → DBF*
      descomprime. El archivo convertido queda en la misma carpeta del
@@ -1157,8 +1199,14 @@ están en los archivos .lng, todos en la carpeta *TabWon_configs/*.
 
 *¿Cómo hago una copia de seguridad de mis consultas guardadas?*
 TabWon ya guarda copias automáticas en
-*TabWon_configs/.backups_consultas/*. Para una copia extra, copia el
-archivo *TabWon_configs/TabWon_logs.log*.
+*TabWon_configs/.backups_consultas/*, en la carpeta de TabWin. Para
+una copia extra, copia el archivo *TabWon_configs/TabWon_logs.log* de
+esa misma carpeta.
+
+*¿Puedo instalar TabWon en cada computadora y usar una carpeta de red?*
+Sí. Indica la carpeta de TabWin de la red en la primera apertura (o en
+Shift + clic en ⚙ → *Carpeta de TabWin*): los DEF, las consultas
+guardadas y las preferencias quedan allí, compartidos por todos.
 
 *¿Dónde quedan los gráficos?*
 Quedan en memoria y se guardan junto con el superlog. Si quieres
@@ -1216,6 +1264,14 @@ vez; después, la caché acelera las lecturas siguientes.
   k) *Una selección del log de TabWin no fue reconocida* — verifica que
      el CNV sea el mismo que usa TabWin; las descripciones cortadas y
      con código adelante ya se tratan automáticamente.
+
+  l) *La apertura tarda* — la primera vez, o con TabWon en una carpeta
+     de red, puede tardar cerca de un minuto. En la versión compilada,
+     una pantalla de carga muestra el avance.
+
+  m) *La lista de DEF quedó vacía* — revisa la carpeta de TabWin en
+     Shift + clic en ⚙ → *Carpeta de TabWin* y si la carpeta de red
+     está accesible.
 
 
 === Consejos finales

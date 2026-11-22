@@ -5,7 +5,7 @@
 <h3 align="center">Tabulador Livre de dados do SUS</h3>
 
 <p align="center">
-  Versão 1.00.0 · Windows · Código aberto (GPL-3.0) · Funciona 100% no seu computador
+  Versão 1.00.1 · Windows · Código aberto (GPL-3.0) · Funciona 100% no seu computador
 </p>
 
 ---
@@ -58,7 +58,7 @@ existiria.
 
 ### Fase de testes e versão oficial
 
-O TabWon está na **versão 1.00.0, em fase de testes**. Antes da versão oficial, o programa passa
+O TabWon está na **versão 1.00.1, em fase de testes**. Antes da versão oficial, o programa passa
 por **três etapas de testes**, cada uma com um número mínimo de pessoas:
 
 |Etapa|Testadores (mínimo)|Objetivo|
@@ -123,6 +123,9 @@ integridade.
 * **Exportação** para XLSX, CSV e área de transferência (formatado, texto ou imagem).
 * **Interface** em português, inglês e espanhol; modos claro, escuro e automático; 10 paletas e
 20 modelos de ícones; personalização por usuário.
+* **Pasta do TabWin compartilhada:** DEFs, consultas salvas, últimas pesquisas e preferências
+de cada usuário ficam na pasta do TabWin, que pode ser da rede. Com o TabWon instalado em cada
+computador ou rodando direto da rede, todos usam as mesmas consultas.
 * **Privacidade:** funciona 100% no computador, sem enviar dados para fora.
 
 ---
@@ -153,7 +156,7 @@ documentação**. Ficam de fora (veja o arquivo [`.gitignore`](.gitignore)):
 |Fora do repositório|Como obter|
 |-|-|
 |Bibliotecas do Python (pandas, DuckDB, pyarrow, Matplotlib etc.)|São baixadas automaticamente pelo `compilar.bat` ou pelo comando `pip` da [seção 8](#8-rodar-sem-compilar-direto-pelo-python).|
-|Pasta `TabWon_dependencias` e o `TabWon.exe`|São gerados pela compilação ([seção 10](#10-compilar-o-tabwon)).|
+|Pasta `TabWon_dependencias`, o `TabWon_tabulador.exe` e o `TabWon.exe`|São gerados pela compilação ([seção 10](#10-compilar-o-tabwon)).|
 |`TabWonDBC.exe`|É gerado a partir do código da pasta `TabWonDBC` ([seção 9](#9-compilar-o-tabwondbc)).|
 |Bases de dados (DBC, DBF, Parquet) e consultas pessoais|Nunca são publicadas. Use as suas.|
 
@@ -176,6 +179,7 @@ TabWon/
 ├─ TabWon_configs/        configurações, idiomas, ajuda, paletas, ícones e logotipos
 ├─ TabWon_dependencias/   bibliotecas usadas pelo executável (gerada na compilação)
 ├─ TabWonDBC/             código-fonte do conversor TabWonDBC (C#/.NET 8)
+├─ loader/                código-fonte do TabWon.exe, a tela de carregamento (C#)
 ├─ Imagens/               arquivos-fonte das imagens (GIMP) e modelos de ícones
 ├─ Prints/                telas do programa usadas neste README
 └─ .gitignore             o que fica fora do repositório
@@ -188,6 +192,7 @@ TabWon/
 |**`TabWon_configs/`**|Tudo o que o TabWon lê enquanto roda e que pode ser editado sem mexer no código: configuração geral (`TabWon_configs.ini`), arquivos de idioma (`.lng`), textos de ajuda e de "Sobre", paletas de cores (`.cor`), modelos de ícones (`icones/`), logotipos e ícone do programa. Também é onde fica o **`TabWonDBC.exe`** compilado. Durante o uso, o TabWon cria aqui as consultas salvas, as preferências de cada usuário (`.usuarios/`), o cache dos DBCs (`.cache_dbc/`) e as cópias de segurança (`.backups_consultas/`).|
 |**`TabWon_dependencias/`**|Bibliotecas (Python, pandas, matplotlib, DuckDB, pyarrow etc.) que o `TabWon.exe` usa. É **gerada automaticamente** pelo `compilar.bat`, **não vem no repositório** e não deve ser editada. Pode ser apagada e recriada a qualquer momento.|
 |**`TabWonDBC/`**|Código-fonte em C# do **TabWonDBC**, o conversor de DBC para Parquet e de DBF ⟺ DBC usado pelo TabWon. Tem README, licença e aviso de autoria próprios.|
+|**`loader/`**|Código-fonte em C# do **loader**, o `TabWon.exe` da versão compilada: mostra a tela de carregamento com o logotipo enquanto o programa principal (`TabWon_tabulador.exe`) é preparado e se fecha quando a janela fica pronta. Tem README próprio.|
 |**`Imagens/`**|Arquivos-fonte editáveis (`.xcf`, do GIMP) do logotipo, do ícone, das imagens da tela "Sobre", e os modelos para criar novos conjuntos de ícones, com o mapa de cada ícone.|
 |**`Prints/`**|Capturas das principais telas, nos modos claro e escuro, usadas neste README.|
 
@@ -206,6 +211,7 @@ TabWon/
 |[`Imagens/README.md`](Imagens/README.md)|Como editar as imagens e criar ícones no GIMP.|
 |[`TabWonDBC/README.md`](TabWonDBC/README.md)|Como compilar e usar o TabWonDBC.|
 |[`TabWonDBC/AVISO.md`](TabWonDBC/AVISO.md)|Autoria e licença do TabWonDBC.|
+|[`loader/README.md`](loader/README.md)|Como funciona e como compilar o loader (`TabWon.exe`).|
 
 **Para criar uma tradução:** copie um dos arquivos `TabWon_configs/TabWon_lng_XXXX.lng`, traduza os
 textos e libere o idioma em *Configurações avançadas → Idioma*. O cabeçalho do arquivo explica o
@@ -226,7 +232,8 @@ formato.
 |Tela|1366 × 768|1920 × 1080|
 
 **Não precisa** de Python instalado nem de permissão de administrador. O programa roda de
-qualquer pasta, inclusive da rede ou de um pen drive.
+qualquer pasta, inclusive da rede ou de um pen drive. O `TabWon.exe` (loader) usa o .NET Framework
+4.8, que já vem no Windows 10 e no Windows 11.
 
 ### Para rodar pelo código-fonte ou compilar
 
@@ -236,6 +243,8 @@ Testado no Python 3.12 e no 3.15.
 * **Internet** na primeira vez, para baixar as bibliotecas.
 * **Para compilar o TabWonDBC:** o **.NET 8 SDK** (gratuito), em
 [https://dotnet.microsoft.com/download/dotnet/8.0](https://dotnet.microsoft.com/download/dotnet/8.0). Baixe a opção **SDK**, não a Runtime.
+* **Para compilar o loader (`TabWon.exe`):** nada a instalar. O compilador C# do .NET Framework
+4.8 já vem no Windows (veja [`loader/README.md`](loader/README.md)).
 * Nada disso exige administrador se você instalar "só para o usuário atual".
 
 ---
@@ -289,9 +298,9 @@ Detalhes, opções e solução de problemas estão em [`TabWonDBC/README.md`](Ta
 
 ## 10. Compilar o TabWon
 
-A compilação gera o **`TabWon.exe`** e a pasta **`TabWon_dependencias`**. O código e o ícone do
-programa vão para dentro do executável, e todo o resto (configurações, DEFs, CNVs, DBCs) fica do
-lado de fora, editável.
+A compilação gera o **`TabWon_tabulador.exe`** (programa principal), o **`TabWon.exe`** (loader)
+e a pasta **`TabWon_dependencias`**. O código e o ícone do programa vão para dentro do executável,
+e todo o resto (configurações, DEFs, CNVs, DBCs) fica do lado de fora, editável.
 
 1. Instale o Python (veja os [requisitos](#para-rodar-pelo-código-fonte-ou-compilar)).
 2. Confira se estes arquivos estão na mesma pasta:
@@ -300,14 +309,17 @@ lado de fora, editável.
    * `TabWon.spec`
    * `compilar.bat`
    * `TabWon_configs\TabWon_icos.ico`
+   * a pasta `loader` (código do `TabWon.exe`)
 3. Dê **duplo clique em `compilar.bat`**. Ele:
 
    * cria um ambiente Python limpo só para a compilação (`.venv_build`), sem administrador;
    * baixa as bibliotecas e o PyInstaller;
-   * gera o programa.
+   * gera o programa principal (`TabWon_tabulador.exe`);
+   * compila o loader (`TabWon.exe`) com o `loader\compilar_loader.bat`.
 4. O resultado aparece em **`dist\TabWon`**:
 
-   * `TabWon.exe`
+   * `TabWon.exe` (loader)
+   * `TabWon_tabulador.exe`
    * `TabWon_dependencias\`
 
 A primeira compilação leva alguns minutos; as seguintes são mais rápidas. Se aparecer um erro
@@ -318,6 +330,18 @@ dizendo que falta um módulo, acrescente o nome dele à lista `ocultos` no iníc
 > precisa descompactar cerca de 150 MB a cada abertura, o que deixa o programa lento para abrir
 > e costuma acionar o antivírus. Com a pasta, ele abre direto.
 
+### O loader (`TabWon.exe`)
+
+Mesmo sem descompactar nada, o programa principal precisa carregar as bibliotecas da pasta
+`TabWon_dependencias` antes de mostrar a janela, o que pode levar cerca de um minuto na primeira
+abertura ou quando o TabWon está numa pasta da rede. Para o usuário não ficar sem resposta, o
+**`TabWon.exe` é um loader**: um programa pequeno, em C#, que aparece na hora com o logotipo e uma
+barra de andamento, abre o `TabWon_tabulador.exe` e se fecha quando a janela do TabWon fica pronta.
+Atalhos e instalador apontam sempre para o `TabWon.exe`.
+
+O loader só existe na versão compilada; quem roda o `TabWon.py` pelo Python não precisa dele.
+Como funciona e como compilar só o loader: [`loader/README.md`](loader/README.md).
+
 ---
 
 ## 11. O que colocar na pasta do TabWon para funcionar
@@ -326,7 +350,8 @@ Depois de compilar, monte a pasta que será usada (ou distribuída) assim:
 
 ```
 TabWon/
-├─ TabWon.exe               ← gerado na compilação
+├─ TabWon.exe               ← loader, gerado na compilação (é ele que se abre)
+├─ TabWon_tabulador.exe     ← programa principal, gerado na compilação
 ├─ TabWon_dependencias/     ← gerado na compilação (não mexer)
 ├─ TabWon_configs/          ← copie a pasta do projeto
 │   ├─ TabWonDBC.exe        ← compilado na seção 9
@@ -336,14 +361,29 @@ TabWon/
 └─ ...
 ```
 
-* **Obrigatórios:** `TabWon.exe`, `TabWon_dependencias/`, `TabWon_configs/` (com o
+* **Obrigatórios:** `TabWon.exe`, `TabWon_tabulador.exe`, `TabWon_dependencias/`, `TabWon_configs/` (com o
 `TabWonDBC.exe` dentro e demais arquivos desta pasta) e pelo menos um **DEF e devidas CNV**.
-* **DBCs:** ficam onde a linha `A` de cada DEF indicar, inclusive em pastas da rede.
+* **DBCs:** ficam onde a linha `A` de cada DEF indicar, inclusive em pastas da rede. Vale sempre
+o caminho escrito no DEF (sem diferenciar maiúsculas e minúsculas). Só quando essa pasta não
+existe no computador o TabWon procura os mesmos nomes na pasta do DEF.
 * **Não copie** as pastas `.usuarios`, `.cache_dbc` e `.backups_consultas` do seu computador:
 elas são pessoais e o TabWon as recria.
 * Inclua `LICENSE` e `AVISO.md` ao distribuir (exigência da licença).
-* Para **atualizar** o programa, troque apenas o `TabWon.exe` e a `TabWon_dependencias`. As
-configurações, consultas salvas e preferências são preservadas.
+* Para **atualizar** o programa, troque apenas o `TabWon.exe`, o `TabWon_tabulador.exe` e a
+`TabWon_dependencias`. As configurações, consultas salvas e preferências são preservadas.
+
+### Pasta do TabWin
+
+O mais simples é colocar o TabWon **na mesma pasta do TabWin**, local ou da rede. Se o TabWon
+ficar em outra pasta (por exemplo, instalado em cada computador) e não encontrar nenhum DEF ao
+lado dele, na primeira abertura ele pede a **pasta do TabWin**, que pode ser da rede, e grava a
+escolha no `TabWon_configs.ini` (seção `[pastas]`). A escolha vale para todos os usuários do
+computador e pode ser trocada em *Configurações avançadas* (Shift + clique na ⚙).
+
+Nessa pasta ficam os DEFs e CNVs e, dentro de `TabWon_configs`, as consultas salvas, as últimas
+pesquisas e as preferências de cada usuário. Assim, rodando da rede ou instalado em cada
+computador, todos compartilham as mesmas consultas. O cache dos DBCs continua na pasta do próprio
+TabWon, que é mais rápida.
 
 ---
 

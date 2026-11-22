@@ -1,6 +1,6 @@
 TabWon — Help Guide
 
-Version: 1.00.0
+Version: 1.00.1
 
 
 === About this guide
@@ -128,7 +128,7 @@ descriptions (TabWin limits them to 50 characters), double spaces and
 descriptions with the code in front.
 
 *Inconsistent log* means that the DEF named in the log does not exist in
-the TabWon folder or that the log is malformed. Check the DEF file
+the TabWin folder or that the log is malformed. Check the DEF file
 name.
 
 *Buttons in the top right corner:*
@@ -143,6 +143,43 @@ The color mode (light, dark or automatic) is chosen in
 *⚙ → Settings → Appearance*.
 
 *Fun fact:* double-click the logo.
+
+
+=== TabWin folder
+
+The *TabWin folder* is where the DEFs and CNVs are. Inside it, under
+*TabWon_configs*, TabWon also keeps the saved queries, the recent
+searches, the downloads and each user's preferences.
+
+  a) *TabWon in the same folder as TabWin* (local or on the network):
+     the TabWin folder is the TabWon folder itself and there is nothing
+     to set up;
+  b) *TabWon in another folder* (for example, installed on each
+     computer): if there is no DEF next to TabWon, on the first start
+     it asks *Where are the TabWin files?*. Point to the folder, which
+     can be on the network. The choice is saved in the *[pastas]*
+     section of *TabWon_configs.ini* and applies to all users of the
+     computer.
+
+This way, everyone who uses the same TabWin folder shares the same
+saved queries, whether TabWon runs from the network or is installed
+on each computer.
+
+*To change the folder:* Shift + click on ⚙ → *TabWin folder* tab. When
+changing it, TabWon copies your preferences and offers to copy the
+saved queries, if the new folder has none yet.
+
+*If the network folder cannot be reached* when TabWon opens, it warns
+you and lets you choose another folder or go on, for now, with the
+TabWon folder itself.
+
+*Data files (DBC):* the path written in line A of each DEF always
+wins, ignoring upper and lower case. Only when that folder does not
+exist on the computer does TabWon look for the same names in the DEF
+folder.
+
+The DBC cache stays in the TabWon folder itself (see the *DBC cache*
+section).
 
 
 === DEF file
@@ -160,8 +197,8 @@ When you choose a DEF in the top selector, TabWon automatically loads:
 *The DEF is the basis of everything.* Without it, you cannot run a
 tabulation.
 
-If the DEF does not show up in the list, check that it is in the same
-folder as TabWon and ends with the *.def* extension (lowercase).
+If the DEF does not show up in the list, check that it is in the TabWin
+folder (see the *TabWin folder* section) and ends with *.def*.
 
 
 === DBC and CNV files
@@ -727,8 +764,8 @@ The "Save query" button opens a window where you give the query a
   a) *Save DBC selection* — includes the chosen files in the log;
   b) *Save Super Log* — includes the adjustments and charts.
 
-Saved queries are kept in *TabWon_configs/TabWon_logs.log* and can be
-reloaded in the "Saved queries" selector.
+Saved queries are kept in *TabWon_configs/TabWon_logs.log*, in the
+TabWin folder, and can be reloaded in the "Saved queries" selector.
 
 *Repeated names are blocked.* If a query with the same name already
 exists, TabWon asks you to choose another.
@@ -840,8 +877,8 @@ keeps it in a cache. Later readings are *much faster*.
 If the DBC changes (different date/time or size), the cache is
 automatically invalidated and the file is converted again.
 
-The files are in *TabWon_configs/.cache_dbc/* and the index in
-*TabWon_configs/.cache_dbc/_index.json*.
+The files are in *TabWon_configs/.cache_dbc/*, in the TabWon folder
+itself, and the index in *TabWon_configs/.cache_dbc/_index.json*.
 
 *To clear the cache manually:* delete the *.cache_dbc/* folder. The next
 time you tabulate, TabWon rebuilds the cache from scratch.
@@ -861,8 +898,8 @@ In *⚙ → Settings* (Ctrl+,) each user chooses:
      blank) and the button to delete your preferences (saved queries
      are kept).
 
-Preferences are kept in *TabWon_configs/.usuarios/<user>.ini* and apply
-only to your Windows user.
+Preferences are kept in *TabWon_configs/.usuarios/<user>.ini*, in the
+TabWin folder, and apply only to your Windows user.
 
 
 === Language
@@ -987,14 +1024,16 @@ Colors tab).
 *Shift + click on ⚙* opens the global settings, saved in
 *TabWon_configs.ini* and valid for all users of the installation:
 
-  a) *Menu and queries* — show or hide in the menu the DEF and CNV
+  a) *TabWin folder* — the folder of the DEFs, CNVs, saved queries and
+     user preferences (see the *TabWin folder* section);
+  b) *Menu and queries* — show or hide in the menu the DEF and CNV
      editors, the SQL Consultant and the converter; allow renaming and
      deleting saved queries; list of identifiers (one per line);
-  b) *Colors* — available palettes (check and sort), default palette
+  c) *Colors* — available palettes (check and sort), default palette
      and default mode;
-  c) *Users* — list of who has saved preferences, with the option to
+  d) *Users* — list of who has saved preferences, with the option to
      delete them;
-  d) *Language* — available languages and default language.
+  e) *Language* — available languages and default language.
 
 Click "💾 Save to INI" to save.
 
@@ -1006,14 +1045,14 @@ settings):
 
 *Edit / Create DEF*
 
-  a) Opens a DEF from the TabWon folder or from any folder, or starts a
+  a) Opens a DEF from the TabWin folder or from any folder, or starts a
      blank one; "🧩 Generate from a DBC" creates a DEF with all fields;
   b) The "➕ Insert line" panel builds each line (L, C, S, T, D, I, X,
      A) and inserts it at the cursor position;
   c) The margin numbers can be dragged to move lines;
   d) "🔍 Analyze DEF" checks files, fields and CNVs and offers automatic
      fixes;
-  e) *The DEF is always saved in the TabWon folder.*
+  e) *The DEF is always saved in the TabWin folder.*
 
 *Edit / Create CNV*
 
@@ -1047,7 +1086,7 @@ a normal TabWon tabulation.
 === DBF ⟺ DBC Converter
 
 The *⟺ DBF ⟺ DBC Converter* (⚙ menu) lists the files in the data
-folders listed in line A of the DEFs in the TabWon folder:
+folders listed in line A of the DEFs in the TabWin folder:
 
   a) *DBF → DBC* compresses into the DATASUS format; *DBC → DBF*
      unpacks. The converted file stays in the same folder as the
@@ -1110,8 +1149,14 @@ Yes. About and Help are TXT files and the interface texts are in the
 
 *How do I back up my saved queries?*
 TabWon already keeps automatic copies in
-*TabWon_configs/.backups_consultas/*. For an extra copy, copy the
-*TabWon_configs/TabWon_logs.log* file.
+*TabWon_configs/.backups_consultas/*, in the TabWin folder. For an
+extra copy, copy the *TabWon_configs/TabWon_logs.log* file from that
+same folder.
+
+*Can I install TabWon on each computer and use a network folder?*
+Yes. Point to the TabWin network folder on the first start (or in
+Shift + click on ⚙ → *TabWin folder*): DEFs, saved queries and
+preferences stay there, shared by everyone.
 
 *Where are the charts?*
 They are kept in memory and saved together with the superlog. To keep
@@ -1167,6 +1212,14 @@ the first time; after that, the cache speeds up the next readings.
      CNV is the same one TabWin uses; truncated descriptions and
      descriptions with the code in front are already handled
      automatically.
+
+  l) *Opening takes long* — the first time, or with TabWon in a network
+     folder, it can take about a minute. In the compiled version, a
+     loading screen shows the progress.
+
+  m) *The DEF list is empty* — check the TabWin folder in Shift + click
+     on ⚙ → *TabWin folder* and whether the network folder can be
+     reached.
 
 
 === Final tips

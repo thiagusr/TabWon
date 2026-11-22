@@ -1,0 +1,50 @@
+# ============================================================
+#  TabWon - arquivos que NAO vao para o repositorio
+# ============================================================
+
+# --- Gerados na compilacao (recrie com compilar.bat) ---
+TabWon_dependencias/
+build/
+dist/
+.venv_build/
+*.exe
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# --- TabWonDBC (C#/.NET): saidas da compilacao ---
+TabWonDBC/bin/
+TabWonDBC/obj/
+
+# --- Loader (TabWon.exe): saida da compilacao ---
+loader/saida/
+
+# --- Criados pelo TabWon durante o uso (pessoais de cada instalacao) ---
+TabWon_configs/.usuarios/
+TabWon_configs/.cache_dbc/
+TabWon_configs/.backups_consultas/
+TabWon_configs/TabWon_logs.log
+TabWon_configs/TabWon_logs_sql.log
+TabWon_configs/TabWon_cache_pasta.txt
+*.lock
+*.tmp
+
+# --- Dados (nunca publique bases de dados no repositorio) ---
+*.dbc
+*.DBC
+*.dbf
+*.DBF
+*.parquet
+*.xlsx
+*.csv
+*.zip
+
+# --- Sistema e editores ---
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/

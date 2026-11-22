@@ -2,6 +2,7 @@ import os
 import sys
 import re
 import glob
+import fnmatch
 import importlib
 import subprocess
 import tempfile
@@ -64,7 +65,7 @@ class _DuckDBSobDemanda:
 
 duckdb = _DuckDBSobDemanda()
 
-VERSAO = "1.00.0"
+VERSAO = "1.00.1"
 COR_FUNDO = "#F5F5F5"
 COR_SUPER_LOG = "#1565C0"
 COR_TRAVADO = "#ECECEC"
@@ -79,6 +80,8 @@ COR_AVISO = "#E65100"
 PASTA_SCRIPT = os.path.dirname(os.path.abspath(sys.executable if getattr(sys, "frozen", False) else __file__))
 PASTA_CONFIGS = os.path.join(PASTA_SCRIPT, "TabWon_configs")
 os.makedirs(PASTA_CONFIGS, exist_ok=True)
+PASTA_TABWIN = PASTA_SCRIPT
+PASTA_DADOS = PASTA_CONFIGS
 
 LOG_FILE = os.path.join(PASTA_CONFIGS, "TabWon_logs.log")
 CONVERSOR_EXE = os.path.join(PASTA_CONFIGS, "TabWonDBC.exe")
@@ -209,6 +212,9 @@ idiomapadrao = TabWon_lng_PTBR.lng    # PTBR = Português (Brasil), ENUS = Ingl�
 [icones]
 modelos = Linear;Solido;Circular;Arredondado;Duotone    # Modelos de ícones na pasta TabWon_configs/icones (<modelo>_claro.png e <modelo>_escuro.png)
 modelopadrao = Linear    # Modelo padrão dos ícones; Emoji usa os símbolos de texto
+
+[pastas]
+tabwin =              # Pasta do TabWin: DEFs, CNVs, consultas salvas e preferências dos usuários; vazio = pasta do TabWon
 """
 MODOS_COR = {"claro": "Claro", "escuro": "Escuro", "sistema": "Automático (conforme o sistema)"}
 MODOS_COR_NUM = {"claro": "1", "escuro": "0", "sistema": "2"}
@@ -789,7 +795,7 @@ TEXTOS_PT = {
     'LB_SE_HOUVER_TRABALHO_NAO_SALVO': 'Se houver trabalho não salvo, ele será perdido.',
     'TK_EDITAR_CRIAR_DEF': 'Editar / Criar DEF',
     'LB_NOVO_DEF_NAO_SALVO': '📄 Novo DEF (não salvo)',
-    'LB_DEF_DA_PASTA_DO_TABWON': 'DEF da pasta do TabWon:',
+    'LB_DEF_DA_PASTA_DO_TABWON': 'DEF da pasta do TabWin:',
     'TT_NUMERO_DA_LINHA_VERDE_ATIVA': 'Número da linha (verde = ativa, cinza = comentário).\nClique e arraste um número para mover a linha.',
     'GR_INSERIR_LINHA': '➕ Inserir linha',
     'TX_X_LINHA_COLUNA_E_SELECAO': 'X - Linha, Coluna e Seleção',
@@ -825,7 +831,7 @@ TEXTOS_PT = {
     'TX_NOVO_DEF_NAO_SALVO': 'Novo DEF (não salvo)',
     'LB_ALTERADO': '•  alterado',
     'MSG_ABRIR_DEF': 'Abrir DEF',
-    'MSG_ESTE_DEF_ESTA_FORA_DA': 'Este DEF está fora da pasta do TabWon.\nAo salvar, ele será gravado na pasta do TabWon (Salvar como).',
+    'MSG_ESTE_DEF_ESTA_FORA_DA': 'Este DEF está fora da pasta do TabWin.\nAo salvar, ele será gravado na pasta do TabWin (Salvar como).',
     'MSG_ALTERACOES_NAO_SALVAS': 'Alterações não salvas',
     'MSG_DESCARTAR_AS_ALTERACOES': 'Descartar as alterações?',
     'TX_ARQUIVOS_DEF': 'Arquivos DEF',
@@ -835,7 +841,7 @@ TEXTOS_PT = {
     'MSG_SALVAR_DEF': 'Salvar DEF',
     'MSG_DEF_SALVO_SELECIONE_O_NOVAMENTE': 'DEF salvo. Selecione-o novamente na tela principal para usar as alterações.',
     'TX_SALVAR_COMO': 'Salvar como',
-    'TX_NOME_DO_DEF_SERA_SALVO': 'Nome do DEF (será salvo na pasta do TabWon):',
+    'TX_NOME_DO_DEF_SERA_SALVO': 'Nome do DEF (será salvo na pasta do TabWin):',
     'MSG_JA_EXISTE_SUBSTITUIR': '{1} já existe. Substituir?',
     'TX_ERROS_AVISOS_SUGESTOES': 'Erros: {1}   Avisos: {2}   Sugestões: {3}',
     'TX_CORRECAO_OES_AUTOMATICA_S_DISPONIVEL': "🛠 {1} correção(ões) automática(s) disponível(is): clique em 'Aplicar correções' para escolher.",
@@ -845,15 +851,15 @@ TEXTOS_PT = {
     'HD_CORRECAO': 'Correção',
     'BT_APLICAR_MARCADAS': '✓ Aplicar marcadas',
     'TX_ABRIR': '📂 Abrir',
-    'TX_ABRIR_UM_DEF_DE_QUALQUER': 'Abrir um DEF de qualquer pasta (para salvar, use a pasta do TabWon)',
+    'TX_ABRIR_UM_DEF_DE_QUALQUER': 'Abrir um DEF de qualquer pasta (para salvar, use a pasta do TabWin)',
     'TX_NOVO': '🆕 Novo',
     'TX_COMECAR_UM_DEF_EM_BRANCO': 'Começar um DEF em branco',
     'TX_GERAR_DE_UM_DBC': '🧩 Gerar de um DBC',
     'TX_CRIAR_UM_DEF_COM_TODOS': 'Criar um DEF com todos os campos de um DBC',
     'TX_SALVAR': '💾 Salvar',
-    'TX_SALVAR_NA_PASTA_DO_TABWON': 'Salvar na pasta do TabWon (Ctrl+S)',
+    'TX_SALVAR_NA_PASTA_DO_TABWON': 'Salvar na pasta do TabWin (Ctrl+S)',
     'TX_SALVAR_COMO_2': '💾 Salvar como',
-    'TX_SALVAR_COM_OUTRO_NOME_NA': 'Salvar com outro nome na pasta do TabWon',
+    'TX_SALVAR_COM_OUTRO_NOME_NA': 'Salvar com outro nome na pasta do TabWin',
     'TX_ANALISAR_DEF': '🔍 Analisar DEF',
     'TX_CONFERIR_ARQUIVOS_CAMPOS_E_CNVS': 'Conferir arquivos, campos e CNVs e sugerir correções',
     'BT_APLICAR_CORRECOES': '🛠 Aplicar correções',
@@ -863,7 +869,7 @@ TEXTOS_PT = {
     'TK_EDITAR_CRIAR_CNV': 'Editar / Criar CNV',
     'LB_NOVO_CNV_NAO_SALVO': '🗂 Novo CNV (não salvo)',
     'LB_CNVS_USADOS_POR_ESTE_DEF': 'CNVs usados por este DEF:',
-    'TT_ESCOLHA_UM_DEF_DA_PASTA': 'Escolha um DEF da pasta do TabWon para listar os CNVs que ele usa',
+    'TT_ESCOLHA_UM_DEF_DA_PASTA': 'Escolha um DEF da pasta do TabWin para listar os CNVs que ele usa',
     'TT_ESCOLHA_UM_CNV_DA_LISTA': 'Escolha um CNV da lista para abri-lo no editor',
     'MSG_NAO_FOI_POSSIVEL_LER_O': 'Não foi possível ler o DEF:\n{1}',
     'TX_TABELA_DBF': '(tabela DBF)',
@@ -1107,7 +1113,7 @@ TEXTOS_PT = {
     'MSG_SELECIONE_UM_SQL_DO_HISTORICO': 'Selecione um SQL do histórico.',
     'MSG_ESTE_SQL_FOI_ESCRITO_A': 'Este SQL foi escrito à mão. Só SQLs montados pelo assistente ou gerados a partir de um log podem virar consulta salva do TabWon.',
     'MSG_O_SQL_FOI_EDITADO_A': 'O SQL foi editado à mão depois de montado. A consulta salva vai seguir o que foi montado no assistente. Continuar?',
-    'MSG_PARA_VIRAR_CONSULTA_SALVA_E': 'Para virar consulta salva é preciso um DEF com estas colunas e seleções. Vou abrir o DEF sugerido: confira e salve na pasta do TabWon. Continuar?',
+    'MSG_PARA_VIRAR_CONSULTA_SALVA_E': 'Para virar consulta salva é preciso um DEF com estas colunas e seleções. Vou abrir o DEF sugerido: confira e salve na pasta do TabWin. Continuar?',
     'TX_ABRIR_O_SQL_SELECIONADO_OU': 'Abrir o SQL selecionado (ou duplo clique)',
     'TX_VIRAR_CONSULTA_SALVA': '↪ Virar consulta salva',
     'TX_TRANSFORMAR_EM_CONSULTA_DE_TABULACAO': 'Transformar em consulta de tabulação do TabWon (com DEF)',
@@ -1128,7 +1134,7 @@ TEXTOS_PT = {
     'TX_PASTA': 'Pasta',
     'LB_CONVERSOR_DBF_DBC': '⟺ Conversor DBF ⟺ DBC',
     'BT_ATUALIZAR': '⟳ Atualizar',
-    'TT_PASTAS_DE_DADOS_INDICADAS_NA': 'Pastas de dados indicadas na linha A dos DEFs da pasta do TabWon',
+    'TT_PASTAS_DE_DADOS_INDICADAS_NA': 'Pastas de dados indicadas na linha A dos DEFs da pasta do TabWin',
     'TT_RELE_OS_DEFS_E_AS': 'Relê os DEFs e as pastas (F5)',
     'BT_CANCELAR_2': '✖ Cancelar',
     'TT_INTERROMPE_A_OPERACAO_EM_ANDAMENTO': 'Interrompe a operação em andamento (o arquivo parcial é descartado)',
@@ -1162,8 +1168,8 @@ TEXTOS_PT = {
     'TX_MOTOR_PYTHON_LENTO_TABWONDBC_EXE': 'Motor: Python (lento) — TabWonDBC.exe não encontrado',
     'TX_TODAS_AS_PASTAS_DOS_DEFS': '📁 Todas as pastas dos DEFs ({1})',
     'TX_PASTA_NAO_ENCONTRADA': '(pasta não encontrada)',
-    'TX_NENHUM_DEF_COM_LINHA_A': 'Nenhum DEF com linha A na pasta do TabWon',
-    'TX_COLOQUE_DEFS_NA_PASTA_DO': 'Coloque DEFs na pasta do TabWon: as pastas de dados são lidas da linha A de cada DEF.',
+    'TX_NENHUM_DEF_COM_LINHA_A': 'Nenhum DEF com linha A na pasta do TabWin',
+    'TX_COLOQUE_DEFS_NA_PASTA_DO': 'Coloque DEFs na pasta do TabWin: as pastas de dados são lidas da linha A de cada DEF.',
     'TX_ARQUIVOS_DE_TODAS_AS_PASTAS': 'Arquivos de todas as pastas dos DEFs. Em laranja: nome fora do padrão da pasta.',
     'TX_NOME_COMECA_COM_ATE_15': '{1}  →  nome começa com "{2}" + até 15 caracteres',
     'TX_PADRAO': 'Padrão:',
@@ -1389,7 +1395,7 @@ TEXTOS_PT = {
     'BT_PARAR_DEPOIS_DESTA': '✖ Parar depois desta',
     'LB_PARANDO': 'Parando…',
     'TX_CONSULTA_NAO_ENCONTRADA_FOI_RENOMEADA': 'consulta não encontrada (foi renomeada ou excluída?)',
-    'TX_O_DEF_NAO_ESTA_NA': 'o DEF {1} não está na pasta do TabWon',
+    'TX_O_DEF_NAO_ESTA_NA': 'o DEF {1} não está na pasta do TabWin',
     'TX_NAO_FOI_POSSIVEL_CARREGAR_A': 'não foi possível carregar a consulta (DEF ou arquivos não encontrados)',
     'TX_FALTOU_DEFINIR': 'faltou definir:',
     'TX_A_CONSULTA_NAO_INICIOU': 'a consulta não iniciou',
@@ -2011,6 +2017,33 @@ TEXTOS_PT = {
     'TX_NAO_FOI_POSSIVEL_CARREGAR_ESTA': 'Não foi possível carregar esta pesquisa.',
     'TX_OS_BOTOES_MOSTRAM_OS_SIMBOLOS': 'Os botões mostram os símbolos de texto (emoji).',
     'TX_ESCOLHER_A_PASTA': 'Escolher a pasta',
+    'TK_PASTA_DO_TABWIN': 'Pasta do TabWin',
+    'LB_ONDE_ESTAO_OS_ARQUIVOS_DO_TABWIN': '📁 Onde estão os arquivos do TabWin?',
+    'TX_NAO_ENCONTREI_NENHUM_DEF_NA_PASTA': 'Não encontrei nenhum arquivo DEF na pasta do TabWon. Indique a pasta onde ficam os DEFs e CNVs do TabWin (pode ser uma pasta da rede).',
+    'TX_PASTA_DO_TABWIN_INACESSIVEL': 'A pasta do TabWin configurada não está acessível agora:\n{1}\n\nConfira a conexão com a rede ou escolha outra pasta.',
+    'TX_NESSA_PASTA_O_TABWON_TAMBEM_GUARDA': 'Nessa pasta, em TabWon_configs, o TabWon também guarda as consultas salvas, as últimas pesquisas e as preferências de cada usuário. Assim, todos que usam a mesma pasta compartilham tudo, mesmo com o TabWon instalado em cada computador.',
+    'TX_VALE_PARA_TODOS_OS_USUARIOS_DESTE': 'Vale para todos os usuários deste computador e pode ser trocada em Configurações avançadas (Shift + clique na ⚙).',
+    'BT_PROCURAR_PASTA': '📁 Procurar...',
+    'TX_DEFS_ENCONTRADOS': '✔ {1} arquivo(s) DEF encontrado(s).',
+    'TX_NENHUM_DEF_NESTA_PASTA': '⚠ Nenhum arquivo DEF nesta pasta.',
+    'TX_PASTA_NAO_ENCONTRADA': '✖ Pasta não encontrada.',
+    'BT_USAR_ESTA_PASTA': '✔ Usar esta pasta',
+    'BT_AGORA_NAO': 'Agora não',
+    'TT_USA_A_PASTA_DO_TABWON_ATE': 'Usa a pasta do TabWon até a próxima abertura',
+    'TX_ESCOLHA_A_PASTA_DO_TABWIN': 'Escolha a pasta do TabWin',
+    'MSG_ESTA_PASTA_NAO_TEM_DEF': 'Esta pasta não tem nenhum arquivo DEF.\n\nUsar mesmo assim?',
+    'MSG_SEM_PERMISSAO_PARA_GRAVAR_NA_PASTA': 'Sem permissão para gravar em:\n{1}\n\nAs consultas salvas e as preferências não poderão ser gravadas nessa pasta. Usar mesmo assim?',
+    'MSG_COPIAR_CONSULTAS_PARA_A_NOVA': 'A nova pasta ainda não tem consultas salvas.\n\nCopiar as consultas salvas atuais para lá?',
+    'MSG_PASTA_DO_TABWIN_DEFINIDA': 'Pasta do TabWin definida:\n{1}',
+    'LB_PASTA_ONDE_FICAM_OS_DEFS': 'Pasta onde ficam os DEFs e CNVs do TabWin. Nela, em TabWon_configs, ficam também as consultas salvas, as últimas pesquisas e as preferências dos usuários. Pode ser uma pasta da rede.',
+    'LB_DEIXE_EM_BRANCO_PARA_USAR': 'Deixe em branco para usar a própria pasta do TabWon.',
+    'BT_USAR_A_PASTA_DO_TABWON': '↺ Usar a pasta do TabWon',
+    'TX_PASTA_EM_USO': 'Pasta em uso: {1}',
+    'MSG_A_PASTA_DO_TABWIN_NAO_EXISTE': 'A pasta do TabWin não existe:\n{1}',
+    'TX_NOV_PASTA_DO_TABWIN': 'Pasta do TabWin: na primeira abertura, se não houver DEFs na pasta do TabWon, o programa pede a pasta do TabWin, que pode ser da rede.',
+    'TX_NOV_DADOS_COMPARTILHADOS': 'DEFs, consultas salvas, últimas pesquisas e preferências dos usuários ficam na pasta do TabWin, compartilhados por todos que a usam. A pasta pode ser trocada em Configurações avançadas.',
+    'TX_NOV_LINHA_A_DO_DEF': 'Os arquivos da linha A são procurados sempre no caminho escrito no DEF, sem diferenciar maiúsculas e minúsculas, e a lista de DEFs fica em ordem alfabética.',
+    'TX_NOV_TELA_DE_CARREGAMENTO': 'Na versão compilada, o TabWon.exe mostra uma tela de carregamento enquanto o programa é preparado.',
 }
 
 
@@ -3111,6 +3144,12 @@ def _anexar_consultas(texto):
 
 
 HISTORICO_VERSOES = [
+    ("1.00.1", "21/11/2026", [
+        'Pasta do TabWin: na primeira abertura, se não houver DEFs na pasta do TabWon, o programa pede a pasta do TabWin, que pode ser da rede.',
+        'DEFs, consultas salvas, últimas pesquisas e preferências dos usuários ficam na pasta do TabWin, compartilhados por todos que a usam. A pasta pode ser trocada em Configurações avançadas.',
+        'Os arquivos da linha A são procurados sempre no caminho escrito no DEF, sem diferenciar maiúsculas e minúsculas, e a lista de DEFs fica em ordem alfabética.',
+        'Na versão compilada, o TabWon.exe mostra uma tela de carregamento enquanto o programa é preparado.',
+    ]),
     ("1.00.0", "19/11/2026", [
         'Cole um log ou superlog do TabWon ou do TabWin e a tabulação é montada automaticamente.',
         'Superlog: guarda todos os ajustes e gráficos e os refaz em novas tabulações, permitindo alterações mais complexas.',
@@ -3148,6 +3187,54 @@ def _usuario_atual():
 def _arquivo_prefs():
     return os.path.join(PASTA_USUARIOS, f"{_usuario_atual()}.ini")
 
+def _caminho_pasta_tabwin(valor):
+    p = (valor or "").strip().strip('"').strip()
+    if not p: return PASTA_SCRIPT
+    if not (os.path.isabs(p) or os.path.splitdrive(p)[0]): p = os.path.join(PASTA_SCRIPT, p)
+    return os.path.normpath(os.path.abspath(p))
+
+
+def _definir_pasta_tabwin(valor):
+    global PASTA_TABWIN, PASTA_DADOS, LOG_FILE, PASTA_USUARIOS, PASTA_BACKUP_CONSULTAS, SQL_LOG_FILE
+    PASTA_TABWIN = _caminho_pasta_tabwin(valor)
+    PASTA_DADOS = (PASTA_CONFIGS if os.path.normcase(PASTA_TABWIN) == os.path.normcase(PASTA_SCRIPT)
+                   else os.path.join(PASTA_TABWIN, "TabWon_configs"))
+    LOG_FILE = os.path.join(PASTA_DADOS, "TabWon_logs.log")
+    PASTA_USUARIOS = os.path.join(PASTA_DADOS, ".usuarios")
+    PASTA_BACKUP_CONSULTAS = os.path.join(PASTA_DADOS, ".backups_consultas")
+    SQL_LOG_FILE = os.path.join(PASTA_DADOS, "TabWon_logs_sql.log")
+    try: os.makedirs(PASTA_DADOS, exist_ok=True)
+    except Exception: pass
+    _log(f"Pasta do TabWin: {PASTA_TABWIN}")
+    return PASTA_TABWIN
+
+
+def _contar_defs(pasta):
+    try: return sum(1 for f in os.listdir(pasta) if f.lower().endswith(".def"))
+    except Exception: return -1
+
+
+def _pasta_gravavel(pasta):
+    try:
+        os.makedirs(pasta, exist_ok=True)
+        teste = os.path.join(pasta, f".tabwon_teste_{os.getpid()}.tmp")
+        with open(teste, "w", encoding="utf-8") as f: f.write("ok")
+        os.remove(teste)
+        return True
+    except Exception:
+        return False
+
+
+def _gravar_pasta_tabwin_ini(valor):
+    try:
+        with open(CONFIG_INI, "r", encoding="utf-8-sig") as f: texto = f.read()
+    except Exception: texto = _INI_PADRAO
+    texto = _ini_definir(texto, "pastas", "tabwin", valor,
+                         "Pasta do TabWin: DEFs, CNVs, consultas salvas e preferências dos usuários; vazio = pasta do TabWon")
+    tmp = CONFIG_INI + ".tmp_tabwon"
+    with open(tmp, "w", encoding="utf-8", newline="\r\n") as f: f.write(texto.replace("\r\n", "\n"))
+    os.replace(tmp, CONFIG_INI)
+
 
 def _ler_config_ini():
     cfg = {"menu": {"editores": True, "consultorsql": True, "conversor": True},
@@ -3155,7 +3242,8 @@ def _ler_config_ini():
            "cores": {"paletas": list(_PALETAS_PADRAO), "corpadrao": PALETA_PADRAO, "modopadrao": "claro"},
            "organizacao": {"identificadores": []},
            "idioma": {"idiomas": list(_IDIOMAS_PADRAO), "idiomapadrao": IDIOMA_PADRAO},
-           "icones": {"modelos": list(_MODELOS_ICONES_PADRAO), "modelopadrao": MODELO_ICONES_PADRAO}}
+           "icones": {"modelos": list(_MODELOS_ICONES_PADRAO), "modelopadrao": MODELO_ICONES_PADRAO},
+           "pastas": {"tabwin": ""}}
     if not os.path.exists(CONFIG_INI):
         try:
             os.makedirs(PASTA_CONFIGS, exist_ok=True)
@@ -3230,6 +3318,14 @@ def _ler_config_ini():
     if mods_ic: cfg["icones"]["modelos"] = mods_ic
     pad_ic = cp.get("icones", "modelopadrao", fallback="").strip()
     if pad_ic: cfg["icones"]["modelopadrao"] = pad_ic
+    cfg["pastas"]["tabwin"] = cp.get("pastas", "tabwin", fallback="").strip().strip('"').strip()
+    if not cp.has_section("pastas") and os.path.exists(CONFIG_INI):
+        try:
+            with open(CONFIG_INI, "r", encoding="utf-8-sig") as f: texto_ini = f.read()
+            texto_ini = _ini_definir(texto_ini, "pastas", "tabwin", "",
+                                     "Pasta do TabWin: DEFs, CNVs, consultas salvas e preferências dos usuários; vazio = pasta do TabWon")
+            with open(CONFIG_INI, "w", encoding="utf-8", newline="\r\n") as f: f.write(texto_ini.replace("\r\n", "\n"))
+        except Exception: pass
     if not cp.has_section("icones") and os.path.exists(CONFIG_INI):
         try:
             with open(CONFIG_INI, "r", encoding="utf-8-sig") as f: texto_ini = f.read()
@@ -3837,7 +3933,7 @@ def _resolver_caminho(caminho, pasta_def=None):
     c = caminho.strip()
     if os.path.exists(c): return c
     nome = os.path.basename(c.replace("\\", os.sep).replace("/", os.sep))
-    for pasta in (pasta_def, PASTA_SCRIPT):
+    for pasta in (pasta_def, PASTA_TABWIN):
         if pasta:
             alt = os.path.join(pasta, nome)
             if os.path.exists(alt): return alt
@@ -3846,6 +3942,66 @@ def _resolver_caminho(caminho, pasta_def=None):
                     if f.lower() == nome.lower(): return os.path.join(pasta, f)
             except Exception: pass
     return c
+
+
+def _pasta_ci(pasta):
+    if not pasta: return None
+    try:
+        if os.path.isdir(pasta): return pasta
+    except Exception: return None
+    pai, nome = os.path.split(pasta.rstrip("\\/"))
+    if not nome or not pai or pai == pasta: return None
+    base = _pasta_ci(pai)
+    if not base: return None
+    try:
+        with os.scandir(base) as it:
+            for e in it:
+                if e.name.lower() == nome.lower() and e.is_dir(): return e.path
+    except Exception: pass
+    return None
+
+
+def _arquivos_na_pasta(pasta, mascara):
+    base = _pasta_ci(pasta)
+    if not base: return []
+    m = mascara.lower()
+    magica = any(ch in m for ch in "*?[")
+    achados = []
+    try:
+        with os.scandir(base) as it:
+            for e in it:
+                nm = e.name.lower()
+                if fnmatch.fnmatchcase(nm, m) if magica else nm == m:
+                    try:
+                        if e.is_file(): achados.append(e.path)
+                    except OSError: pass
+    except Exception: pass
+    return achados
+
+
+def _listar_arquivos_def(spec, pasta_def=None):
+    c = (spec or "").strip().strip('"').strip()
+    if not c: return []
+    c = c.replace("/", os.sep).replace("\\", os.sep)
+    pasta, mascara = os.path.split(c)
+    if not mascara: return []
+    bases = [b for b in (pasta_def, PASTA_TABWIN) if b]
+    candidatos = []
+    if pasta:
+        if os.path.isabs(pasta) or os.path.splitdrive(pasta)[0] or pasta.startswith(os.sep): candidatos.append(pasta)
+        else: candidatos += [os.path.normpath(os.path.join(b, pasta)) for b in bases]
+    candidatos += bases
+    vistos = set()
+    for cand in candidatos:
+        try: chave = os.path.normcase(os.path.abspath(cand))
+        except Exception: chave = cand
+        if chave in vistos: continue
+        vistos.add(chave)
+        if not _pasta_ci(cand): continue
+        unicos = {}
+        for p in _arquivos_na_pasta(cand, mascara): unicos.setdefault(os.path.normcase(os.path.abspath(p)), p)
+        return sorted(unicos.values(), key=lambda x: os.path.basename(x).lower())
+    return []
 
 
 def _dividir_spec(spec):
@@ -4248,16 +4404,7 @@ TIPOS_DEF = {
 
 
 def _arquivos_da_linha_a(padrao, pasta_def=None):
-    c = padrao.strip()
-    if "*" in c or "?" in c:
-        enc = []
-        for base in (pasta_def, PASTA_SCRIPT):
-            if base:
-                enc = glob.glob(os.path.join(base, os.path.basename(c)))
-                if enc: break
-        return enc or glob.glob(c)
-    r = _resolver_caminho(c, pasta_def)
-    return [r] if os.path.exists(r) else []
+    return _listar_arquivos_def(padrao, pasta_def)
 
 
 def _validar_cnv_arquivo(caminho):
@@ -4633,6 +4780,7 @@ def _reunir_rotulos(pecas, rotulos):
 
 
 SQL_LOG_FILE = os.path.join(PASTA_CONFIGS, "TabWon_logs_sql.log")
+
 SQL_LIMITE_TELA = 10000
 SQL_AGREGACOES = ["", "SOMA", "CONTAGEM", "CONTAGEM DISTINTA", "MÉDIA", "MÍNIMO", "MÁXIMO"]
 SQL_OPERADORES = ["igual a", "diferente de", "maior que", "maior ou igual a", "menor que",
@@ -4919,12 +5067,9 @@ def _ler_def_itens(caminho):
         if linha.startswith("A"):
             c = linha[1:].strip()
             if not d["path_a"]: d["path_a"] = c
-            if "*" in c:
-                enc = glob.glob(os.path.join(PASTA_SCRIPT, os.path.basename(c))) or glob.glob(c)
-                dbcs.update(enc)
-            else:
-                alt = os.path.join(PASTA_SCRIPT, os.path.basename(c))
-                dbcs.add(c if os.path.exists(c) else (alt if os.path.exists(alt) else c))
+            enc = _listar_arquivos_def(c, pasta_def)
+            if enc: dbcs.update(enc)
+            elif not any(ch in c for ch in "*?"): dbcs.add(c)
             continue
         partes = [p.strip() for p in linha.split(",")]
         if len(partes) < 2: continue
@@ -4943,14 +5088,14 @@ def _ler_def_itens(caminho):
         destinos = {"I": ["incrementos"], "L": ["linhas"], "C": ["colunas"], "S": ["selecoes"],
                     "T": ["linhas", "colunas"], "D": ["linhas"], "X": ["linhas", "colunas", "selecoes"]}.get(t, [])
         for dd in destinos: d[dd].append(item)
-    d["dbcs"] = sorted(dbcs, key=lambda x: os.path.basename(x), reverse=True)
+    d["dbcs"] = sorted(dbcs, key=lambda x: os.path.basename(x).lower(), reverse=True)
     return d
 
 
 def _resolver_def_do_log(def_valor):
     if not def_valor: return None
     if os.path.exists(def_valor): return def_valor
-    alt = os.path.join(PASTA_SCRIPT, os.path.basename(def_valor))
+    alt = os.path.join(PASTA_TABWIN, os.path.basename(def_valor))
     return alt if os.path.exists(alt) else None
 
 
@@ -5223,7 +5368,7 @@ def _ler_sql_salvos():
 
 
 def _gravar_sql_salvos(itens):
-    os.makedirs(PASTA_CONFIGS, exist_ok=True)
+    os.makedirs(os.path.dirname(SQL_LOG_FILE), exist_ok=True)
     tmp = SQL_LOG_FILE + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
         for e in itens: f.write(json.dumps(e, ensure_ascii=False) + "\n")
@@ -6705,11 +6850,11 @@ def _dividir_caminho_a(c):
 
 def _regras_pastas_defs():
     pastas = {}
-    try: defs = sorted((f for f in os.listdir(PASTA_SCRIPT) if f.lower().endswith(".def")), key=str.lower)
+    try: defs = sorted((f for f in os.listdir(PASTA_TABWIN) if f.lower().endswith(".def")), key=str.lower)
     except Exception: defs = []
     for nome_def in defs:
         try:
-            with open(os.path.join(PASTA_SCRIPT, nome_def), "r", encoding="latin-1", errors="ignore") as f:
+            with open(os.path.join(PASTA_TABWIN, nome_def), "r", encoding="latin-1", errors="ignore") as f:
                 linhas = f.read().splitlines()
         except Exception: continue
         for bruta in linhas:
@@ -6720,9 +6865,9 @@ def _regras_pastas_defs():
             c = linha[1:].strip()
             if not c: continue
             pasta, arq = _dividir_caminho_a(c)
-            if not pasta: pasta = PASTA_SCRIPT
+            if not pasta: pasta = PASTA_TABWIN
             elif not (os.path.isabs(pasta) or re.match(r"^([A-Za-z]:|\\\\)", pasta)):
-                pasta = os.path.join(PASTA_SCRIPT, pasta)
+                pasta = os.path.join(PASTA_TABWIN, pasta)
             local = os.path.normpath(_caminho_local(pasta))
             item = pastas.setdefault(os.path.normcase(local), {"pasta": local, "regras": [], "defs": []})
             if nome_def not in item["defs"]: item["defs"].append(nome_def)
@@ -7457,6 +7602,14 @@ class TabWonApp:
         self.root = root
         _TEMA["root"] = root
         self._cfg = _ler_config_ini()
+        self._pasta_tabwin_inacessivel = ""
+        self._pasta_tabwin_dispensada = False
+        _pasta_cfg_tw = self._cfg.get("pastas", {}).get("tabwin", "")
+        if _pasta_cfg_tw and not os.path.isdir(_caminho_pasta_tabwin(_pasta_cfg_tw)):
+            self._pasta_tabwin_inacessivel = _caminho_pasta_tabwin(_pasta_cfg_tw)
+            _definir_pasta_tabwin("")
+        else:
+            _definir_pasta_tabwin(_pasta_cfg_tw)
         self._prefs = _ler_prefs_usuario()
         _ORG["identificadores"] = list(self._cfg.get("organizacao", {}).get("identificadores", []))
         _definir_tema(self._prefs.get("paleta") or self._cfg["cores"]["corpadrao"],
@@ -8596,7 +8749,7 @@ class TabWonApp:
 
     def _atualizar_lista_defs(self):
         try:
-            defs = sorted(f for f in os.listdir(PASTA_SCRIPT) if f.lower().endswith(".def"))
+            defs = sorted((f for f in os.listdir(PASTA_TABWIN) if f.lower().endswith(".def")), key=str.lower)
             atual = self.combo_def.get()
             self.combo_def["values"] = ["Selecionar consulta"] + defs
             self.combo_def.set(atual)
@@ -8615,7 +8768,7 @@ class TabWonApp:
         lbl_arq.pack(side="left", fill="x", expand=True)
 
         barra = tk.Frame(top, bg=COR_FUNDO, pady=6, padx=8); barra.pack(fill="x")
-        tk.Label(barra, text="DEF da pasta do TabWon:", font=("Arial", 9, "bold"), bg=COR_FUNDO).pack(side="left")
+        tk.Label(barra, text="DEF da pasta do TabWin:", font=("Arial", 9, "bold"), bg=COR_FUNDO).pack(side="left")
         cb_defs = ttk.Combobox(barra, state="readonly", width=28, font=("Arial", 10))
         cb_defs.pack(side="left", padx=(4, 8))
 
@@ -8815,7 +8968,7 @@ class TabWonApp:
                 messagebox.showinfo("Tabela DBF", f"{nome} é uma tabela DBF de descrições.\n"
                                     "Para convertê-la em CNV, use '🧩 Gerar de um DBF' no editor de CNV.", parent=top)
                 return "break"
-            pasta = os.path.dirname(est["arquivo"]) if est["arquivo"] else PASTA_SCRIPT
+            pasta = os.path.dirname(est["arquivo"]) if est["arquivo"] else PASTA_TABWIN
             self.abrir_editor_cnv(caminho=_resolver_caminho(nome, pasta), ao_fechar=lambda: top.after(100, _analisar), pai=top)
             return "break"
         txt.tag_bind("cnvlink", "<Double-Button-1>", _abrir_cnv_do_texto)
@@ -8865,7 +9018,7 @@ class TabWonApp:
         def _campos_do_texto():
             arqs = []
             for l in txt.get("1.0", tk.END).splitlines():
-                if l[:1] == "A": arqs = _arquivos_da_linha_a(l[1:], PASTA_SCRIPT)
+                if l[:1] == "A": arqs = _arquivos_da_linha_a(l[1:], PASTA_TABWIN)
                 if arqs: break
             if arqs:
                 cb_campo["values"] = [c[0] for c in _campos_do_dbc(sorted(arqs)[-1])]
@@ -8877,29 +9030,29 @@ class TabWonApp:
                 messagebox.showerror("Abrir DEF", str(ex), parent=top); return
             txt.delete("1.0", tk.END); txt.insert("1.0", conteudo.replace("\r\n", "\n"))
             txt.edit_modified(False); txt.edit_reset()
-            dentro = os.path.normcase(os.path.dirname(os.path.abspath(caminho))) == os.path.normcase(PASTA_SCRIPT)
+            dentro = os.path.normcase(os.path.dirname(os.path.abspath(caminho))) == os.path.normcase(PASTA_TABWIN)
             est["arquivo"] = caminho if (dentro and nome_para_salvar) else None
             est["base"] = txt.get("1.0", "end-1c")
             est["alterado"] = False; _titulo(); _colorir(); _campos_do_texto()
             if not dentro:
-                messagebox.showinfo("Abrir DEF", "Este DEF está fora da pasta do TabWon.\n"
-                                    "Ao salvar, ele será gravado na pasta do TabWon (Salvar como).", parent=top)
+                messagebox.showinfo("Abrir DEF", "Este DEF está fora da pasta do TabWin.\n"
+                                    "Ao salvar, ele será gravado na pasta do TabWin (Salvar como).", parent=top)
 
         def _pode_descartar():
             if not est["alterado"]: return True
             return messagebox.askyesno("Alterações não salvas", "Descartar as alterações?", parent=top)
 
         def _listar_defs():
-            cb_defs["values"] = sorted(f for f in os.listdir(PASTA_SCRIPT) if f.lower().endswith(".def"))
+            cb_defs["values"] = sorted((f for f in os.listdir(PASTA_TABWIN) if f.lower().endswith(".def")), key=str.lower)
         _listar_defs()
         def _sel_def(_=None):
             nome = cb_defs.get()
-            if nome and _pode_descartar(): _carregar(os.path.join(PASTA_SCRIPT, nome))
+            if nome and _pode_descartar(): _carregar(os.path.join(PASTA_TABWIN, nome))
         cb_defs.bind("<<ComboboxSelected>>", _sel_def)
 
         def _abrir():
             if not _pode_descartar(): return
-            p = filedialog.askopenfilename(parent=top, title="Abrir DEF", initialdir=PASTA_SCRIPT,
+            p = filedialog.askopenfilename(parent=top, title="Abrir DEF", initialdir=PASTA_TABWIN,
                                            filetypes=[("Arquivos DEF", "*.def *.DEF"), ("Todos", "*.*")])
             if p: _carregar(p)
 
@@ -8948,13 +9101,13 @@ class TabWonApp:
             return True
 
         def _salvar_como():
-            nome = simpledialog.askstring("Salvar como", "Nome do DEF (será salvo na pasta do TabWon):",
+            nome = simpledialog.askstring("Salvar como", "Nome do DEF (será salvo na pasta do TabWin):",
                                           parent=top, initialvalue=os.path.basename(est["arquivo"] or "NOVO.def"))
             if not nome: return False
             nome = os.path.basename(nome.strip())
             nome = re.sub(r'[<>:"/\\|?*]', "_", nome)
             if not nome.lower().endswith(".def"): nome += ".def"
-            destino = os.path.join(PASTA_SCRIPT, nome)
+            destino = os.path.join(PASTA_TABWIN, nome)
             if os.path.exists(destino) and not messagebox.askyesno("Salvar como", f"{nome} já existe. Substituir?", parent=top):
                 return False
             return _gravar(destino)
@@ -8965,14 +9118,14 @@ class TabWonApp:
 
         def _abrir_cnv_da_analise(n, ref):
             if n: _ir_linha(n)
-            caminho = _resolver_caminho(ref, PASTA_SCRIPT)
+            caminho = _resolver_caminho(ref, PASTA_TABWIN)
             self.abrir_editor_cnv(caminho=caminho, ao_fechar=lambda: top.after(100, _analisar), pai=top)
 
         def _analisar():
             try:
                 if not top.winfo_exists(): return
             except Exception: return
-            itens, sugest, correcoes = _analisar_def(txt.get("1.0", "end-1c"), PASTA_SCRIPT)
+            itens, sugest, correcoes = _analisar_def(txt.get("1.0", "end-1c"), PASTA_TABWIN)
             est["sugestoes"] = sugest; est["correcoes"] = correcoes
             rel.config(state="normal"); rel.delete("1.0", tk.END)
             cont = {}
@@ -9046,11 +9199,11 @@ class TabWonApp:
                       font=("Arial", 9, "bold")).pack(side="right", padx=2)
             centralizar(j, top)
 
-        dicas_def = {"📂 Abrir": "Abrir um DEF de qualquer pasta (para salvar, use a pasta do TabWon)",
+        dicas_def = {"📂 Abrir": "Abrir um DEF de qualquer pasta (para salvar, use a pasta do TabWin)",
                      "🆕 Novo": "Começar um DEF em branco",
                      "🧩 Gerar de um DBC": "Criar um DEF com todos os campos de um DBC",
-                     "💾 Salvar": "Salvar na pasta do TabWon (Ctrl+S)",
-                     "💾 Salvar como": "Salvar com outro nome na pasta do TabWon",
+                     "💾 Salvar": "Salvar na pasta do TabWin (Ctrl+S)",
+                     "💾 Salvar como": "Salvar com outro nome na pasta do TabWin",
                      "🔍 Analisar DEF": "Conferir arquivos, campos e CNVs e sugerir correções"}
         for t_, c_, cor in (("📂 Abrir", _abrir, "#607D8B"), ("🆕 Novo", _novo, "#607D8B"),
                             ("🧩 Gerar de um DBC", _gerar_de_dbc, "#795548"),
@@ -9113,16 +9266,16 @@ class TabWonApp:
         tk.Label(f_defs, text="CNVs usados por este DEF:", bg=COR_FUNDO, font=("Arial", 9, "bold")).pack(side="left")
         cb_cnvs_def = ttk.Combobox(f_defs, state="readonly", width=46)
         cb_cnvs_def.pack(side="left", padx=4)
-        _adicionar_tooltip(cb_def_cnv, "Escolha um DEF da pasta do TabWon para listar os CNVs que ele usa")
+        _adicionar_tooltip(cb_def_cnv, "Escolha um DEF da pasta do TabWin para listar os CNVs que ele usa")
         _adicionar_tooltip(cb_cnvs_def, "Escolha um CNV da lista para abri-lo no editor")
         mapa_cnvs_def = {}
         try:
-            cb_def_cnv["values"] = sorted((f for f in os.listdir(PASTA_SCRIPT) if f.lower().endswith(".def")), key=str.lower)
+            cb_def_cnv["values"] = sorted((f for f in os.listdir(PASTA_TABWIN) if f.lower().endswith(".def")), key=str.lower)
         except Exception: pass
 
         def _listar_cnvs_do_def(_=None):
             mapa_cnvs_def.clear()
-            try: itens = _ler_def_itens(os.path.join(PASTA_SCRIPT, cb_def_cnv.get()))
+            try: itens = _ler_def_itens(os.path.join(PASTA_TABWIN, cb_def_cnv.get()))
             except Exception as ex:
                 messagebox.showerror("DEF", f"Não foi possível ler o DEF:\n{ex}", parent=top); return
             vistos = []
@@ -9410,7 +9563,7 @@ class TabWonApp:
 
         def _abrir():
             if not _pode_descartar(): return
-            p = filedialog.askopenfilename(parent=top, title="Abrir CNV", initialdir=PASTA_SCRIPT,
+            p = filedialog.askopenfilename(parent=top, title="Abrir CNV", initialdir=PASTA_TABWIN,
                                            filetypes=[("Arquivos CNV", "*.cnv *.CNV"), ("Todos", "*.*")])
             if p: _carregar(p)
 
@@ -9514,7 +9667,7 @@ class TabWonApp:
 
         def _salvar_como():
             p = filedialog.asksaveasfilename(parent=top, title="Salvar CNV como", defaultextension=".cnv",
-                                             initialdir=os.path.dirname(est.get("arquivo") or est.get("sugerido") or os.path.join(PASTA_SCRIPT, "x")) or PASTA_SCRIPT,
+                                             initialdir=os.path.dirname(est.get("arquivo") or est.get("sugerido") or os.path.join(PASTA_TABWIN, "x")) or PASTA_TABWIN,
                                              initialfile=os.path.basename(est.get("arquivo") or est.get("sugerido") or "NOVO.cnv"),
                                              filetypes=[("Arquivos CNV", "*.cnv"), ("Todos", "*.*")])
             return _gravar(p) if p else False
@@ -9805,7 +9958,7 @@ class TabWonApp:
         tk.Entry(f_ce, textvariable=var_ccnv, width=26).grid(row=6, column=0, sticky="we")
 
         def _escolher_cnv_col():
-            p = filedialog.askopenfilename(parent=top, title="CNV ou DBF", initialdir=PASTA_SCRIPT,
+            p = filedialog.askopenfilename(parent=top, title="CNV ou DBF", initialdir=PASTA_TABWIN,
                                            filetypes=[("Conversão", "*.cnv *.CNV *.dbf *.DBF"), ("Todos", "*.*")])
             if not p: return
             p = os.path.normpath(p)
@@ -10515,7 +10668,7 @@ class TabWonApp:
             caminhos = {}
             for c in plano["cnvs"]:
                 p = filedialog.asksaveasfilename(parent=top, title=f"Salvar o CNV de faixas de {c['campo']}",
-                                                 initialdir=PASTA_SCRIPT, initialfile=c["arquivo"], defaultextension=".cnv",
+                                                 initialdir=PASTA_TABWIN, initialfile=c["arquivo"], defaultextension=".cnv",
                                                  filetypes=[("Arquivos CNV", "*.cnv"), ("Todos", "*.*")])
                 if not p:
                     caminhos[c["arquivo"]] = c["arquivo"]; continue
@@ -10567,7 +10720,7 @@ class TabWonApp:
             except Exception as ex:
                 messagebox.showwarning("Virar consulta salva", str(ex), parent=top); return
             if not messagebox.askyesno("Virar consulta salva", "Para virar consulta salva é preciso um DEF com estas "
-                                       "colunas e seleções. Vou abrir o DEF sugerido: confira e salve na pasta do TabWon. "
+                                       "colunas e seleções. Vou abrir o DEF sugerido: confira e salve na pasta do TabWin. "
                                        "Continuar?", parent=top): return
             _criar_def_do_plano(plano, lambda caminho: _finalizar(caminho, plano["selecoes"]))
 
@@ -10661,7 +10814,7 @@ class TabWonApp:
         cb_pasta.pack(side="left", padx=(4, 6))
         btn_atualizar = tk.Button(barra, text="⟳ Atualizar", font=("Arial", 9), cursor="hand2")
         btn_atualizar.pack(side="left")
-        _adicionar_tooltip(cb_pasta, "Pastas de dados indicadas na linha A dos DEFs da pasta do TabWon")
+        _adicionar_tooltip(cb_pasta, "Pastas de dados indicadas na linha A dos DEFs da pasta do TabWin")
         _adicionar_tooltip(btn_atualizar, "Relê os DEFs e as pastas (F5)")
         lbl_regra = tk.Label(top, text="", bg=COR_FUNDO, fg="#555555", font=("Arial", 9), anchor="w", padx=10)
         lbl_regra.pack(fill="x")
@@ -10787,13 +10940,13 @@ class TabWonApp:
             alvo = next((r for r, k in est["mapa"].items() if k == atual), None) if atual else None
             if alvo: cb_pasta.set(alvo)
             elif rotulos: cb_pasta.current(0)
-            else: cb_pasta.set("Nenhum DEF com linha A na pasta do TabWon")
+            else: cb_pasta.set("Nenhum DEF com linha A na pasta do TabWin")
             lbl_motor.config(text=_motor_txt())
 
         def _descr_regra():
             k = est["mapa"].get(cb_pasta.get())
             if not k:
-                return "Coloque DEFs na pasta do TabWon: as pastas de dados são lidas da linha A de cada DEF."
+                return "Coloque DEFs na pasta do TabWin: as pastas de dados são lidas da linha A de cada DEF."
             if k == "*":
                 return "Arquivos de todas as pastas dos DEFs. Em laranja: nome fora do padrão da pasta."
             it = est["regras"][k]
@@ -12880,7 +13033,178 @@ class TabWonApp:
         try: _tb.print_exception(tipo, valor, tb)
         except Exception: pass
 
+    def _motivo_pedir_pasta_tabwin(self):
+        if self._pasta_tabwin_inacessivel: return "inacessivel"
+        if self._pasta_tabwin_dispensada: return ""
+        if self._cfg.get("pastas", {}).get("tabwin", ""): return ""
+        return "sem_def" if _contar_defs(PASTA_TABWIN) <= 0 else ""
+
+    def _migrar_dados_usuario(self, pasta_usuarios_ant, log_ant):
+        try:
+            if os.path.normcase(os.path.abspath(pasta_usuarios_ant)) == os.path.normcase(os.path.abspath(PASTA_USUARIOS)):
+                return
+        except Exception: return
+        us = _usuario_atual()
+        for nome in (f"{us}.ini", f"{us}_baixados.json", f"{us}_recentes.json"):
+            de = os.path.join(pasta_usuarios_ant, nome); para = os.path.join(PASTA_USUARIOS, nome)
+            if os.path.exists(de) and not os.path.exists(para):
+                try:
+                    os.makedirs(PASTA_USUARIOS, exist_ok=True); _ocultar_pasta(PASTA_USUARIOS)
+                    shutil.copy2(de, para)
+                except Exception as ex: _log(f"Não copiou {nome}: {ex}")
+        try: tem_ant = os.path.exists(log_ant) and os.path.getsize(log_ant) > 0
+        except Exception: tem_ant = False
+        if tem_ant and not os.path.exists(LOG_FILE):
+            if messagebox.askyesno("Pasta do TabWin", "A nova pasta ainda não tem consultas salvas.\n\n"
+                                                      "Copiar as consultas salvas atuais para lá?"):
+                try:
+                    os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True); shutil.copy2(log_ant, LOG_FILE)
+                except Exception as ex:
+                    messagebox.showerror("Pasta do TabWin", f"Não foi possível copiar as consultas salvas:\n{ex}")
+
+    def _trocar_pasta_tabwin(self, valor):
+        pasta_usuarios_ant, log_ant = PASTA_USUARIOS, LOG_FILE
+        tema_ant = (_TEMA.get("arquivo"), _TEMA.get("modo"))
+        idioma_ant = _idioma_efetivo(self._cfg, self._prefs)
+        icones_ant = _modelo_icones_efetivo(self._cfg, self._prefs)
+        _definir_pasta_tabwin(valor)
+        self._pasta_tabwin_inacessivel = ""
+        self._migrar_dados_usuario(pasta_usuarios_ant, log_ant)
+        try: _ocultar_pasta(PASTA_USUARIOS)
+        except Exception: pass
+        self._prefs = _ler_prefs_usuario()
+        tema_novo = (self._prefs.get("paleta") or self._cfg["cores"]["corpadrao"],
+                     self._prefs.get("modo") or self._cfg["cores"]["modopadrao"])
+        if _modelo_icones_efetivo(self._cfg, self._prefs) != icones_ant:
+            _definir_modelo_icones(_modelo_icones_efetivo(self._cfg, self._prefs)); _reaplicar_icones()
+        if _idioma_efetivo(self._cfg, self._prefs) != idioma_ant: self._aplicar_idioma()
+        if tema_novo != tema_ant: self._aplicar_tema(*tema_novo)
+        try: self._zoom = int(self._prefs.get("zoom", 0) or 0)
+        except Exception: pass
+        if self.df_resultado is None:
+            self.carregar_defs()
+        try: self.carregar_logs_salvos()
+        except Exception: pass
+        try: self._atualizar_botao_baixados()
+        except Exception: pass
+        try: self._atualizar_saudacao()
+        except Exception: pass
+
+    def _pedir_pasta_tabwin(self, motivo, ao_concluir=None):
+        ant = getattr(self, "_janela_pasta_tabwin", None)
+        try:
+            if ant is not None and ant.winfo_exists(): ant.lift(); return
+        except Exception: pass
+        d = tk.Toplevel(self.root); d.title("Pasta do TabWin"); d.configure(bg=COR_FUNDO)
+        d.transient(self.root); d.resizable(False, False)
+        self._janela_pasta_tabwin = d
+        corpo = tk.Frame(d, bg=COR_FUNDO, padx=30, pady=20); corpo.pack(fill="both", expand=True)
+        logo_path = os.path.join(PASTA_CONFIGS, "TabWon_logo.png")
+        if HAS_PIL and os.path.exists(logo_path):
+            ph = carregar_imagem_com_fundo(logo_path, 90, COR_FUNDO)
+            if ph is not None:
+                d._logo = ph
+                tk.Label(corpo, image=ph, bg=COR_FUNDO).pack(pady=(0, 8))
+        tk.Label(corpo, text="📁 Onde estão os arquivos do TabWin?", font=("Arial", 15, "bold"), bg=COR_FUNDO,
+                 fg="#222222").pack()
+        if motivo == "inacessivel":
+            txt_motivo = (f"A pasta do TabWin configurada não está acessível agora:\n{self._pasta_tabwin_inacessivel}"
+                          f"\n\nConfira a conexão com a rede ou escolha outra pasta.")
+            inicial = self._pasta_tabwin_inacessivel
+        else:
+            txt_motivo = ("Não encontrei nenhum arquivo DEF na pasta do TabWon. Indique a pasta onde ficam os DEFs e "
+                          "CNVs do TabWin (pode ser uma pasta da rede).")
+            inicial = ""
+        tk.Label(corpo, text=txt_motivo, font=("Arial", 10), bg=COR_FUNDO, fg="#333333", wraplength=560,
+                 justify="center").pack(pady=(8, 8))
+        tk.Label(corpo, text="Nessa pasta, em TabWon_configs, o TabWon também guarda as consultas salvas, as últimas "
+                             "pesquisas e as preferências de cada usuário. Assim, todos que usam a mesma pasta "
+                             "compartilham tudo, mesmo com o TabWon instalado em cada computador.",
+                 font=("Arial", 9), bg=COR_FUNDO, fg="#555555", wraplength=560, justify="center").pack(pady=(0, 10))
+        linha = tk.Frame(corpo, bg=COR_FUNDO); linha.pack(fill="x")
+        var = tk.StringVar(value=inicial)
+        ent = tk.Entry(linha, textvariable=var, font=("Arial", 10), width=58)
+        ent.pack(side="left", fill="x", expand=True, ipady=3)
+        lbl_st = tk.Label(corpo, text="", font=("Arial", 9, "bold"), bg=COR_FUNDO, fg="#555555")
+        lbl_st.pack(anchor="w", pady=(4, 0))
+        tk.Label(corpo, text="Vale para todos os usuários deste computador e pode ser trocada em Configurações "
+                             "avançadas (Shift + clique na ⚙).", font=("Arial", 8), bg=COR_FUNDO, fg="#777777",
+                 wraplength=560, justify="center").pack(pady=(10, 12))
+        fb = tk.Frame(corpo, bg=COR_FUNDO); fb.pack(fill="x")
+        b_ok = tk.Button(fb, text="✔ Usar esta pasta", font=("Arial", 10, "bold"), bg="#4CAF50", fg="white",
+                         width=18, state="disabled", cursor="hand2")
+        b_ok.pack(side="right")
+        b_nao = tk.Button(fb, text="Agora não", font=("Arial", 10), width=12)
+        b_nao.pack(side="left")
+        _adicionar_tooltip(b_nao, "Usa a pasta do TabWon até a próxima abertura")
+
+        def _status(*_):
+            p = var.get().strip().strip('"')
+            if not p:
+                lbl_st.config(text="", fg="#555555"); b_ok.config(state="disabled"); return
+            c = _caminho_pasta_tabwin(p)
+            if not os.path.isdir(c):
+                lbl_st.config(text="✖ Pasta não encontrada.", fg="#C62828"); b_ok.config(state="disabled"); return
+            n = _contar_defs(c)
+            if n > 0: lbl_st.config(text=f"✔ {n} arquivo(s) DEF encontrado(s).", fg="#2E7D32")
+            else: lbl_st.config(text="⚠ Nenhum arquivo DEF nesta pasta.", fg="#E65100")
+            b_ok.config(state="normal")
+        var.trace_add("write", _status)
+
+        def _procurar():
+            ini = var.get().strip() or PASTA_TABWIN
+            p = filedialog.askdirectory(parent=d, title="Escolha a pasta do TabWin",
+                                        initialdir=ini if os.path.isdir(ini) else PASTA_SCRIPT, mustexist=True)
+            if p: var.set(os.path.normpath(p))
+        tk.Button(linha, text="📁 Procurar...", command=_procurar, font=("Arial", 9)).pack(side="left", padx=(6, 0))
+
+        def _fechar_e_seguir():
+            try: d.grab_release()
+            except Exception: pass
+            d.destroy()
+            if ao_concluir: self.root.after(50, ao_concluir)
+
+        def _ok(_=None):
+            if str(b_ok.cget("state")) == "disabled": return
+            c = _caminho_pasta_tabwin(var.get())
+            if _contar_defs(c) <= 0 and not messagebox.askyesno(
+                    "Pasta do TabWin", "Esta pasta não tem nenhum arquivo DEF.\n\nUsar mesmo assim?", parent=d):
+                return
+            dados = PASTA_CONFIGS if os.path.normcase(c) == os.path.normcase(PASTA_SCRIPT) else os.path.join(c, "TabWon_configs")
+            if not _pasta_gravavel(dados) and not messagebox.askyesno(
+                    "Pasta do TabWin", f"Sem permissão para gravar em:\n{dados}\n\nAs consultas salvas e as "
+                                       f"preferências não poderão ser gravadas nessa pasta. Usar mesmo assim?",
+                    icon="warning", parent=d):
+                return
+            valor = "" if os.path.normcase(c) == os.path.normcase(PASTA_SCRIPT) else c
+            try: _gravar_pasta_tabwin_ini(valor)
+            except Exception as ex:
+                messagebox.showerror("Pasta do TabWin", f"Não foi possível gravar o TabWon_configs.ini:\n{ex}", parent=d)
+                return
+            self._cfg = _ler_config_ini()
+            self._trocar_pasta_tabwin(valor)
+            _fechar_e_seguir()
+
+        def _agora_nao(_=None):
+            self._pasta_tabwin_dispensada = True
+            self._pasta_tabwin_inacessivel = ""
+            _fechar_e_seguir()
+        b_ok.config(command=_ok); b_nao.config(command=_agora_nao)
+        ent.bind("<Return>", _ok)
+        d.bind("<Escape>", _agora_nao)
+        d.protocol("WM_DELETE_WINDOW", _agora_nao)
+        _status()
+        centralizar(d, self.root)
+        try: d.grab_set()
+        except Exception: pass
+        ent.focus_force()
+        d._api = {"var": var, "ok": _ok, "agora_nao": _agora_nao, "botao": b_ok, "status": lbl_st}
+        return d
+
     def _verificar_boas_vindas(self):
+        motivo = self._motivo_pedir_pasta_tabwin()
+        if motivo:
+            self._pedir_pasta_tabwin(motivo, ao_concluir=self._verificar_boas_vindas); return
         if (self._prefs or {}).get("nome"):
             self._ver_novidades_se_preciso(); return
         try:
@@ -13073,7 +13397,7 @@ class TabWonApp:
             if not def_valor: _set_status("Log inconsistente", "#E65100"); return
             nome_def = os.path.basename(def_valor)
             if nome_def not in list(self.combo_def['values']) and \
-               not os.path.exists(os.path.join(PASTA_SCRIPT, nome_def)):
+               not os.path.exists(os.path.join(PASTA_TABWIN, nome_def)):
                 _set_status("Log inconsistente", "#E65100"); return
             atos_pendentes = parsed.get("ajustes", [])
             self._atos_log_origem = list(atos_pendentes)
@@ -13463,7 +13787,7 @@ class TabWonApp:
                 valores = list(self.combo_def['values'])
                 if nome_def in valores:
                     self.combo_def.set(nome_def); self.on_def_selected(None)
-                elif os.path.exists(os.path.join(PASTA_SCRIPT, nome_def)):
+                elif os.path.exists(os.path.join(PASTA_TABWIN, nome_def)):
                     if nome_def not in valores:
                         valores.append(nome_def); self.combo_def['values'] = valores
                     self.combo_def.set(nome_def); self.on_def_selected(None)
@@ -13809,6 +14133,7 @@ class TabWonApp:
                     f"Python: {sys.version.split()[0]}", f"pandas {versao_mod('pandas')} · duckdb {versao_mod('duckdb')} · "
                     f"openpyxl {versao_mod('openpyxl')} · numpy {versao_mod('numpy')}",
                     f"Pasta do TabWon: {PASTA_SCRIPT}", f"Pasta de configurações: {PASTA_CONFIGS}",
+                    f"Pasta do TabWin: {PASTA_TABWIN}", f"Dados compartilhados: {PASTA_DADOS}",
                     f"Cache: {CACHE_DIR}", f"Conversor: {_descricao_conversor()}",
                     f"DEF atual: {self.def_path or '-'}",
                     f"Tela: {'resultado' if self._no_resultado() else 'seleção/inicial'}",
@@ -13952,8 +14277,8 @@ class TabWonApp:
                 if idx is None: raise RuntimeError("consulta não encontrada (foi renomeada ou excluída?)")
                 op_ = _parse_log_tabwin(e["texto"]).get("opcoes", {})
                 def_ = next((v.strip() for k, v in op_.items() if _normalizar_texto(k) == "def"), "")
-                if def_ and not os.path.exists(os.path.join(PASTA_SCRIPT, os.path.basename(def_.replace("\\", "/")))):
-                    raise RuntimeError(f"o DEF {os.path.basename(def_.replace(chr(92), '/'))} não está na pasta do TabWon")
+                if def_ and not os.path.exists(os.path.join(PASTA_TABWIN, os.path.basename(def_.replace("\\", "/")))):
+                    raise RuntimeError(f"o DEF {os.path.basename(def_.replace(chr(92), '/'))} não está na pasta do TabWin")
                 self.combo_logs_salvos.current(idx + 1); self.on_log_salvo_selected(None)
                 novas = st["msgs"][st["msgs_ini"]:]
                 if novas: raise RuntimeError(re.sub(r"\s+", " ", novas[-1])[:300])
@@ -14208,7 +14533,8 @@ class TabWonApp:
                                   fg="white" if not p else "#757575", cursor="arrow")
 
     def carregar_defs(self):
-        defs = [f for f in os.listdir(PASTA_SCRIPT) if f.lower().endswith(".def")]
+        try: defs = sorted((f for f in os.listdir(PASTA_TABWIN) if f.lower().endswith(".def")), key=str.lower)
+        except Exception: defs = []
         self.combo_def["values"] = ["Selecionar consulta"] + defs
         self.combo_def.current(0)
         self.def_data = None; self.def_path = None
@@ -14230,7 +14556,7 @@ class TabWonApp:
             except Exception: pass
         self._criar_widgets_frame_main()
         self.mostrar_campos(True)
-        self.def_path = os.path.join(PASTA_SCRIPT, nome_def)
+        self.def_path = os.path.join(PASTA_TABWIN, nome_def)
         try:
             with open(self.def_path, "r", encoding="latin-1", errors="ignore") as f:
                 linhas = f.readlines()
@@ -14253,16 +14579,9 @@ class TabWonApp:
             if linha.upper() == "X": grupo += 1; continue
             if linha.startswith("A"):
                 c = linha[1:].strip()
-                if "*" in c:
-                    pat = os.path.join(PASTA_SCRIPT, os.path.basename(c))
-                    enc = glob.glob(pat)
-                    if not enc: enc = glob.glob(c)
-                    dbcs.update(enc)
-                else:
-                    if os.path.isabs(c) and os.path.exists(c): dbcs.add(c)
-                    else:
-                        alt = os.path.join(PASTA_SCRIPT, os.path.basename(c))
-                        dbcs.add(alt if os.path.exists(alt) else c)
+                enc = _listar_arquivos_def(c, pasta_def)
+                if enc: dbcs.update(enc)
+                elif not any(ch in c for ch in "*?"): dbcs.add(c)
                 continue
             partes = [p.strip() for p in linha.split(",")]
             if len(partes) < 2: continue
@@ -14295,7 +14614,7 @@ class TabWonApp:
                 for d, lb in [("linhas", self.lb_linhas), ("colunas", self.lb_colunas),
                               ("selecoes", self.lb_sel_disp)]:
                     self.def_data[d].append(item); lb.insert(tk.END, nome)
-        lista_dbcs = sorted(list(dbcs), key=lambda x: os.path.basename(x), reverse=True)
+        lista_dbcs = sorted(list(dbcs), key=lambda x: os.path.basename(x).lower(), reverse=True)
         self.def_data["dbcs"] = lista_dbcs
         for d in lista_dbcs: self.lb_dbcs.insert(tk.END, os.path.basename(d))
         self.lbl_info.config(text=f"TabWon versão {VERSAO}", fg="gray")
@@ -17984,6 +18303,43 @@ class TabWonApp:
         def aba(titulo):
             f = tk.Frame(nb, bg=COR_FUNDO, padx=14, pady=10); nb.add(f, text=titulo); return f
 
+        a0 = aba(" Pasta do TabWin ")
+        lf0 = tk.LabelFrame(a0, text=" Pasta do TabWin ", bg=COR_FUNDO, fg=COR_CABECALHO,
+                            font=("Arial", 10, "bold"), padx=10, pady=8)
+        lf0.pack(fill="x")
+        tk.Label(lf0, text="Pasta onde ficam os DEFs e CNVs do TabWin. Nela, em TabWon_configs, ficam também as "
+                           "consultas salvas, as últimas pesquisas e as preferências dos usuários. Pode ser uma pasta "
+                           "da rede.", bg=COR_FUNDO, fg="#555555", font=("Arial", 9), wraplength=700,
+                 justify="left").pack(anchor="w")
+        tk.Label(lf0, text="Deixe em branco para usar a própria pasta do TabWon.", bg=COR_FUNDO, fg="#555555",
+                 font=("Arial", 9)).pack(anchor="w", pady=(2, 6))
+        lin0 = tk.Frame(lf0, bg=COR_FUNDO); lin0.pack(fill="x")
+        var_tw = tk.StringVar(value=cfg.get("pastas", {}).get("tabwin", ""))
+        tk.Entry(lin0, textvariable=var_tw, font=("Arial", 10)).pack(side="left", fill="x", expand=True, ipady=2)
+
+        def _procurar_tw():
+            ini = _caminho_pasta_tabwin(var_tw.get())
+            p = filedialog.askdirectory(parent=top, title="Escolha a pasta do TabWin",
+                                        initialdir=ini if os.path.isdir(ini) else PASTA_SCRIPT, mustexist=True)
+            if p: var_tw.set(os.path.normpath(p))
+        tk.Button(lin0, text="📁 Procurar...", command=_procurar_tw, font=("Arial", 9)).pack(side="left", padx=(6, 0))
+        tk.Button(lin0, text="↺ Usar a pasta do TabWon", command=lambda: var_tw.set(""),
+                  font=("Arial", 9)).pack(side="left", padx=(6, 0))
+        lbl_tw = tk.Label(lf0, text="", font=("Arial", 9, "bold"), bg=COR_FUNDO, fg="#555555", anchor="w",
+                          justify="left", wraplength=700)
+        lbl_tw.pack(fill="x", pady=(6, 0))
+        lbl_tw_uso = tk.Label(lf0, text=f"Pasta em uso: {PASTA_TABWIN}", font=("Arial", 8), bg=COR_FUNDO,
+                              fg="#777777", anchor="w", justify="left", wraplength=700)
+        lbl_tw_uso.pack(fill="x", pady=(2, 0))
+
+        def _status_tw(*_):
+            c = _caminho_pasta_tabwin(var_tw.get())
+            if not os.path.isdir(c): lbl_tw.config(text="✖ Pasta não encontrada.", fg="#C62828"); return
+            n = _contar_defs(c)
+            if n > 0: lbl_tw.config(text=f"✔ {n} arquivo(s) DEF encontrado(s).", fg="#2E7D32")
+            else: lbl_tw.config(text="⚠ Nenhum arquivo DEF nesta pasta.", fg="#E65100")
+        var_tw.trace_add("write", _status_tw); _status_tw()
+
         a1 = aba(" Menu e consultas ")
         V = {}
 
@@ -18177,6 +18533,22 @@ class TabWonApp:
             v_idi = api_idi["valores"]()
             if v_idi is None: nb.select(a4); return
             valores += v_idi
+            tw_txt = var_tw.get().strip().strip('"').strip()
+            tw_c = _caminho_pasta_tabwin(tw_txt)
+            if tw_txt and not os.path.isdir(tw_c):
+                messagebox.showerror("Configurações avançadas", f"A pasta do TabWin não existe:\n{tw_c}", parent=top)
+                nb.select(a0); return
+            tw_valor = "" if os.path.normcase(tw_c) == os.path.normcase(PASTA_SCRIPT) else tw_c
+            tw_mudou = os.path.normcase(tw_c) != os.path.normcase(PASTA_TABWIN)
+            if tw_mudou and tw_valor:
+                dados_tw = os.path.join(tw_c, "TabWon_configs")
+                if not _pasta_gravavel(dados_tw) and not messagebox.askyesno(
+                        "Pasta do TabWin", f"Sem permissão para gravar em:\n{dados_tw}\n\nAs consultas salvas e as "
+                                           f"preferências não poderão ser gravadas nessa pasta. Usar mesmo assim?",
+                        icon="warning", parent=top):
+                    nb.select(a0); return
+            valores.append(("pastas", "tabwin", tw_valor,
+                            "Pasta do TabWin: DEFs, CNVs, consultas salvas e preferências dos usuários; vazio = pasta do TabWon"))
             try:
                 try:
                     with open(CONFIG_INI, "r", encoding="utf-8-sig") as f: texto = f.read()
@@ -18191,6 +18563,7 @@ class TabWonApp:
             self._cfg = _ler_config_ini()
             _ORG["identificadores"] = list(self._cfg.get("organizacao", {}).get("identificadores", []))
             top.destroy()
+            if tw_mudou: self._trocar_pasta_tabwin(tw_valor)
             if _modelo_icones_efetivo(self._cfg, self._prefs) != _ICONES["modelo"]:
                 _definir_modelo_icones(_modelo_icones_efetivo(self._cfg, self._prefs)); _reaplicar_icones()
             if _idioma_efetivo(self._cfg, self._prefs) != (_I18N["arquivo"] if _I18N["ativo"] else ""):
@@ -18205,7 +18578,7 @@ class TabWonApp:
         centralizar(top, self.root); top.grab_set()
         top._api = {"V": V, "salvar": _salvar, "ids": txt_ids, "marcadas": marcadas, "ordem": ordem,
                     "cb_padrao": cb_padrao, "tvu": tvu, "excluir_usuarios": _excluir_usuarios, "listar": _listar_usuarios,
-                    "idioma": api_idi}
+                    "idioma": api_idi, "pasta_tabwin": var_tw}
         return top
 
     def _ato_estatistica(self, est, colunas, params, destinos, fmt):
@@ -20045,7 +20418,28 @@ class TabWonApp:
         else: messagebox.showinfo("Cancelado", "A tabulação foi cancelada.")
 
 
+def _avisar_loader():
+    nome = os.environ.pop("TABWON_LOADER_EVENTO", "")
+    if not nome or os.name != "nt": return
+    try:
+        import ctypes
+        k32 = ctypes.windll.kernel32
+        k32.OpenEventW.restype = ctypes.c_void_p
+        h = k32.OpenEventW(0x0002, False, nome)
+        if h:
+            k32.SetEvent(ctypes.c_void_p(h))
+            k32.CloseHandle(ctypes.c_void_p(h))
+    except Exception: pass
+
+
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = TabWonApp(root)
+    root = None
+    try:
+        root = tk.Tk()
+        app = TabWonApp(root)
+        root.update_idletasks()
+    finally:
+        _avisar_loader()
+    try: root.lift(); root.focus_force()
+    except Exception: pass
     root.mainloop()

@@ -1,6 +1,6 @@
 TabWon — Tabulador Livre
 
-Versão: 1.00.0
+Versão: 1.00.1
 
 === Sobre o programa
 
@@ -90,8 +90,11 @@ E a você, que utiliza o TabWon e contribui para seu aperfeiçoamento.
 
 === Repositório e contribuições
 
-Repositório oficial do projeto, com código-fonte e documentação:
+*Repositório oficial do projeto, com código-fonte e documentação:*
 https://github.com/thiagusr/TabWon
+
+*Site oficial do projeto:*
+https://tabwon.org
 
 Para enviar sugestões, relatar erros ou propor alterações, utilize as
 issues e os pull requests do repositório, conforme as orientações do

@@ -1,13 +1,13 @@
 TabWon — Guia de Ajuda
 
-Versão: 1.00.0
+Versão: 1.00.1
 
 
 === Sobre este guia
 
 Este é o guia completo do TabWon. Cada seção começa com o nome do
 recurso e, em seguida, a explicação. Trechos importantes aparecem
-destacados entre *asteriscos*.
+destacados.
 
 O guia está organizado na mesma ordem em que você usa o programa:
 primeiro a tela inicial, depois a tabulação, depois o resultado, os
@@ -126,7 +126,7 @@ cortadas (o TabWin limita a 50 caracteres), espaços duplicados e
 descrições com o código na frente.
 
 *Log inconsistente* significa que o DEF citado no log não existe na
-pasta do TabWon ou que o log está mal formatado. Confira o nome do
+pasta do TabWin ou que o log está mal formatado. Confira o nome do
 arquivo DEF.
 
 *Botões do canto superior direito:*
@@ -143,6 +143,42 @@ O modo de cor (claro, escuro ou automático) é escolhido em
 *Curiosidade:* dê um duplo clique no logotipo.
 
 
+=== Pasta do TabWin
+
+A *pasta do TabWin* é onde ficam os DEFs e os CNVs. Nela, dentro de
+*TabWon_configs*, o TabWon também guarda as consultas salvas, as
+últimas pesquisas, os baixados e as preferências de cada usuário.
+
+  a) *TabWon na mesma pasta do TabWin* (local ou da rede): a pasta do
+     TabWin é a própria pasta do TabWon e não há nada a configurar;
+  b) *TabWon em outra pasta* (por exemplo, instalado em cada
+     computador): se não houver nenhum DEF ao lado do TabWon, na
+     primeira abertura ele pergunta *Onde estão os arquivos do
+     TabWin?*. Indique a pasta, que pode ser da rede. A escolha fica
+     gravada na seção *[pastas]* do *TabWon_configs.ini* e vale para
+     todos os usuários do computador.
+
+Assim, todos que usam a mesma pasta do TabWin compartilham as mesmas
+consultas salvas, rodando o TabWon da rede ou instalado em cada
+computador.
+
+*Para trocar a pasta:* Shift + clique na ⚙ → aba *Pasta do TabWin*. Ao
+trocar, o TabWon copia as suas preferências e oferece copiar as
+consultas salvas, se a nova pasta ainda não tiver.
+
+*Se a pasta da rede não estiver acessível* ao abrir o TabWon, ele
+avisa e permite escolher outra pasta ou continuar, por enquanto, com a
+pasta do próprio TabWon.
+
+*Arquivos de dados (DBC):* vale sempre o caminho escrito na linha A de
+cada DEF, sem diferenciar maiúsculas e minúsculas. Só quando essa
+pasta não existe no computador o TabWon procura os mesmos nomes na
+pasta do DEF.
+
+O cache dos DBCs continua na pasta do próprio TabWon (veja a seção
+*Cache de DBC*).
+
+
 === Arquivo DEF
 
 O DEF é o arquivo que descreve a estrutura da tabulação: quais variáveis
@@ -156,8 +192,8 @@ Ao escolher um DEF no seletor superior, o TabWon carrega automaticamente:
 
 *O DEF é a base de tudo.* Sem ele, não é possível executar uma tabulação.
 
-Se o DEF não aparece na lista, verifique se ele está na mesma pasta do
-TabWon e se termina com a extensão *.def* (minúscula).
+Se o DEF não aparece na lista, verifique se ele está na pasta do TabWin
+(veja a seção *Pasta do TabWin*) e se termina com a extensão *.def*.
 
 
 === Arquivos DBC e CNV
@@ -728,8 +764,8 @@ para a consulta. Há duas opções:
   a) *Salvar seleção de DBC* — inclui os arquivos escolhidos no log;
   b) *Salvar Super Log* — inclui os ajustes e gráficos.
 
-Consultas salvas ficam em *TabWon_configs/TabWon_logs.log* e podem ser
-recarregadas pelo seletor "Consultas salvas".
+Consultas salvas ficam em *TabWon_configs/TabWon_logs.log*, na pasta do
+TabWin, e podem ser recarregadas pelo seletor "Consultas salvas".
 
 *Nomes repetidos são bloqueados.* Se já existir uma consulta com o mesmo
 nome, o TabWon pede para escolher outro.
@@ -839,8 +875,8 @@ e guarda em cache. As próximas leituras são *muito mais rápidas*.
 Se o DBC for alterado (data/hora ou tamanho diferente), o cache é
 automaticamente invalidado e o arquivo é convertido de novo.
 
-Os arquivos ficam em *TabWon_configs/.cache_dbc/* e o índice em
-*TabWon_configs/.cache_dbc/_index.json*.
+Os arquivos ficam em *TabWon_configs/.cache_dbc/*, na pasta do próprio
+TabWon, e o índice em *TabWon_configs/.cache_dbc/_index.json*.
 
 *Para limpar o cache manualmente:* apague a pasta *.cache_dbc/*. Na
 próxima vez que você tabular, o TabWon recria o cache do zero.
@@ -859,8 +895,8 @@ Em *⚙ → Configurações* (Ctrl+,) cada usuário escolhe:
      ficar em branco) e o botão para excluir as suas preferências (as
      consultas salvas são mantidas).
 
-As preferências ficam em *TabWon_configs/.usuarios/<usuário>.ini* e
-valem só para o seu usuário do Windows.
+As preferências ficam em *TabWon_configs/.usuarios/<usuário>.ini*, na
+pasta do TabWin, e valem só para o seu usuário do Windows.
 
 
 === Idioma
@@ -984,14 +1020,16 @@ O modelo padrão da instalação e a lista de modelos ficam na seção
 *Shift + clique na ⚙* abre as definições globais, gravadas em
 *TabWon_configs.ini* e válidas para todos os usuários da instalação:
 
-  a) *Menu e consultas* — exibir ou ocultar no menu os editores de DEF e
+  a) *Pasta do TabWin* — a pasta dos DEFs, CNVs, consultas salvas e
+     preferências dos usuários (veja a seção *Pasta do TabWin*);
+  b) *Menu e consultas* — exibir ou ocultar no menu os editores de DEF e
      CNV, o Consultor SQL e o conversor; permitir renomear e excluir
      consultas salvas; lista de identificadores (um por linha);
-  b) *Cores* — paletas disponíveis (marque e ordene), paleta padrão e
+  c) *Cores* — paletas disponíveis (marque e ordene), paleta padrão e
      modo padrão;
-  c) *Usuários* — lista de quem tem preferências salvas, com a opção de
+  d) *Usuários* — lista de quem tem preferências salvas, com a opção de
      excluí-las;
-  d) *Idioma* — idiomas disponíveis e idioma padrão.
+  e) *Idioma* — idiomas disponíveis e idioma padrão.
 
 Clique em "💾 Salvar no INI" para gravar.
 
@@ -1003,14 +1041,14 @@ avançadas):
 
 *Editar / Criar DEF*
 
-  a) Abre um DEF da pasta do TabWon ou de qualquer pasta, ou começa um
+  a) Abre um DEF da pasta do TabWin ou de qualquer pasta, ou começa um
      em branco; "🧩 Gerar de um DBC" cria um DEF com todos os campos;
   b) O painel "➕ Inserir linha" monta cada linha (L, C, S, T, D, I, X,
      A) e a insere na posição do cursor;
   c) Os números da margem podem ser arrastados para mover linhas;
   d) "🔍 Analisar DEF" confere arquivos, campos e CNVs e oferece
      correções automáticas;
-  e) *O DEF é sempre salvo na pasta do TabWon.*
+  e) *O DEF é sempre salvo na pasta do TabWin.*
 
 *Editar / Criar CNV*
 
@@ -1044,7 +1082,7 @@ em uma tabulação normal do TabWon.
 === Conversor DBF ⟺ DBC
 
 O *⟺ Conversor DBF ⟺ DBC* (menu ⚙) lista os arquivos das pastas de dados
-indicadas na linha A dos DEFs da pasta do TabWon:
+indicadas na linha A dos DEFs da pasta do TabWin:
 
   a) *DBF → DBC* compacta no formato do DATASUS; *DBC → DBF*
      descompacta. O arquivo convertido fica na mesma pasta do original e
@@ -1109,8 +1147,14 @@ arquivos .lng, todos na pasta *TabWon_configs/*.
 
 *Como faço backup das minhas consultas salvas?*
 O TabWon já guarda cópias automáticas em
-*TabWon_configs/.backups_consultas/*. Para uma cópia extra, copie o
-arquivo *TabWon_configs/TabWon_logs.log*.
+*TabWon_configs/.backups_consultas/*, na pasta do TabWin. Para uma
+cópia extra, copie o arquivo *TabWon_configs/TabWon_logs.log* dessa
+mesma pasta.
+
+*Posso instalar o TabWon em cada computador e usar uma pasta da rede?*
+Sim. Indique a pasta do TabWin da rede na primeira abertura (ou em
+Shift + clique na ⚙ → *Pasta do TabWin*): DEFs, consultas salvas e
+preferências ficam lá, compartilhados por todos.
 
 *Onde ficam os gráficos?*
 Ficam em memória e são salvos junto com o superlog. Se quiser
@@ -1166,6 +1210,14 @@ lenta na primeira vez; depois o cache acelera as próximas leituras.
   k) *Uma seleção do log do TabWin não foi reconhecida* — confira se o
      CNV é o mesmo usado pelo TabWin; descrições cortadas e com código
      na frente já são tratadas automaticamente.
+
+  l) *A abertura demora* — na primeira vez, ou com o TabWon numa pasta
+     da rede, pode levar cerca de um minuto. Na versão compilada, uma
+     tela de carregamento mostra o andamento.
+
+  m) *A lista de DEFs ficou vazia* — confira a pasta do TabWin em
+     Shift + clique na ⚙ → *Pasta do TabWin* e se a pasta da rede está
+     acessível.
 
 
 === Dicas finais

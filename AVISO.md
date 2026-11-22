@@ -6,9 +6,9 @@ Repositório oficial: [https://github.com/thiagusr/TabWon](https://github.com/th
 
 Este aviso vale para todo o projeto TabWon: o programa principal (`TabWon.py`), os arquivos de
 configuração, idiomas, ajuda, paletas e ícones da pasta `TabWon\_configs`, os modelos de imagem da
-pasta `Imagens`, os roteiros de compilação (`compilar.bat` e `TabWon.spec`), a documentação e o
-programa companheiro **TabWonDBC** (pasta `TabWonDBC`, que tem também o seu próprio
-[`AVISO.md`](TabWonDBC/AVISO.md)).
+pasta `Imagens`, os roteiros de compilação (`compilar.bat` e `TabWon.spec`), o **loader**
+(pasta `loader`, que gera o `TabWon.exe`), a documentação e o programa companheiro
+**TabWonDBC** (pasta `TabWonDBC`, que tem também o seu próprio [`AVISO.md`](TabWonDBC/AVISO.md)).
 
 ## Licença
 
@@ -91,6 +91,7 @@ O TabWon usa as bibliotecas abaixo. No executável compilado, elas ficam na past
 |[Pillow](https://python-pillow.org)|MIT-CMU|Imagens e logotipo|
 |[pywin32](https://github.com/mhammond/pywin32)|PSF|Área de transferência do Windows|
 |[PyInstaller](https://pyinstaller.org)|GPL-2.0 com exceção para o bootloader|Geração do executável|
+|.NET Framework 4.8 (Microsoft)|Componente do sistema Windows|Base do loader (`TabWon.exe`); já vem no Windows e não é distribuído com o TabWon|
 
 ## Contato
 
