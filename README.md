@@ -5,7 +5,7 @@
 <h3 align="center">Tabulador Livre de dados do SUS</h3>
 
 <p align="center">
-  Versão 1.00.1 · Windows · Código aberto (GPL-3.0) · Funciona 100% no seu computador
+  Versão 1.00.2 · Windows · Código aberto (GPL-3.0) · Funciona 100% no seu computador
 </p>
 
 ---
@@ -58,7 +58,7 @@ existiria.
 
 ### Fase de testes e versão oficial
 
-O TabWon está na **versão 1.00.1, em fase de testes**. Antes da versão oficial, o programa passa
+O TabWon está na **versão 1.00.2, em fase de testes**. Antes da versão oficial, o programa passa
 por **três etapas de testes**, cada uma com um número mínimo de pessoas:
 
 |Etapa|Testadores (mínimo)|Objetivo|
@@ -102,8 +102,9 @@ na tela **Sobre**. Os detalhes estão em [`AVISO.md`](AVISO.md).
 
 ## 3. Recursos e diferenciais
 
-* **Mesmos arquivos do TabWin:** abre os DEFs, CNVs, DBFs e DBCs que você já usa e cola logs do
-TabWin para remontar a tabulação.
+* **Mesmos arquivos do TabWin:** abre os DEFs, CNVs, DBFs e DBCs que você já usa, inclusive os CNVs
+do formato novo do TabWin (descrições de até 100 caracteres, em UTF-8), e cola logs do TabWin
+para remontar a tabulação.
 * **Rápido:** na primeira leitura, cada DBC é convertido para Parquet pelo **TabWonDBC**, e as
 próximas tabulações ficam muito mais rápidas.
 * **Superlog:** grava a consulta com **todos os ajustes** feitos no resultado (colunas, operações,
@@ -120,7 +121,9 @@ boxplot, velocímetro, treemap e outros.
 * **Consultor SQL** sobre os DBCs, passo a passo ou escrevendo o SQL.
 * **Editores de DEF e CNV** com análise e correção guiada; **conversor DBF ⟺ DBC** com teste de
 integridade.
-* **Exportação** para XLSX, CSV e área de transferência (formatado, texto ou imagem).
+* **Exportação** para XLSX, CSV e área de transferência (formatado, texto ou imagem). Por padrão,
+os arquivos são salvos fora da pasta do TabWon (a sugestão é a pasta Downloads), para manter a
+organização.
 * **Interface** em português, inglês e espanhol; modos claro, escuro e automático; 10 paletas e
 20 modelos de ícones; personalização por usuário.
 * **Pasta do TabWin compartilhada:** DEFs, consultas salvas, últimas pesquisas e preferências
@@ -174,6 +177,7 @@ TabWon/
 ├─ compilar.bat           compila o TabWon com um duplo clique
 ├─ dicionario_funcoes.md  referência das funções do código-fonte
 ├─ README.md              este arquivo
+├─ TabWon_LEIA-ME.txt     instruções curtas que acompanham o programa compilado
 ├─ AVISO.md               autoria, licença e termos adicionais
 ├─ LICENSE                texto da GNU GPL v3
 ├─ TabWon_configs/        configurações, idiomas, ajuda, paletas, ícones e logotipos
@@ -308,21 +312,30 @@ e todo o resto (configurações, DEFs, CNVs, DBCs) fica do lado de fora, editáv
    * `TabWon.py`
    * `TabWon.spec`
    * `compilar.bat`
-   * `TabWon_configs\TabWon_icos.ico`
+   * `TabWon_configs\TabWon_icos.ico` (e o `TabWonDBC.exe`, da [seção 9](#9-compilar-o-tabwondbc))
+   * `AVISO.md`, `README.md` e `TabWon_LEIA-ME.txt`
    * a pasta `loader` (código do `TabWon.exe`)
-3. Dê **duplo clique em `compilar.bat`**. Ele:
+3. Dê **duplo clique em `compilar.bat`**. Tudo é feito dentro da pasta **`Compilado`**. Ele:
 
-   * cria um ambiente Python limpo só para a compilação (`.venv_build`), sem administrador;
+   * cria um ambiente Python limpo só para a compilação (`Compilado\venv`), sem administrador;
    * baixa as bibliotecas e o PyInstaller;
    * gera o programa principal (`TabWon_tabulador.exe`);
-   * compila o loader (`TabWon.exe`) com o `loader\compilar_loader.bat`.
-4. O resultado aparece em **`dist\TabWon`**:
+   * compila o loader (`TabWon.exe`) com o `loader\compilar_loader.bat`;
+   * junta tudo em **`Compilado\dist\TabWon`**: `TabWon.exe` (loader), `TabWon_tabulador.exe`,
+   `TabWon_dependencias\`, `TabWon_configs\` (sem logs, cache e pastas pessoais, e com a pasta do
+   TabWin em branco no INI), `TabWonDBC\` (código, sem `bin` e `obj`), `AVISO.md`, `README.md` e
+   `TabWon_LEIA-ME.txt`.
+4. No fim, ele pergunta se você quer **manter apenas o que importa**:
 
-   * `TabWon.exe` (loader)
-   * `TabWon_tabulador.exe`
-   * `TabWon_dependencias\`
+   * **S:** copia para a pasta **`TabWon_compilado`**, um nível acima da pasta do projeto, e apaga a
+   pasta `Compilado`. A pasta `TabWon_compilado` não é apagada: só os arquivos novos ou alterados são
+   sobrescritos, a `TabWon_dependencias` é sincronizada (para não sobrar biblioteca antiga) e um
+   `TabWon_configs.ini` que já esteja lá é mantido. É dessa pasta que o gerador do instalador lê os
+   arquivos;
+   * **N:** deixa tudo em `Compilado\dist\TabWon`.
 
-A primeira compilação leva alguns minutos; as seguintes são mais rápidas. Se aparecer um erro
+A primeira compilação leva alguns minutos. Se você mantiver a pasta `Compilado`, as seguintes são
+mais rápidas, porque o ambiente Python já está pronto. Se aparecer um erro
 dizendo que falta um módulo, acrescente o nome dele à lista `ocultos` no início do
 `TabWon.spec` e compile de novo.
 
@@ -366,6 +379,8 @@ TabWon/
 * **DBCs:** ficam onde a linha `A` de cada DEF indicar, inclusive em pastas da rede. Vale sempre
 o caminho escrito no DEF (sem diferenciar maiúsculas e minúsculas). Só quando essa pasta não
 existe no computador o TabWon procura os mesmos nomes na pasta do DEF.
+* Os usuários precisam de **permissão de gravação** na pasta do TabWon. Sem ela, o `TabWon.exe`
+mostra "Seu usuário não tem permissão de escrita, contate o suporte técnico." e não abre.
 * **Não copie** as pastas `.usuarios`, `.cache_dbc` e `.backups_consultas` do seu computador:
 elas são pessoais e o TabWon as recria.
 * Inclua `LICENSE` e `AVISO.md` ao distribuir (exigência da licença).

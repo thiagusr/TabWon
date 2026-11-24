@@ -1,102 +1,85 @@
 TabWon — Tabulador Livre
 
-Versão: 1.00.1
+Versão: 1.00.2
 
 === Sobre o programa
 
-O TabWon é um programa de tabulação de dados inspirado nas funcionalidades
-do TabWin, mantido pelo DATASUS. Trabalha com arquivos DEF, DBC, DBF e CNV,
-utilizados em processos de tabulação, e permite gerar tabelas cruzadas,
-aplicar filtros, criar colunas calculadas e produzir gráficos.
+O TabWon é um programa de tabulação de dados que trabalha com os mesmos
+tipos de arquivos do TabWin (DEF, CNV, DBF e DBC), permitindo gerar tabelas
+cruzadas, aplicar filtros, criar colunas calculadas e montar gráficos a
+partir de bases como o DATASUS/SUS.
 
-Além da tabulação, reúne funções estatísticas aplicadas aos resultados,
-busca em tabelas, consultas SQL, editores de arquivos DEF e CNV,
-conversão entre DBF e DBC, verificação de integridade de arquivos DBC
-e execução de consultas em lote. A interface está disponível em
-português, inglês e espanhol.
+Além da tabulação, reúne funções e estatística sobre o resultado, busca
+na tabela, consultas em SQL, editores de DEF e CNV, conversão entre DBF
+e DBC com teste de integridade, execução de consultas em lote e
+interface em português, inglês e espanhol.
 
-O TabWon é um *projeto independente, livre e de código aberto*, distribuído
-sob a *GNU General Public License, versão 3 (GPL-3.0-only)*. Não possui
-vínculo institucional com o DATASUS nem constitui uma versão oficial
-do TabWin.
+É um *software livre e independente*, inspirado no TabWin e
+*sem vínculo institucional com o DATASUS*. Funciona 100% no seu
+computador: nenhum dado ou tabulação é enviado para servidores externos.
 
-O processamento dos dados e das tabulações é realizado localmente, no
-computador do usuário, sem envio desses conteúdos para servidores externos.
+O objetivo é ser uma alternativa aberta, gratuita e continuamente
+aprimorada pela comunidade, sem depender de binários fechados ou de
+licenças restritivas.
 
-=== Proposta do projeto
+=== Inspiração
 
-O TabWon busca oferecer uma alternativa aberta para quem realiza
-tabulações em sistemas e bases de dados que utilizam arquivos DBC,
-preservando a familiaridade com os recursos do TabWin e ampliando
-as possibilidades de trabalho.
-
-A proposta é evoluir continuamente, com *novos recursos*, *leiaute moderno*
-e *navegação mais amigável*, tornando as rotinas de tabulação, exploração
-e análise de dados mais práticas e acessíveis.
-
-O desenvolvimento é independente e aberto a melhorias, correções e
-contribuições da comunidade. A inspiração no TabWin reconhece sua
-importância como referência para esse tipo de trabalho, sem representar
-vínculo institucional, parceria ou endosso do DATASUS.
+*Um agradecimento especial ao Ministério da Saúde*, que criou o TabWin e
+definiu os formatos DEF e CNV. Sem esse legado, o TabWon não
+existiria. A ideia aqui não é competir, e sim somar: o TabWon existe
+porque o TabWin abriu o caminho.
 
 === Desenvolvimento
 
-*Desenvolvido originalmente por Thiago Rodrigues (thiagusr)*, como projeto
-independente, a partir de experiência prática com tabulação e
-processamento de dados.
+*Desenvolvido originalmente por Thiago Rodrigues (thiagusr)*, servidor da Equipe de Processamento SIA/SMS de Porto Alegre/RS.
 
-A leitura, a gravação e a verificação dos arquivos DBC contam com o
-*TabWonDBC*, módulo integrante do projeto, também de código aberto.
+A leitura e a gravação dos arquivos DBC são feitas pelo *TabWonDBC*,
+programa companheiro do TabWon, também de código aberto.
 
-O TabWon parte das necessidades observadas na utilização cotidiana de
-ferramentas de tabulação e busca reunir transparência, flexibilidade
-e facilidade de uso em um mesmo ambiente.
+O projeto nasceu da prática: quem tabula dados do SUS todos os dias sabe
+o quanto uma ferramenta livre, transparente e adaptável faz diferença.
 
-=== Código aberto e licença
+=== Código aberto
 
-O código-fonte do TabWon está disponível publicamente sob a licença
-*GNU GPL v3 (GPL-3.0-only)*, permitindo, nos termos dessa licença:
+O TabWon é *software de código aberto*. Todo o código-fonte é
+disponibilizado publicamente para que a comunidade possa:
 
-  * Estudar e auditar o funcionamento do programa;
-  * Utilizar, copiar, modificar e redistribuir o software;
-  * Corrigir erros e propor novos recursos;
-  * Adaptar o programa a diferentes necessidades;
-  * Contribuir com traduções e melhorias de acessibilidade.
+  * Auditar o funcionamento;
+  * Corrigir erros;
+  * Adicionar novos recursos;
+  * Adaptar o programa a realidades locais;
+  * Traduzir para outros idiomas.
 
-A interface está disponível em *português (Brasil)*, *inglês (EUA)* e
-*espanhol (América Latina)*. Para criar uma nova tradução, é possível
-usar como referência um dos arquivos *TabWon_lng_XXXX.lng* da pasta
-TabWon_configs; o cabeçalho desses arquivos apresenta orientações.
+A interface já está disponível em *português (Brasil)*, *inglês (EUA)* e
+*espanhol (América Latina)*. Para criar uma nova tradução, basta copiar
+um dos arquivos *TabWon_lng_XXXX.lng* da pasta TabWon_configs e traduzir
+os textos — o cabeçalho de cada arquivo explica como.
 
-*Contribuições são bem-vindas.* Desenvolvedores, profissionais que
-trabalham com tabulação, pesquisadores e demais usuários podem participar
-por meio de sugestões, relatos de problemas e contribuições ao código.
-
-Consulte os arquivos de licença e avisos de autoria do repositório para
-conhecer as condições aplicáveis à distribuição e às modificações.
+*Contribuições são bem-vindas.* Se você é desenvolvedor, tabulador,
+pesquisador ou apenas alguém que usa o TabWon no dia a dia, sua ajuda é
+fundamental para o projeto continuar crescendo.
 
 === Agradecimentos
 
-Ao *Ministério da Saúde* e ao *DATASUS*, pelo desenvolvimento e pela
-manutenção do TabWin, referência que inspirou este projeto.
+Ao *Ministério da Saúde*, pelo TabWin e pelos formatos abertos (DEF,
+DBC, CNV) que tornam este trabalho possível.
 
-Às pessoas que colaboram com testes em situações reais, sugestões de
-melhorias, traduções e identificação de problemas.
+À Equipe de Processamento SIA/SMS de Porto Alegre/RS, pelo incentivo e
+pelos testes em cenários reais.
 
-O botão *Relatório de problema*, no menu ⚙, auxilia na reunião das
-informações necessárias para comunicar falhas ou dificuldades.
+A quem contribuir com traduções, sugestões e relatos de problemas — o
+botão *Relatório de problema*, no menu ⚙, ajuda a juntar as informações
+necessárias.
 
-E a você, que utiliza o TabWon e contribui para seu aperfeiçoamento.
+À comunidade do DATASUS, pelos arquivos de domínio público que alimentam
+as análises.
 
-=== Repositório e contribuições
+E a você, que usa o TabWon: *obrigado por fazer parte desta história*.
 
-*Repositório oficial do projeto, com código-fonte e documentação:*
+=== Contato e contribuições
+
+Código-fonte, issues e pull requests:
 https://github.com/thiagusr/TabWon
 
-*Site oficial do projeto:*
+Site oficial:
 https://tabwon.org
-
-Para enviar sugestões, relatar erros ou propor alterações, utilize as
-issues e os pull requests do repositório, conforme as orientações do
-projeto. Para informações sobre o uso do programa, consulte também
-o arquivo TabWon_ajuda.txt.

@@ -1,6 +1,6 @@
 TabWon — Tabulador Libre
 
-Versión: 1.00.1
+Versión: 1.00.2
 
 === Acerca del programa
 
@@ -23,19 +23,7 @@ El objetivo es ser una alternativa abierta, gratuita y mejorada
 continuamente por la comunidad, sin depender de binarios cerrados ni de
 licencias restrictivas.
 
-=== Origen del nombre
-
-TabWin significa *Tabulador para Windows*. TabWon nació como un juego
-con ese nombre: en inglés, *Win* es presente (ganar) y *Won* es pasado
-(ganó) — una forma ligera de decir que, con código abierto,
-*quien gana es la comunidad*. El sonido también recuerda a "TabOne", el
-tabulador número uno. 😄
-
-Bromas aparte, el nombre lleva una historia real: una vez se solicitó al
-Ministerio de Salud de Brasil el código fuente de TabWin, y el pedido
-fue negado. En lugar de desistir, la respuesta fue desarrollar, desde
-cero y con código abierto, un tabulador que hiciera el mismo trabajo — y
-que cualquier persona pudiera usar, estudiar y mejorar.
+=== Inspiración
 
 *Un agradecimiento especial al Ministerio de Salud*, que creó TabWin y
 definió los formatos DEF, DBC y CNV. Sin ese legado, TabWon no

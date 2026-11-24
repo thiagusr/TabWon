@@ -1,13 +1,13 @@
 TabWon — Guia de Ajuda
 
-Versão: 1.00.1
+Versão: 1.00.2
 
 
 === Sobre este guia
 
 Este é o guia completo do TabWon. Cada seção começa com o nome do
 recurso e, em seguida, a explicação. Trechos importantes aparecem
-destacados.
+destacados entre *asteriscos*.
 
 O guia está organizado na mesma ordem em que você usa o programa:
 primeiro a tela inicial, depois a tabulação, depois o resultado, os
@@ -86,7 +86,9 @@ A lista completa também está em *⚙ → Atalhos de teclado* (F1).
   a) *Duplo clique no título da tabela* — abre o modal de Detalhes;
   b) *Duplo clique em uma coluna em "Editar / Mover colunas"* — aplica
      formatação;
-  c) *Duplo clique em uma consulta salva* — carrega a consulta.
+  c) *Duplo clique em uma consulta salva* — carrega a consulta;
+  d) *Duplo clique numa célula do resultado* — permite selecionar e
+     copiar parte do texto ou do valor, sem editar.
 
 
 === Exemplo prático de tabulação
@@ -210,6 +212,16 @@ automaticamente, deixando a tabela muito mais legível.
 Você não precisa se preocupar com o CNV: se o DEF já aponta o arquivo, o
 TabWon aplica sozinho.
 *Basta garantir que o .cnv esteja na mesma pasta do .def*.
+
+*Formato novo do TabWin:* o TabWon também lê os CNVs do formato mais
+recente do TabWin, com *N* no início do cabeçalho (ex.: N 95 6 L),
+descrições de até 100 caracteres e arquivos em UTF-8. O editor de CNV
+abre e salva esses arquivos no mesmo formato.
+
+*Mesmo número de categoria em mais de uma linha:* as linhas formam uma
+só categoria, que usa a descrição da última linha, como no TabWin. As
+faixas de códigos (ex.: 000000-999999) também valem para códigos que
+terminam com espaços em branco.
 
 *Dica:* na primeira leitura de um DBC, o TabWon cria um cache (veja a
 seção *Cache de DBC*). As próximas leituras são muito mais rápidas.
@@ -360,7 +372,11 @@ Após a tabulação, você vê:
   e) O botão "Nova Consulta" no canto direito.
 
 *Duplo clique no título da tabela* abre o modal de detalhes (título, cor
-do texto, mostrar/ocultar TOTAL).
+do texto, mostrar/ocultar TOTAL e a coluna Total tabulado).
+
+*Copiar um trecho:* dê um *duplo clique numa célula* para selecionar o
+texto ou o valor e copiar só uma parte (Ctrl+C). Nada é alterado na
+tabela. O botão direito também tem *📋 Copiar valor*.
 
 
 === Como ler a tabela
@@ -380,8 +396,8 @@ base.
 Se você escolheu mais de um incremento (possível com Colunas em "Não
 ativa"), a tabela terá uma coluna para cada incremento.
 
-*Dica:* ordene uma coluna clicando no cabeçalho. O TabWon alterna entre
-crescente e decrescente a cada clique.
+*Dica:* ordene uma coluna clicando no cabeçalho, inclusive a primeira
+coluna. O TabWon alterna entre crescente e decrescente a cada clique.
 
 
 === Linha TOTAL
@@ -399,6 +415,23 @@ Você pode:
 *Cuidado:* se você fizer operações depois de excluir o TOTAL, o total
 não é recalculado automaticamente. Use a opção "Detalhes" → "Mostrar
 linha TOTAL" para recalcular.
+
+
+=== Coluna Total tabulado
+
+Quando há uma *Coluna* ativa (diferente de "Não ativa") e o resultado
+tem mais de uma coluna, o TabWon acrescenta a coluna *Total tabulado*, com a
+soma de cada linha. Ela fica logo depois das colunas da tabulação e
+aparece destacada (na faixa de letras acima da tabela e na exportação
+XLSX e na cópia formatada).
+
+  a) Colunas criadas depois (operações, funções etc.) aparecem depois
+     da coluna Total tabulado;
+  b) Mover as colunas da tabulação não muda o Total tabulado; excluir uma
+     delas o recalcula;
+  c) Para *ocultar* ou *mostrar* a coluna Total tabulado: botão direito
+     na tabela ou modal de Detalhes → "Mostrar coluna Total tabulado". A escolha
+     entra no superlog.
 
 
 === Barra de ferramentas (resultado)
@@ -759,7 +792,7 @@ gráficos.
 === Salvar consulta
 
 O botão "Salvar consulta" abre um modal onde você dá um *nome único*
-para a consulta. Há duas opções:
+(até 30 caracteres) para a consulta. Há duas opções:
 
   a) *Salvar seleção de DBC* — inclui os arquivos escolhidos no log;
   b) *Salvar Super Log* — inclui os ajustes e gráficos.
@@ -825,6 +858,13 @@ da planilha.
 *Dica:* a aba do Excel terá o nome da tabulação. Se o nome tiver
 caracteres inválidos, o TabWon os remove automaticamente.
 
+*Onde salvar:* para manter a organização, por padrão o TabWon não
+deixa salvar arquivos XLSX e CSV na pasta do TabWon, na pasta do TabWin
+ou em subpastas delas. A janela de salvar já abre na pasta *Downloads*
+(ou na última pasta usada). Vale também para Salvar registros,
+consultas em lote e Consultor SQL. Isso pode ser liberado em
+Configurações avançadas → Menu e consultas.
+
 
 === Exportação CSV
 
@@ -835,6 +875,8 @@ Exporta a tabela e o log como CSV separado por ponto e vírgula
 
 *Atenção:* o CSV usa *ponto e vírgula* como separador (padrão
 brasileiro). Se seu programa espera vírgula, ajuste na importação.
+
+*Onde salvar:* as mesmas regras da exportação XLSX.
 
 
 === Copiar tabela
@@ -877,6 +919,12 @@ automaticamente invalidado e o arquivo é convertido de novo.
 
 Os arquivos ficam em *TabWon_configs/.cache_dbc/*, na pasta do próprio
 TabWon, e o índice em *TabWon_configs/.cache_dbc/_index.json*.
+
+*Vários usuários na rede:* o cache é compartilhado: um DBC convertido
+por um usuário serve para todos. Se o seu usuário não conseguir ler ou
+gravar a pasta *.cache_dbc/* da rede, o TabWon usa automaticamente um
+cache local no seu computador (em *%LOCALAPPDATA%\TabWon\cache_dbc*),
+que é limpo sozinho depois de 7 dias sem uso.
 
 *Para limpar o cache manualmente:* apague a pasta *.cache_dbc/*. Na
 próxima vez que você tabular, o TabWon recria o cache do zero.
@@ -1024,7 +1072,8 @@ O modelo padrão da instalação e a lista de modelos ficam na seção
      preferências dos usuários (veja a seção *Pasta do TabWin*);
   b) *Menu e consultas* — exibir ou ocultar no menu os editores de DEF e
      CNV, o Consultor SQL e o conversor; permitir renomear e excluir
-     consultas salvas; lista de identificadores (um por linha);
+     consultas salvas; lista de identificadores (um por linha); permitir
+     salvar XLSX e CSV na pasta do TabWon e do TabWin;
   c) *Cores* — paletas disponíveis (marque e ordene), paleta padrão e
      modo padrão;
   d) *Usuários* — lista de quem tem preferências salvas, com a opção de
@@ -1054,7 +1103,9 @@ avançadas):
 
   a) Lista os CNVs usados pelo DEF escolhido;
   b) Edita linha a linha (sequencial, subtotal, descrição até 50
-     caracteres, códigos e faixas);
+     caracteres, ou 100 no formato novo, códigos e faixas). Os botões
+     de ordenação alternam entre crescente e decrescente a cada clique,
+     e *Texto* ordena pela descrição ignorando os números do início;
   c) Gera um CNV a partir de um campo do DBC ou de uma tabela DBF;
   d) "✔ Validar" aponta problemas e oferece correção guiada.
 

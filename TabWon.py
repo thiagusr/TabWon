@@ -65,7 +65,7 @@ class _DuckDBSobDemanda:
 
 duckdb = _DuckDBSobDemanda()
 
-VERSAO = "1.00.1"
+VERSAO = "1.00.2"
 COR_FUNDO = "#F5F5F5"
 COR_SUPER_LOG = "#1565C0"
 COR_TRAVADO = "#ECECEC"
@@ -97,7 +97,9 @@ except Exception:
 INDEX_CACHE = os.path.join(CACHE_DIR, "_index.json")
 SOBRE_FILE = os.path.join(PASTA_CONFIGS, "TabWon_sobre.txt")
 AJUDA_FILE = os.path.join(PASTA_CONFIGS, "TabWon_ajuda.txt")
-os.makedirs(CACHE_DIR, exist_ok=True)
+CACHE_LOCAL = os.path.join(os.environ.get("LOCALAPPDATA") or tempfile.gettempdir(), "TabWon", "cache_dbc")
+try: os.makedirs(CACHE_DIR, exist_ok=True)
+except OSError: pass
 
 _CNV_CACHE = {}
 
@@ -215,6 +217,9 @@ modelopadrao = Linear    # Modelo padrão dos ícones; Emoji usa os símbolos de
 
 [pastas]
 tabwin =              # Pasta do TabWin: DEFs, CNVs, consultas salvas e preferências dos usuários; vazio = pasta do TabWon
+
+[exportacao]
+pastatabwon = 0       # 1|0 permite salvar XLSX e CSV na pasta do TabWon e na pasta do TabWin (e subpastas); 0 = não permite
 """
 MODOS_COR = {"claro": "Claro", "escuro": "Escuro", "sistema": "Automático (conforme o sistema)"}
 MODOS_COR_NUM = {"claro": "1", "escuro": "0", "sistema": "2"}
@@ -884,7 +889,7 @@ TEXTOS_PT = {
     'LB_CARACTERES_DO_CODIGO': 'Caracteres do código:',
     'LB_LOCALIZAR': '🔎 Localizar:',
     'TX_SUBTOTAL': 'Subtotal',
-    'TX_DESCRICAO_ATE_50': 'Descrição (até 50)',
+    'TX_DESCRICAO_ATE_50': 'Descrição (até {1})',
     'TX_CODIGOS': 'Códigos',
     'TT_CLIQUE_E_ARRASTE_UMA_LINHA': 'Clique e arraste uma linha para movê-la. Linhas em vermelho têm problemas.',
     'GR_LINHA_SELECIONADA': '✎ Linha selecionada',
@@ -892,7 +897,7 @@ TEXTOS_PT = {
     'TX_DESCRICAO': 'Descrição:',
     'TX_CODIGOS_VIRGULAS_FAIXAS_A_B': 'Códigos (vírgulas, faixas a-b):',
     'TX_COMENTARIO_3': 'Comentário:',
-    'LB_50_CARACTERES_NA_DESCRICAO': '{1}/50 caracteres na descrição',
+    'LB_50_CARACTERES_NA_DESCRICAO': '{1}/{2} caracteres na descrição',
     'TX_NOVO_CNV_NAO_SALVO': 'Novo CNV (não salvo)',
     'TX_LITERAL': 'Literal',
     'TX_FAIXAS': 'Faixas',
@@ -2026,7 +2031,7 @@ TEXTOS_PT = {
     'BT_PROCURAR_PASTA': '📁 Procurar...',
     'TX_DEFS_ENCONTRADOS': '✔ {1} arquivo(s) DEF encontrado(s).',
     'TX_NENHUM_DEF_NESTA_PASTA': '⚠ Nenhum arquivo DEF nesta pasta.',
-    'TX_PASTA_NAO_ENCONTRADA': '✖ Pasta não encontrada.',
+    'TX_PASTA_NAO_ENCONTRADA_3': '✖ Pasta não encontrada.',
     'BT_USAR_ESTA_PASTA': '✔ Usar esta pasta',
     'BT_AGORA_NAO': 'Agora não',
     'TT_USA_A_PASTA_DO_TABWON_ATE': 'Usa a pasta do TabWon até a próxima abertura',
@@ -2044,6 +2049,33 @@ TEXTOS_PT = {
     'TX_NOV_DADOS_COMPARTILHADOS': 'DEFs, consultas salvas, últimas pesquisas e preferências dos usuários ficam na pasta do TabWin, compartilhados por todos que a usam. A pasta pode ser trocada em Configurações avançadas.',
     'TX_NOV_LINHA_A_DO_DEF': 'Os arquivos da linha A são procurados sempre no caminho escrito no DEF, sem diferenciar maiúsculas e minúsculas, e a lista de DEFs fica em ordem alfabética.',
     'TX_NOV_TELA_DE_CARREGAMENTO': 'Na versão compilada, o TabWon.exe mostra uma tela de carregamento enquanto o programa é preparado.',
+    'MSG_NAO_E_PERMITIDO_SALVAR_NA_PASTA': 'Não é permitido salvar arquivos nesta pasta.\n\nEscolha outra.',
+    'TK_SALVAR_ARQUIVO': 'Salvar arquivo',
+    'GR_ARQUIVOS_EXPORTADOS_XLSX_E_CSV': 'Arquivos exportados (XLSX e CSV)',
+    'CK_PERMITIR_SALVAR_NA_PASTA_DO': 'Permitir salvar na pasta do TabWon e do TabWin (e subpastas)',
+    'TT_DESMARCADO_PADRAO_PARA_MANTER': 'Desmarcado (padrão): para manter a organização, o TabWon não deixa salvar exportações nessas pastas e sugere a pasta Downloads',
+    'TX_NOV_CNV_FORMATO_NOVO': 'CNVs no formato novo do TabWin (cabeçalho com N, descrições de até 100 caracteres e arquivos em UTF-8) agora são lidos, tabulados e editados corretamente. DEFs em UTF-8 também são lidos.',
+    'TX_NOV_LINHA_EM_NOVA_CONSULTA': 'Nova consulta: a Linha e a Coluna voltam selecionadas exatamente como na última tabulação.',
+    'TX_NOV_NOME_30_CARACTERES': 'Os nomes das consultas salvas podem ter até 30 caracteres.',
+    'TX_NOV_EXPORTACAO_FORA_DA_PASTA': 'Por padrão, arquivos XLSX e CSV não podem ser salvos na pasta do TabWon nem na pasta do TabWin; o TabWon sugere a pasta Downloads. A permissão pode ser dada em Configurações avançadas.',
+    'TX_NOV_VARIOS_USUARIOS_NA_REDE': 'Vários usuários na mesma pasta da rede: o cache dos DBCs passa a ser gravado com as permissões da pasta (antes só quem convertia o DBC conseguia lê-lo, causando "Acesso negado" para os demais) e, se o cache da rede não puder ser lido ou gravado, o TabWon usa um cache local no computador.',
+    'TX_NOV_PERMISSAO_DE_ESCRITA': 'Na versão compilada, o TabWon.exe confere se o usuário pode gravar na pasta do programa antes de abrir.',
+    'TX_NOV_COLUNA_TOTAL': 'Com uma Coluna ativa e mais de uma coluna no resultado, a tabela ganha a coluna Total tabulado (destacada), com a soma de cada linha. Ela pode ser ocultada em Detalhes ou no menu do botão direito.',
+    'TX_NOV_SELECIONAR_TEXTO': 'No resultado, um duplo clique numa célula permite selecionar e copiar parte do texto ou do valor, sem editar.',
+    'TX_NOV_CNV_SEQUENCIAL_REPETIDO': 'CNVs: linhas com o mesmo número de categoria ficam numa só categoria, com a descrição da última linha, e as faixas de códigos também valem para códigos com espaços no fim, como no TabWin.',
+    'TX_NOV_EDITOR_CNV_LISTA': 'Editor de CNV: a lista de CNVs do DEF mostra primeiro o nome no DEF e depois o arquivo; a coluna Comentário saiu da edição das linhas.',
+    'BT_COPIAR_VALOR': '📋 Copiar valor',
+    'BT_SELECIONAR_TEXTO': '🔎 Selecionar texto',
+    'BT_OCULTAR_COLUNA_TOTAL': '👁 Ocultar coluna Total tabulado',
+    'BT_MOSTRAR_COLUNA_TOTAL': '👁 Mostrar coluna Total tabulado',
+    'CK_MOSTRAR_COLUNA_TOTAL': 'Mostrar coluna Total tabulado',
+    'BT_TEXTO_ORDENAR': 'Texto',
+    'TT_ORDENAR_PELO_SEQUENCIAL_CLIQUE': 'Ordenar as linhas pelo sequencial (clique de novo para inverter)',
+    'TT_ORDENAR_PELA_DESCRICAO_CLIQUE': 'Ordenar as linhas pela descrição (clique de novo para inverter)',
+    'TT_ORDENAR_PELA_DESCRICAO_IGNORANDO': 'Ordenar pela descrição ignorando os números do início (clique de novo para inverter)',
+    'TT_ORDENAR_PELO_CODIGO_CLIQUE': 'Ordenar as linhas pelo código (clique de novo para inverter)',
+    'TX_NOV_ORDENAR_PRIMEIRA_COLUNA': 'No resultado, a primeira coluna também pode ser ordenada, clicando no título.',
+    'TX_NOV_ORDENACAO_EDITOR_CNV': 'Editor de CNV: os botões de ordenação alternam entre crescente e decrescente, e o novo botão Texto ordena pela descrição ignorando os números do início.',
 }
 
 
@@ -3144,6 +3176,20 @@ def _anexar_consultas(texto):
 
 
 HISTORICO_VERSOES = [
+    ("1.00.2", "23/11/2026", [
+        'CNVs no formato novo do TabWin (cabeçalho com N, descrições de até 100 caracteres e arquivos em UTF-8) agora são lidos, tabulados e editados corretamente. DEFs em UTF-8 também são lidos.',
+        'Nova consulta: a Linha e a Coluna voltam selecionadas exatamente como na última tabulação.',
+        'Os nomes das consultas salvas podem ter até 30 caracteres.',
+        'Por padrão, arquivos XLSX e CSV não podem ser salvos na pasta do TabWon nem na pasta do TabWin; o TabWon sugere a pasta Downloads. A permissão pode ser dada em Configurações avançadas.',
+        'Mais robustez com vários usuários na mesma pasta da rede: o cache dos DBCs e o histórico SQL toleram acessos simultâneos.',
+        'Na versão compilada, o TabWon.exe confere se o usuário pode gravar na pasta do programa antes de abrir.',
+        'Com uma Coluna ativa e mais de uma coluna no resultado, a tabela ganha a coluna Total tabulado (destacada), com a soma de cada linha. Ela pode ser ocultada em Detalhes ou no menu do botão direito.',
+        'No resultado, um duplo clique numa célula permite selecionar e copiar parte do texto ou do valor, sem editar.',
+        'CNVs: linhas com o mesmo número de categoria ficam numa só categoria, com a descrição da última linha, e as faixas de códigos também valem para códigos com espaços no fim, como no TabWin.',
+        'Editor de CNV: a lista de CNVs do DEF mostra primeiro o nome no DEF e depois o arquivo; a coluna Comentário saiu da edição das linhas.',
+        'No resultado, a primeira coluna também pode ser ordenada, clicando no título.',
+        'Editor de CNV: os botões de ordenação alternam entre crescente e decrescente, e o novo botão Texto ordena pela descrição ignorando os números do início.',
+    ]),
     ("1.00.1", "21/11/2026", [
         'Pasta do TabWin: na primeira abertura, se não houver DEFs na pasta do TabWon, o programa pede a pasta do TabWin, que pode ser da rede.',
         'DEFs, consultas salvas, últimas pesquisas e preferências dos usuários ficam na pasta do TabWin, compartilhados por todos que a usam. A pasta pode ser trocada em Configurações avançadas.',
@@ -3173,6 +3219,37 @@ ATALHOS_TECLADO = [
     ("Geral", [("F1", "Esta lista de atalhos"), ("Ctrl+,", "Configurações"), ("Ctrl+Shift+L", "Rodar consultas em lote"),
                ("Shift + clique na ⚙", "Configurações avançadas"), ("Esc", "Fechar a janela aberta")]),
 ]
+
+
+def _pasta_downloads():
+    if os.name == "nt":
+        try:
+            import ctypes, uuid
+            guid = (ctypes.c_ubyte * 16).from_buffer_copy(uuid.UUID("374DE290-123F-4565-9164-39C4925E467B").bytes_le)
+            ptr = ctypes.c_wchar_p()
+            if ctypes.windll.shell32.SHGetKnownFolderPath(ctypes.byref(guid), 0, None, ctypes.byref(ptr)) == 0:
+                caminho = ptr.value
+                ctypes.windll.ole32.CoTaskMemFree(ptr)
+                if caminho and os.path.isdir(caminho): return caminho
+        except Exception: pass
+    for c in (os.path.join(os.path.expanduser("~"), "Downloads"), os.path.expanduser("~")):
+        if os.path.isdir(c): return c
+    return os.path.expanduser("~")
+
+
+def _formas_caminho(caminho):
+    formas = set()
+    for f in (os.path.abspath, os.path.realpath):
+        try: formas.add(os.path.normcase(f(caminho)).rstrip("\\/"))
+        except Exception: pass
+    return {x for x in formas if x}
+
+
+def _caminho_dentro(caminho, pasta):
+    for c in _formas_caminho(caminho):
+        for p in _formas_caminho(pasta):
+            if c == p or c.startswith(p + os.sep): return True
+    return False
 
 
 def _usuario_atual():
@@ -3243,7 +3320,7 @@ def _ler_config_ini():
            "organizacao": {"identificadores": []},
            "idioma": {"idiomas": list(_IDIOMAS_PADRAO), "idiomapadrao": IDIOMA_PADRAO},
            "icones": {"modelos": list(_MODELOS_ICONES_PADRAO), "modelopadrao": MODELO_ICONES_PADRAO},
-           "pastas": {"tabwin": ""}}
+           "pastas": {"tabwin": ""}, "exportacao": {"pastatabwon": False}}
     if not os.path.exists(CONFIG_INI):
         try:
             os.makedirs(PASTA_CONFIGS, exist_ok=True)
@@ -3319,11 +3396,17 @@ def _ler_config_ini():
     pad_ic = cp.get("icones", "modelopadrao", fallback="").strip()
     if pad_ic: cfg["icones"]["modelopadrao"] = pad_ic
     cfg["pastas"]["tabwin"] = cp.get("pastas", "tabwin", fallback="").strip().strip('"').strip()
-    if not cp.has_section("pastas") and os.path.exists(CONFIG_INI):
+    cfg["exportacao"]["pastatabwon"] = bol("exportacao", "pastatabwon", False)
+    faltam_secoes = [s for s in ("pastas", "exportacao") if not cp.has_section(s)]
+    if faltam_secoes and os.path.exists(CONFIG_INI):
         try:
             with open(CONFIG_INI, "r", encoding="utf-8-sig") as f: texto_ini = f.read()
-            texto_ini = _ini_definir(texto_ini, "pastas", "tabwin", "",
-                                     "Pasta do TabWin: DEFs, CNVs, consultas salvas e preferências dos usuários; vazio = pasta do TabWon")
+            if "pastas" in faltam_secoes:
+                texto_ini = _ini_definir(texto_ini, "pastas", "tabwin", "",
+                                         "Pasta do TabWin: DEFs, CNVs, consultas salvas e preferências dos usuários; vazio = pasta do TabWon")
+            if "exportacao" in faltam_secoes:
+                texto_ini = _ini_definir(texto_ini, "exportacao", "pastatabwon", "0",
+                                         "1|0 permite salvar XLSX e CSV na pasta do TabWon e na pasta do TabWin (e subpastas); 0 = não permite")
             with open(CONFIG_INI, "w", encoding="utf-8", newline="\r\n") as f: f.write(texto_ini.replace("\r\n", "\n"))
         except Exception: pass
     if not cp.has_section("icones") and os.path.exists(CONFIG_INI):
@@ -3448,7 +3531,7 @@ def _ler_prefs_usuario():
                 if chave_u == "nome":
                     nome = _limpar_nome_usuario(valor_u)
                     if nome: res["nome"] = nome
-                elif chave_u in ("versao", "pasta_lote", "idioma", "icones") and valor_u: res[chave_u] = valor_u
+                elif chave_u in ("versao", "pasta_lote", "pasta_exportacao", "idioma", "icones") and valor_u: res[chave_u] = valor_u
                 elif chave_u == "zoom" and valor_u.lstrip("-").isdigit(): res["zoom"] = int(valor_u)
     except Exception: pass
     return res
@@ -3464,7 +3547,7 @@ def _gravar_prefs_usuario(prefs):
         if prefs.get("modo"):
             linhas.append(f"modo = {MODOS_COR_NUM.get(prefs['modo'], '1')}"
                           f"    # 1 claro, 0 escuro, 2 automático (conforme o sistema)")
-        if any(prefs.get(k) not in (None, "") for k in ("nome", "frase", "versao", "pasta_lote", "zoom", "idioma", "icones")):
+        if any(prefs.get(k) not in (None, "") for k in ("nome", "frase", "versao", "pasta_lote", "pasta_exportacao", "zoom", "idioma", "icones")):
             linhas.append("[usuario]")
             if prefs.get("nome"): linhas.append(f"nome = {_limpar_nome_usuario(prefs['nome'])}")
             if prefs.get("frase") is not None: linhas.append(f"frase = {int(prefs['frase'])}")
@@ -3473,6 +3556,8 @@ def _gravar_prefs_usuario(prefs):
             if prefs.get("idioma"): linhas.append(f"idioma = {prefs['idioma']}")
             if prefs.get("icones"): linhas.append(f"icones = {prefs['icones']}")
             if prefs.get("pasta_lote"): linhas.append(f"pasta_lote = {str(prefs['pasta_lote']).replace(chr(10), ' ')}")
+            if prefs.get("pasta_exportacao"):
+                linhas.append(f"pasta_exportacao = {str(prefs['pasta_exportacao']).replace(chr(10), ' ')}")
         with open(_arquivo_prefs(), "w", encoding="utf-8", newline="\r\n") as f: f.write("\n".join(linhas) + "\n")
         return True
     except Exception as ex:
@@ -3861,10 +3946,12 @@ def carregar_imagem_com_fundo(img_path, max_h, bg_hex=COR_FUNDO):
 
 
 def _carregar_index():
-    if os.path.exists(INDEX_CACHE):
+    for tentativa in range(5):
+        if not os.path.exists(INDEX_CACHE): return {}
         try:
             with open(INDEX_CACHE, "r", encoding="utf-8") as f: return json.load(f)
-        except Exception: pass
+        except Exception:
+            time.sleep(0.2 * (tentativa + 1))
     return {}
 
 
@@ -3872,11 +3959,11 @@ def _salvar_index(index):
     temp = INDEX_CACHE + f".{os.getpid()}.{threading.get_ident()}.tmp"
     try:
         with open(temp, "w", encoding="utf-8") as f: json.dump(index, f, indent=2)
-        for tentativa in range(20):
+        for tentativa in range(50):
             try:
                 os.replace(temp, INDEX_CACHE); return
             except PermissionError:
-                time.sleep(0.1)
+                time.sleep(0.2)
         os.replace(temp, INDEX_CACHE)
     except Exception:
         try:
@@ -3915,6 +4002,15 @@ def _limpar_orfaos():
             if arquivo.endswith(".parquet") and arquivo not in validos and idade > _IDADE_ORFAO:
                 try: os.remove(caminho)
                 except Exception: pass
+    try: locais = os.listdir(CACHE_LOCAL)
+    except OSError: locais = []
+    for arquivo in locais:
+        caminho = os.path.join(CACHE_LOCAL, arquivo)
+        try:
+            if agora - os.path.getmtime(caminho) > 7 * 24 * 3600:
+                if os.path.isdir(caminho): shutil.rmtree(caminho, ignore_errors=True)
+                else: os.remove(caminho)
+        except Exception: pass
 
 
 _readdbc = None
@@ -3926,6 +4022,38 @@ read_dbc = _readdbc.read_dbc if _readdbc else None
 
 
 _CNV_RICO = {}
+
+
+def _codificacao_texto(caminho):
+    try:
+        with open(caminho, "rb") as f: dados = f.read()
+    except Exception: return "latin-1"
+    if dados.startswith(b"\xef\xbb\xbf"): return "utf-8-sig"
+    if dados.isascii(): return "latin-1"
+    try:
+        dados.decode("utf-8"); return "utf-8"
+    except UnicodeDecodeError:
+        return "latin-1"
+
+
+_RE_CAB_CNV = re.compile(r"^\s*(?:([A-Za-z])\s+)?(\d+)\s+(\d+)\s*([A-Za-z]*)")
+
+
+def _limite_desc_cnv(cab):
+    return 100 if str((cab or {}).get("prefixo", "")).upper() == "N" else 50
+
+
+def _coluna_codigos_cnv(linhas, largo):
+    if not largo: return 60
+    cont = {}
+    for l in linhas:
+        s = l.rstrip()
+        if not s or s.lstrip().startswith(";"): continue
+        m = re.search(r"\s(\S+)$", s)
+        if not m: continue
+        cont[m.start(1)] = cont.get(m.start(1), 0) + 1
+    if not cont: return 112
+    return max(cont.items(), key=lambda kv: (kv[1], -kv[0]))[0]
 
 
 def _resolver_caminho(caminho, pasta_def=None):
@@ -4109,27 +4237,30 @@ def ler_cnv(spec):
         _CNV_RICO[ch] = res
         return res
     try:
-        with open(caminho, "r", encoding="latin-1", errors="ignore") as f:
+        with open(caminho, "r", encoding=_codificacao_texto(caminho), errors="ignore") as f:
             linhas = f.read().splitlines()
     except Exception:
         _CNV_RICO[ch] = res; return res
-    i_cab = None
+    i_cab = None; largo = False
     for i, l in enumerate(linhas):
         s = l.strip()
         if not s or s.startswith(";"): continue
-        m = re.match(r"^\s*(\d+)\s+(\d+)\s*([A-Za-z]*)", l)
+        m = _RE_CAB_CNV.match(l)
         if m:
-            res["n_chars"] = int(m.group(2))
-            flag = m.group(3).upper()
+            res["n_chars"] = int(m.group(3))
+            flag = m.group(4).upper()
             res["literal"] = flag.startswith("L")
             res["faixas"] = flag.startswith("F")
+            largo = (m.group(1) or "").upper() == "N"
             i_cab = i
         break
     if i_cab is None:
         _CNV_RICO[ch] = res; return res
+    col = _coluna_codigos_cnv(linhas[i_cab + 1:], largo)
+    lim_sub, lim_seq = (4, 9) if largo else (3, 8)
     n_chars = res["n_chars"]
     curto = bool(n_chars) and n_chars <= 4 and not res["literal"]
-    rotulo_seq = {}; seq_ordem = []; usados = {}
+    rotulo_seq = {}; seq_ordem = []; seq_vistos = set(); usados = {}; desc_seq = {}; pai_seq = {}
     entradas = []
     for linha in linhas[i_cab + 1:]:
         if not linha.strip() or linha.lstrip().startswith(";"): continue
@@ -4137,30 +4268,34 @@ def ler_cnv(spec):
         if not m1: continue
         fim1 = m1.end()
         m2 = re.match(r"\s+(\d+)(?=\s|$)", linha[fim1:])
-        if fim1 <= 3 and m2 and fim1 + m2.end() <= 8:
+        if fim1 <= lim_sub and m2 and fim1 + m2.end() <= lim_seq:
             pai, seq = int(m1.group(1)), int(m2.group(1)); ini_desc = fim1 + m2.end()
         else:
             pai, seq = None, int(m1.group(1)); ini_desc = fim1
         while ini_desc < len(linha) and linha[ini_desc] == " ": ini_desc += 1
-        if len(linha) > 60 and ini_desc < 59:
-            desc = linha[ini_desc:59].strip(); cods = linha[60:].strip()
+        if len(linha) > col and ini_desc < col - 1:
+            desc = linha[ini_desc:col - 1].strip(); cods = linha[col:].strip()
         else:
             desc = linha[ini_desc:].strip(); cods = ""
-        if not cods or (desc and re.search(r"\s{2,}\S", desc) and not linha[59:60].isspace()):
+        if not cods or (desc and re.search(r"\s{2,}\S", desc) and not linha[col - 1:col].isspace()):
             partes = re.split(r'\s{2,}', linha[ini_desc:].strip())
             if len(partes) > 1: desc = partes[0]; cods = partes[-1]
         desc_orig = " ".join(desc.split())
         if desc.startswith("."): desc = desc[1:].strip()
         desc = " ".join(desc.split())
         if ";" in cods: cods = cods.split(";")[0].strip()
-        if seq not in rotulo_seq:
-            rot = desc or str(seq)
-            if rot in usados and usados[rot] != seq:
-                rot = desc_orig if desc_orig and desc_orig not in usados else f"{rot} ({seq})"
-            usados.setdefault(rot, seq)
-            rotulo_seq[seq] = rot; seq_ordem.append(seq)
-        if pai is not None and pai != seq: res["pai"][rotulo_seq[seq]] = pai
+        if seq not in seq_vistos: seq_vistos.add(seq); seq_ordem.append(seq)
+        if desc or seq not in desc_seq: desc_seq[seq] = (desc, desc_orig)
+        if pai is not None and pai != seq: pai_seq[seq] = pai
         entradas.append((seq, cods))
+    for seq in seq_ordem:
+        desc, desc_orig = desc_seq.get(seq, ("", ""))
+        rot = desc or str(seq)
+        if rot in usados and usados[rot] != seq:
+            rot = desc_orig if desc_orig and desc_orig not in usados else f"{rot} ({seq})"
+        usados.setdefault(rot, seq)
+        rotulo_seq[seq] = rot
+    res["pai"] = {rotulo_seq[s]: p for s, p in pai_seq.items()}
     for seq in sorted(seq_ordem):
         res["cats"].append(rotulo_seq[seq]); res["codigos"][rotulo_seq[seq]] = []
     res["pai"] = {r: rotulo_seq[p] for r, p in res["pai"].items() if p in rotulo_seq}
@@ -4264,14 +4399,17 @@ def aplicar_cnv(serie, caminho_cnv, pos=1):
     out = s.map(cnv["mapa"])
     if cnv["intervalos"] and out.isna().any():
         falta = out.isna()
+        tam = s.str.len()
         for a, b, rot in cnv["intervalos"]:
-            m = falta & (s.str.len() == len(a)) & (s >= a) & (s <= b)
+            comp = s.where(tam >= len(a), s.str.ljust(len(a)))
+            m = falta & (tam > 0) & (tam <= len(a)) & (comp >= a) & (comp <= b)
             if m.any():
                 out = out.where(~m, rot); falta = falta & ~m
     return out.fillna(s)
 
 
 ROTULO_NAO_CLASSIFICADOS = "Não classificados"
+NOME_COLUNA_TOTAL = "Total tabulado"
 MODOS_NAO_CLASSIFICADOS = {
     0: ("Ignorar", "O programa desconsidera todos os registros com valores inválidos ou ausentes nos campos "
                    "selecionados. Apenas os dados que correspondem às categorias válidas previstas no arquivo "
@@ -4410,14 +4548,14 @@ def _arquivos_da_linha_a(padrao, pasta_def=None):
 def _validar_cnv_arquivo(caminho):
     problemas = []
     try:
-        with open(caminho, "r", encoding="latin-1", errors="ignore") as f: linhas = f.read().splitlines()
+        with open(caminho, "r", encoding=_codificacao_texto(caminho), errors="ignore") as f: linhas = f.read().splitlines()
     except Exception as ex:
         return [("erro", f"não foi possível ler: {ex}")]
     cnv = ler_cnv(caminho)
     if not cnv or not cnv["n_chars"]:
         return [("erro", "primeira linha útil deve ter 'categorias caracteres' (ex.: 13 2)")]
     cab = next((l for l in linhas if l.strip() and not l.strip().startswith(";")), "")
-    m = re.match(r"^\s*(\d+)", cab)
+    m = re.match(r"^\s*(?:[A-Za-z]\s+)?(\d+)", cab)
     declaradas = int(m.group(1)) if m else 0
     if declaradas and declaradas != len(cnv["cats"]):
         problemas.append(("aviso", f"cabeçalho diz {declaradas} categorias, mas há {len(cnv['cats'])}"))
@@ -4565,9 +4703,11 @@ def _aplicar_unificacoes_def(texto, sugestoes):
 
 
 def _ler_cnv_para_edicao(caminho):
-    with open(caminho, "r", encoding="latin-1", errors="replace") as f:
+    codificacao = _codificacao_texto(caminho)
+    with open(caminho, "r", encoding=codificacao, errors="replace") as f:
         linhas = f.read().splitlines()
-    cab = {"ncat": 0, "nchars": 1, "flag": "", "comentarios": [], "comentarios_antes": []}
+    cab = {"ncat": 0, "nchars": 1, "flag": "", "prefixo": "", "codificacao": codificacao,
+           "comentarios": [], "comentarios_antes": []}
     linhas_dados = []
     i_cab = None
     for i, l in enumerate(linhas):
@@ -4575,12 +4715,16 @@ def _ler_cnv_para_edicao(caminho):
         if not s or s.startswith(";"):
             if s: cab["comentarios_antes"].append(l)
             continue
-        m = re.match(r"^\s*(\d+)\s+(\d+)\s*(\S*)", l)
+        m = _RE_CAB_CNV.match(l)
         if m:
-            cab["ncat"] = int(m.group(1)); cab["nchars"] = int(m.group(2)); cab["flag"] = m.group(3)
+            cab["prefixo"] = (m.group(1) or "").upper()
+            cab["ncat"] = int(m.group(2)); cab["nchars"] = int(m.group(3)); cab["flag"] = m.group(4)
             i_cab = i
         break
     if i_cab is None: return cab, []
+    largo = cab["prefixo"] == "N"
+    col = _coluna_codigos_cnv(linhas[i_cab + 1:], largo)
+    lim_sub, lim_seq = (4, 9) if largo else (3, 8)
     inicio = True
     for l in linhas[i_cab + 1:]:
         if not l.strip():
@@ -4596,13 +4740,13 @@ def _ler_cnv_para_edicao(caminho):
             continue
         fim1 = m1.end()
         m2 = re.match(r"\s+(\d+)(?=\s|$)", l[fim1:])
-        if fim1 <= 3 and m2 and fim1 + m2.end() <= 8:
+        if fim1 <= lim_sub and m2 and fim1 + m2.end() <= lim_seq:
             sub, seq, ini = m1.group(1), m2.group(1), fim1 + m2.end()
         else:
             sub, seq, ini = "", m1.group(1), fim1
         while ini < len(l) and l[ini] == " ": ini += 1
-        if len(l) > 60 and ini < 59:
-            desc = l[ini:59].rstrip(); cods = l[60:].strip()
+        if len(l) > col and ini < col - 1:
+            desc = l[ini:col - 1].rstrip(); cods = l[col:].strip()
         else:
             desc = l[ini:].strip(); cods = ""
         if not cods or re.search(r"\s{2,}\S", desc):
@@ -4621,12 +4765,16 @@ def _montar_texto_cnv(cab, linhas, ncat=None):
     ncat = ncat if ncat is not None else len(seqs)
     out = list(cab.get("comentarios_antes", []))
     flag = (" " + cab["flag"]) if cab.get("flag") else ""
-    out.append(f"{ncat} {cab['nchars']}{flag}")
+    largo = str(cab.get("prefixo", "")).upper() == "N"
+    out.append(f"{'N ' if largo else ''}{ncat} {cab['nchars']}{flag}")
     out.extend(cab.get("comentarios", []))
     for r in linhas:
         if r["tipo"] == "comentario":
             t = r["desc"]; out.append(t if t.startswith(";") else ";" + t); continue
-        pref = f"{str(r['sub']).strip():>3}{str(r['seq']).strip():>4}  {r['desc'][:50]:<50} "
+        if largo:
+            pref = f"{str(r['sub']).strip():>4}{str(r['seq']).strip():>5}  {r['desc'][:100]:<100} "
+        else:
+            pref = f"{str(r['sub']).strip():>3}{str(r['seq']).strip():>4}  {r['desc'][:50]:<50} "
         cods = [c for c in str(r["cods"]).replace(" ", "").split(",") if c]
         blocos = []; atual = ""
         for c in cods:
@@ -4648,6 +4796,7 @@ def _validar_linhas_cnv(cab, linhas):
     n = cab.get("nchars") or 0
     faixas = str(cab.get("flag", "")).upper().startswith("F")
     literal = str(cab.get("flag", "")).upper().startswith("L")
+    lim = _limite_desc_cnv(cab)
     if n < 1: rel.append("Erro: informe o número de caracteres do código (≥ 1).")
     seqs = set(); dono = {}
     dados = [r for r in linhas if r["tipo"] == "linha"]
@@ -4656,7 +4805,7 @@ def _validar_linhas_cnv(cab, linhas):
         if not s.isdigit(): rel.append(f"Erro: linha {i}: sequencial '{s}' não é número."); continue
         seqs.add(int(s))
         if not r["desc"].strip(): rel.append(f"Aviso: linha {i} (seq {s}): descrição vazia.")
-        if len(r["desc"]) > 50: rel.append(f"Aviso: linha {i} (seq {s}): descrição com {len(r['desc'])} caracteres (máximo 50).")
+        if len(r["desc"]) > lim: rel.append(f"Aviso: linha {i} (seq {s}): descrição com {len(r['desc'])} caracteres (máximo {lim}).")
         cods = [c for c in r["cods"].split(",") if c]
         if not cods and not str(r["sub"]).strip():
             rel.append(f"Aviso: linha {i} (seq {s}): sem códigos.")
@@ -4665,7 +4814,7 @@ def _validar_linhas_cnv(cab, linhas):
                 try: float(c)
                 except Exception: rel.append(f"Erro: linha {i} (seq {s}): limite '{c}' não é número (use ponto decimal).")
                 continue
-            partes = c.split("-") if ("-" in c and not literal) else [c]
+            partes = c.split("-") if ("-" in c and (not literal or all(len(x) == n for x in c.split("-")))) else [c]
             for p in partes:
                 if n and len(p) != n:
                     rel.append(f"Aviso: linha {i} (seq {s}): código '{p}' tem {len(p)} caracteres (esperado {n})."); break
@@ -4720,6 +4869,7 @@ def _problemas_linhas_cnv(cab, linhas):
     faixas = str(cab.get("flag", "")).upper().startswith("F")
     literal = str(cab.get("flag", "")).upper().startswith("L")
     curto = bool(n) and n <= 4 and not literal
+    lim = _limite_desc_cnv(cab)
     if n < 1: gerais.append(("Erro", "informe o número de caracteres do código (≥ 1)"))
     seqs = set(); dono = {}
     for i, r in enumerate(linhas):
@@ -4728,7 +4878,7 @@ def _problemas_linhas_cnv(cab, linhas):
         if not s.isdigit(): add(i, "Erro", f"sequencial '{s}' não é número"); continue
         seqs.add(int(s))
         if not r["desc"].strip(): add(i, "Aviso", "descrição vazia")
-        if len(r["desc"]) > 50: add(i, "Aviso", f"descrição com {len(r['desc'])} caracteres (máximo 50)")
+        if len(r["desc"]) > lim: add(i, "Aviso", f"descrição com {len(r['desc'])} caracteres (máximo {lim})")
         cods = [c for c in r["cods"].split(",") if c]
         if not cods and not str(r["sub"]).strip(): add(i, "Aviso", "sem códigos")
         for c in cods:
@@ -4736,7 +4886,7 @@ def _problemas_linhas_cnv(cab, linhas):
                 try: float(c)
                 except Exception: add(i, "Erro", f"limite '{c}' não é número (use ponto decimal)")
                 continue
-            partes = c.split("-") if ("-" in c and not literal) else [c]
+            partes = c.split("-") if ("-" in c and (not literal or all(len(x) == n for x in c.split("-")))) else [c]
             for p in partes:
                 if n and len(p) != n:
                     add(i, "Aviso", f"código '{p}' tem {len(p)} caracteres (esperado {n})"); break
@@ -5055,7 +5205,7 @@ def _sql_de_modelo(modelo):
 
 
 def _ler_def_itens(caminho):
-    with open(caminho, "r", encoding="latin-1", errors="ignore") as f: linhas = f.readlines()
+    with open(caminho, "r", encoding=_codificacao_texto(caminho), errors="ignore") as f: linhas = f.readlines()
     pasta_def = os.path.dirname(os.path.abspath(caminho))
     d = {"linhas": [], "colunas": [], "incrementos": [], "selecoes": [], "dbcs": [], "path_a": ""}
     dbcs = set()
@@ -5369,10 +5519,16 @@ def _ler_sql_salvos():
 
 def _gravar_sql_salvos(itens):
     os.makedirs(os.path.dirname(SQL_LOG_FILE), exist_ok=True)
-    tmp = SQL_LOG_FILE + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        for e in itens: f.write(json.dumps(e, ensure_ascii=False) + "\n")
-    os.replace(tmp, SQL_LOG_FILE)
+    tmp = f"{SQL_LOG_FILE}.{os.getpid()}.tmp"
+    with _TravaArquivo(SQL_LOG_FILE + ".lock"):
+        with open(tmp, "w", encoding="utf-8") as f:
+            for e in itens: f.write(json.dumps(e, ensure_ascii=False) + "\n")
+        for tentativa in range(25):
+            try:
+                os.replace(tmp, SQL_LOG_FILE); return
+            except PermissionError:
+                time.sleep(0.2)
+        os.replace(tmp, SQL_LOG_FILE)
 
 
 PREFIXO_SQL = "Q ▶ "
@@ -5428,7 +5584,7 @@ def _pedir_nome(pai, titulo, rotulo, inicial=""):
 
 
 _ORG = {"identificadores": []}
-LIMITE_NOME_CONSULTA = 20
+LIMITE_NOME_CONSULTA = 30
 
 
 def _montar_nome_consulta(ident, nome):
@@ -6250,7 +6406,8 @@ def _unir_atos(*listas):
 _CACHE_LOCK = threading.RLock()
 _TRAVA_INDEX = os.path.join(CACHE_DIR, "tmp_index.lock")
 _SEM_JANELA = 0x08000000 if os.name == "nt" else 0
-_IDADE_ORFAO = 3600
+_IDADE_ORFAO = 24 * 3600
+_LIMPEZA_ORFAOS = {"ultima": 0.0}
 _TRAVA_VENCIDA = 20 * 60
 
 
@@ -6274,7 +6431,7 @@ class _TravaArquivo:
                 except Exception: pass
                 return False
             except OSError:
-                return False
+                return True
         return False
 
     def liberar(self):
@@ -6299,15 +6456,49 @@ def _info_cache(dbc_path):
     stat = os.stat(dbc_path)
     mtime, size = int(stat.st_mtime), stat.st_size
     hash_rapido = _hash_rapido(dbc_path) or "nohash"
-    nome = f"{os.path.basename(dbc_path)}.{mtime}.{size}.{hash_rapido[:8]}.parquet"
+    nome = f"{os.path.basename(dbc_path)}.{mtime}.{size}.{hash_rapido[:8]}.v2.parquet"
     return nome, mtime, size, hash_rapido
+
+
+def _legivel(caminho):
+    try:
+        with open(caminho, "rb"): return True
+    except OSError:
+        return False
 
 
 def _cache_valido(dbc_path):
     try: nome = _info_cache(dbc_path)[0]
     except Exception: return None
-    caminho = os.path.join(CACHE_DIR, nome)
-    return caminho if os.path.exists(caminho) else None
+    for pasta in (CACHE_DIR, CACHE_LOCAL):
+        caminho = os.path.join(pasta, nome)
+        if os.path.exists(caminho) and _legivel(caminho): return caminho
+    return None
+
+
+def _criar_pasta_lote():
+    for base in (CACHE_DIR, CACHE_LOCAL):
+        try:
+            os.makedirs(base, exist_ok=True)
+            pasta = os.path.join(base, f"tmp_lote_{os.getpid()}_{os.urandom(4).hex()}")
+            os.mkdir(pasta)
+            return pasta
+        except OSError:
+            continue
+    return tempfile.mkdtemp(prefix="TabWon_lote_")
+
+
+def _guardar_local(parquet_gerado, info):
+    os.makedirs(CACHE_LOCAL, exist_ok=True)
+    destino = os.path.join(CACHE_LOCAL, info[0])
+    if os.path.exists(destino) and _legivel(destino):
+        try: os.remove(parquet_gerado)
+        except Exception: pass
+    else:
+        provisorio = f"{destino}.{os.getpid()}.tmp"
+        shutil.move(parquet_gerado, provisorio)
+        os.replace(provisorio, destino)
+    return destino
 
 
 def _registrar_no_index(dbc_path, info):
@@ -6318,23 +6509,36 @@ def _registrar_no_index(dbc_path, info):
                            "hash_rapido": hash_rapido,
                            "criado_em": time.strftime("%Y-%m-%d %H:%M:%S")}
         _salvar_index(index)
-    try: _limpar_orfaos()
-    except Exception: pass
+    if time.time() - _LIMPEZA_ORFAOS["ultima"] > 600:
+        _LIMPEZA_ORFAOS["ultima"] = time.time()
+        try: _limpar_orfaos()
+        except Exception: pass
 
 
 def _guardar_no_cache(dbc_path, parquet_gerado, info):
     destino = os.path.join(CACHE_DIR, info[0])
-    if os.path.exists(destino):
+    try:
+        if not os.path.exists(destino):
+            for tentativa in range(10):
+                try:
+                    os.replace(parquet_gerado, destino); break
+                except OSError:
+                    if os.path.exists(destino): break
+                    if tentativa == 9: raise
+                    time.sleep(0.3)
+        if not _legivel(destino):
+            raise PermissionError(f"sem permissão de leitura em {destino}")
+    except OSError as e:
+        if not os.path.exists(parquet_gerado): raise
+        _log(f"Cache compartilhado indisponível para {os.path.basename(dbc_path)} ({e}); usando o cache local {CACHE_LOCAL}")
+        return _guardar_local(parquet_gerado, info)
+    if os.path.exists(parquet_gerado):
         try: os.remove(parquet_gerado)
         except Exception: pass
-    else:
-        try:
-            os.replace(parquet_gerado, destino)
-        except OSError:
-            if not os.path.exists(destino): raise
-            try: os.remove(parquet_gerado)
-            except Exception: pass
-    _registrar_no_index(dbc_path, info)
+    try: os.utime(destino, None)
+    except Exception: pass
+    try: _registrar_no_index(dbc_path, info)
+    except Exception as e: _log(f"Não foi possível atualizar o índice do cache: {e}")
     return destino
 
 
@@ -6387,7 +6591,7 @@ def _converter_lotes(dbcs, infos, cancelado=None):
             lotes.append([d])
     erros = {}
     for lote in lotes:
-        pasta = tempfile.mkdtemp(dir=CACHE_DIR, prefix="tmp_lote_")
+        pasta = _criar_pasta_lote()
         try:
             jobs = max(1, min(len(lote), nucleos // 2))
             args = ["--lote", pasta] + lote + ["--jobs", str(jobs)]
@@ -6453,12 +6657,13 @@ def _converter_para_cache(dbcs, cancelado=None, ao_iniciar=None):
 def _ler_dbc_com_cache(dbc_path, colunas=None):
     try: os.stat(dbc_path)
     except Exception as e: raise RuntimeError(f"Erro ao acessar DBC: {e}")
-    for tentativa in range(2):
+    for tentativa in range(4):
         cache_file = _cache_valido(dbc_path)
         if cache_file:
             try: return _ler_parquet(cache_file, colunas)
-            except Exception:
-                if tentativa == 0: time.sleep(0.5); continue
+            except Exception as ex:
+                _log(f"Leitura do cache de {os.path.basename(dbc_path)} falhou (tentativa {tentativa + 1}): {ex}")
+                if tentativa < 3: time.sleep(0.5 * (tentativa + 1)); continue
         break
     if not os.path.exists(CONVERSOR_EXE):
         if read_dbc is None:
@@ -6854,7 +7059,8 @@ def _regras_pastas_defs():
     except Exception: defs = []
     for nome_def in defs:
         try:
-            with open(os.path.join(PASTA_TABWIN, nome_def), "r", encoding="latin-1", errors="ignore") as f:
+            _arq_def = os.path.join(PASTA_TABWIN, nome_def)
+            with open(_arq_def, "r", encoding=_codificacao_texto(_arq_def), errors="ignore") as f:
                 linhas = f.read().splitlines()
         except Exception: continue
         for bruta in linhas:
@@ -7847,6 +8053,9 @@ class TabWonApp:
             "transposto": bool(getattr(self, "transposto", False)),
             "transp_backup": getattr(self, "_transp_backup", None),
             "subtotais": dict(getattr(self, "_subtotais", {}) or {}),
+            "coluna_total": getattr(self, "_coluna_total", None),
+            "colunas_originais": list(getattr(self, "_colunas_originais", []) or []),
+            "mostrar_coluna_total": bool(getattr(self, "mostrar_coluna_total", False)),
         }
 
     def _registrar_snapshot_base(self):
@@ -7875,6 +8084,10 @@ class TabWonApp:
             self.transposto = bool(snap.get("transposto", False))
             self._transp_backup = snap.get("transp_backup")
             if "subtotais" in snap: self._subtotais = dict(snap["subtotais"] or {})
+            if "coluna_total" in snap:
+                self._coluna_total = snap["coluna_total"]
+                self._colunas_originais = list(snap.get("colunas_originais") or [])
+                self.mostrar_coluna_total = bool(snap.get("mostrar_coluna_total"))
             self._ordem_atual = snap.get("ordem")
             self.ajustes_log = list(snap.get("ajustes_log", []))
             self._atos_log_origem = list(snap.get("atos_origem", []))
@@ -8048,6 +8261,7 @@ class TabWonApp:
             if verbo == "mover linhas": return self._ato_exec_mover_linhas(kw)
             if verbo == "renomear primeira coluna": return self._ato_exec_renomear_primeira_coluna(kw)
             if verbo == "mostrar total": return self._ato_exec_mostrar_total(kw)
+            if verbo == "mostrar coluna total": return self._ato_exec_mostrar_coluna_total(kw)
             return False
         except KeyError as ex:
             try:
@@ -8123,6 +8337,45 @@ class TabWonApp:
                 self.df_resultado = self.df_resultado.drop(index="TOTAL")
         self.mostrar_total = v
         return True
+
+    def _colunas_base_total(self):
+        if self.df_resultado is None: return []
+        nome = getattr(self, "_coluna_total", None)
+        return [c for c in (getattr(self, "_colunas_originais", None) or [])
+                if c in self.df_resultado.columns and c != nome]
+
+    def _recalcular_coluna_total(self):
+        nome = getattr(self, "_coluna_total", None)
+        if not nome or self.df_resultado is None or getattr(self, "transposto", False): return
+        if not getattr(self, "mostrar_coluna_total", False): return
+        base = self._colunas_base_total()
+        if not base:
+            if nome in self.df_resultado.columns: self.df_resultado = self.df_resultado.drop(columns=[nome])
+            return
+        soma = self.df_resultado[base].apply(pd.to_numeric, errors="coerce").fillna(0).sum(axis=1)
+        if nome in self.df_resultado.columns:
+            self.df_resultado[nome] = soma
+        else:
+            cols = list(self.df_resultado.columns)
+            pos = max(cols.index(c) for c in base) + 1
+            self.df_resultado.insert(pos, nome, soma)
+
+    def _ato_exec_mostrar_coluna_total(self, kw):
+        if self.df_resultado is None or not getattr(self, "_coluna_total", None): return False
+        v = str(kw.get("mostrar", "true")).strip().lower() == "true"
+        self.mostrar_coluna_total = v
+        if v: self._recalcular_coluna_total()
+        elif self._coluna_total in self.df_resultado.columns:
+            self.df_resultado = self.df_resultado.drop(columns=[self._coluna_total])
+            self.formatos_colunas.pop(self._coluna_total, None)
+        return True
+
+    def _alternar_coluna_total(self, mostrar):
+        try:
+            if self._ato_exec_mostrar_coluna_total({"mostrar": "true" if mostrar else "false"}):
+                self._registrar_ajuste(f"Ato=mostrar coluna total | mostrar={'true' if mostrar else 'false'}")
+                self._refresh_log_text_widget(); self._render_resultado()
+        except Exception as ex: messagebox.showerror("Erro", str(ex))
 
     def _recalcular_total(self):
         if self.df_resultado is None or len(self.df_resultado) == 0: return
@@ -8338,6 +8591,9 @@ class TabWonApp:
         if para in self.df_resultado.columns: return False
         self.df_resultado = self.df_resultado.rename(columns={de: para})
         if de in self.formatos_colunas: self.formatos_colunas[para] = self.formatos_colunas.pop(de)
+        if getattr(self, "_colunas_originais", None):
+            self._colunas_originais = [para if c == de else c for c in self._colunas_originais]
+        if getattr(self, "_coluna_total", None) == de: self._coluna_total = para
         return True
 
     def _ato_exec_mover_coluna(self, kw):
@@ -8358,6 +8614,10 @@ class TabWonApp:
         if not nome or nome not in self.df_resultado.columns: return False
         self.df_resultado = self.df_resultado.drop(columns=[nome])
         self.formatos_colunas.pop(nome, None)
+        if nome == getattr(self, "_coluna_total", None): self.mostrar_coluna_total = False
+        elif nome in (getattr(self, "_colunas_originais", None) or []):
+            self._recalcular_coluna_total()
+            if "TOTAL" in self.df_resultado.index and getattr(self, "mostrar_total", True): self._recalcular_total()
         return True
 
     def _ato_exec_excluir_linha(self, kw):
@@ -8386,6 +8646,8 @@ class TabWonApp:
     def _ato_exec_ordenar(self, kw):
         self._ordenado_por_ato = True
         nome = str(kw.get("coluna", "")).strip()
+        if nome == COLUNA_PRIMEIRA:
+            self._ordenar_pela_primeira(str(kw.get("ordem", "asc")).lower() == "asc"); return True
         if not nome or nome not in self.df_resultado.columns: return False
         asc = str(kw.get("ordem", "asc")).lower() == "asc"
         total_row = None
@@ -9025,7 +9287,8 @@ class TabWonApp:
 
         def _carregar(caminho, nome_para_salvar=True):
             try:
-                with open(caminho, "r", encoding="latin-1", errors="replace") as f: conteudo = f.read()
+                est["codificacao"] = _codificacao_texto(caminho)
+                with open(caminho, "r", encoding=est["codificacao"], errors="replace") as f: conteudo = f.read()
             except Exception as ex:
                 messagebox.showerror("Abrir DEF", str(ex), parent=top); return
             txt.delete("1.0", tk.END); txt.insert("1.0", conteudo.replace("\r\n", "\n"))
@@ -9087,7 +9350,9 @@ class TabWonApp:
             conteudo = txt.get("1.0", "end-1c").replace("\r\n", "\n").replace("\n", "\r\n")
             if not conteudo.endswith("\r\n"): conteudo += "\r\n"
             try:
-                with open(caminho, "w", encoding="latin-1", errors="replace", newline="") as f: f.write(conteudo)
+                cod_def = est.get("codificacao") or "latin-1"
+                if os.path.exists(caminho): cod_def = _codificacao_texto(caminho) if cod_def == "latin-1" else cod_def
+                with open(caminho, "w", encoding=cod_def, errors="replace", newline="") as f: f.write(conteudo)
             except Exception as ex:
                 messagebox.showerror("Salvar DEF", str(ex), parent=top); return False
             est["arquivo"] = caminho; est["alterado"] = False; est["base"] = txt.get("1.0", "end-1c"); _titulo()
@@ -9285,13 +9550,13 @@ class TabWonApp:
                     arq = _dividir_spec(it["cnv"])[0]
                     if arq.lower() in [v.lower() for v in vistos]: continue
                     vistos.append(arq)
-                    rot = os.path.basename(arq)
+                    rot = f"{it['nome']}  —  {os.path.basename(arq)}"
                     if arq.lower().endswith(".dbf"): rot += "  (tabela DBF)"
                     elif not os.path.exists(arq): rot += "  (não encontrado)"
-                    rot += f"  —  {it['nome']}"
                     mapa_cnvs_def[rot] = arq
             cb_cnvs_def["values"] = list(mapa_cnvs_def)
             cb_cnvs_def.set(f"{len(mapa_cnvs_def)} arquivo(s) — escolha um" if mapa_cnvs_def else "nenhum CNV neste DEF")
+            est["rot_cnv_def"] = cb_cnvs_def.get()
         cb_def_cnv.bind("<<ComboboxSelected>>", _listar_cnvs_do_def)
 
         def _abrir_cnv_do_def(_=None):
@@ -9300,7 +9565,10 @@ class TabWonApp:
             if arq.lower().endswith(".dbf"):
                 messagebox.showinfo("Tabela DBF", "Este item usa uma tabela DBF de descrições.\n"
                                     "Use '🧩 Gerar de um DBF' para criar um CNV a partir dela.", parent=top); return
-            if not _pode_descartar(): return
+            if not _pode_descartar():
+                cb_cnvs_def.set(est.get("rot_cnv_def") or "")
+                return
+            est["rot_cnv_def"] = cb_cnvs_def.get()
             if os.path.exists(arq): _carregar(arq)
             else:
                 _novo(); est["sugerido"] = arq
@@ -9336,6 +9604,7 @@ class TabWonApp:
                              ("com", "Comentário", 120, "w")):
             tree.heading(c, text=t); tree.column(c, width=w, anchor=anc, stretch=(c in ("desc", "cods")))
         tree.column("num", stretch=False)
+        tree.configure(displaycolumns=("num", "sub", "seq", "desc", "cods"))
         sy = tk.Scrollbar(f_tree, orient="vertical", command=tree.yview)
         tree.configure(yscrollcommand=sy.set)
         sy.pack(side="right", fill="y"); tree.pack(fill="both", expand=True)
@@ -9382,6 +9651,7 @@ class TabWonApp:
                    "cods": "Códigos (vírgulas, faixas a-b):", "com": "Comentário:"}
         entradas = {}
         for i, k in enumerate(cols):
+            if k == "com": continue
             tk.Label(f_ed, text=rotulos[k], bg=COR_FUNDO, font=("Arial", 9), anchor="w").grid(row=i * 2, column=0, sticky="w")
             e = tk.Entry(f_ed, textvariable=vars_ed[k], width=(8 if k in ("sub", "seq") else 38), font=("Arial", 10))
             e.grid(row=i * 2 + 1, column=0, sticky="w" if k in ("sub", "seq") else "we", pady=(0, 4))
@@ -9389,8 +9659,8 @@ class TabWonApp:
         lbl_cont = tk.Label(f_ed, text="", bg=COR_FUNDO, fg="#666", font=("Arial", 8))
         lbl_cont.grid(row=10, column=0, sticky="w")
         vars_ed["desc"].trace_add("write", lambda *a: lbl_cont.config(
-            text=f"{len(vars_ed['desc'].get())}/50 caracteres na descrição",
-            fg=("#C62828" if len(vars_ed['desc'].get()) > 50 else "#666")))
+            text=f"{len(vars_ed['desc'].get())}/{_limite_desc_cnv(est['cab'])} caracteres na descrição",
+            fg=("#C62828" if len(vars_ed['desc'].get()) > _limite_desc_cnv(est['cab']) else "#666")))
 
         f_bt = tk.Frame(f_ed, bg=COR_FUNDO); f_bt.grid(row=11, column=0, sticky="we", pady=(8, 0))
 
@@ -9501,16 +9771,29 @@ class TabWonApp:
             _marcar(); _redesenhar()
             tree.selection_set([str(ini + k) for k in range(len(bloco))]); tree.see(str(ini))
 
+        botoes_ord = {}
+        rotulos_ord = {"seq": "Sequencial", "desc": "Descrição", "texto": "Texto", "cods": "Código"}
+
         def _ordenar(chave):
+            ant = est.get("ordem_cnv")
+            asc = not ant[1] if (ant and ant[0] == chave) else True
+            est["ordem_cnv"] = (chave, asc)
             coms = [r for r in est["linhas"] if r["tipo"] == "comentario"]
             dados = [r for r in est["linhas"] if r["tipo"] != "comentario"]
             if chave == "seq":
-                dados.sort(key=lambda r: int(r["seq"]) if str(r["seq"]).isdigit() else 10 ** 9)
+                dados.sort(key=lambda r: int(r["seq"]) if str(r["seq"]).isdigit() else 10 ** 9, reverse=not asc)
             elif chave == "desc":
-                dados.sort(key=lambda r: _normalizar_texto(r["desc"].lstrip(". ")))
+                dados.sort(key=lambda r: _normalizar_texto(r["desc"].lstrip(". ")), reverse=not asc)
+            elif chave == "texto":
+                dados.sort(key=lambda r: (_normalizar_texto(re.sub(r"^[\s\d.,;:/\\()\[\]\-–—_]+", "", r["desc"])),
+                                          _normalizar_texto(r["desc"])), reverse=not asc)
             else:
-                dados.sort(key=lambda r: (r["cods"].split(",")[0] if r["cods"] else "\uffff"))
-            est["linhas"] = coms + dados; _marcar(); _redesenhar()
+                dados.sort(key=lambda r: (r["cods"].split(",")[0] if r["cods"] else "\uffff"), reverse=not asc)
+            est["linhas"] = coms + dados
+            for k_, b_ in botoes_ord.items():
+                try: b_.config(text=rotulos_ord[k_] + ((" ▲" if asc else " ▼") if k_ == chave else ""))
+                except Exception: pass
+            _marcar(); _redesenhar()
 
         def _renumerar():
             if not messagebox.askyesno("Renumerar", "Renumerar os sequenciais na ordem atual (1, 2, 3…)?\n"
@@ -9536,9 +9819,14 @@ class TabWonApp:
         b_.pack(fill="x", pady=(6, 1)); _adicionar_tooltip(b_, "Gravar na linha os valores editados acima")
         f_ord = tk.LabelFrame(f_ed, text=" Ordenar por ", bg=COR_FUNDO, font=("Arial", 9))
         f_ord.grid(row=12, column=0, sticky="we", pady=(8, 0))
-        for t_, k in (("Sequencial", "seq"), ("Descrição", "desc"), ("Código", "cods")):
-            b_ = tk.Button(f_ord, text=t_, command=lambda kk=k: _ordenar(kk), font=("Arial", 8))
-            b_.pack(side="left", padx=2, pady=2); _adicionar_tooltip(b_, f"Ordenar as linhas por {t_.lower()}")
+        dicas_ord = {"seq": "Ordenar as linhas pelo sequencial (clique de novo para inverter)",
+                     "desc": "Ordenar as linhas pela descrição (clique de novo para inverter)",
+                     "texto": "Ordenar pela descrição ignorando os números do início (clique de novo para inverter)",
+                     "cods": "Ordenar as linhas pelo código (clique de novo para inverter)"}
+        for k in ("seq", "desc", "texto", "cods"):
+            b_ = tk.Button(f_ord, text=rotulos_ord[k], command=lambda kk=k: _ordenar(kk), font=("Arial", 8))
+            b_.pack(side="left", padx=2, pady=2); _adicionar_tooltip(b_, dicas_ord[k])
+            botoes_ord[k] = b_
         b_ = tk.Button(f_ed, text="🔢 Renumerar sequenciais", command=_renumerar, font=("Arial", 9))
         b_.grid(row=13, column=0, sticky="we", pady=(6, 0))
         _adicionar_tooltip(b_, "Renumerar 1, 2, 3… na ordem atual, ajustando os subtotais")
@@ -9552,6 +9840,8 @@ class TabWonApp:
             except Exception as ex:
                 messagebox.showerror("Abrir CNV", str(ex), parent=top); return
             est["cab"] = c; est["linhas"] = linhas; est["arquivo"] = caminho
+            try: tree.heading("desc", text=f"Descrição (até {_limite_desc_cnv(c)})")
+            except Exception: pass
             var_nchars.set(str(c.get("nchars", 2)))
             f = str(c.get("flag", "")).upper()
             var_tipo.set("Literal (L)" if f.startswith("L") else ("Faixas de valor (F)" if f.startswith("F") else "Normal"))
@@ -9569,7 +9859,10 @@ class TabWonApp:
 
         def _novo():
             if not _pode_descartar(): return
-            est["cab"] = {"ncat": 0, "nchars": 2, "flag": "", "comentarios": [], "comentarios_antes": []}
+            est["cab"] = {"ncat": 0, "nchars": 2, "flag": "", "prefixo": "", "codificacao": "latin-1",
+                          "comentarios": [], "comentarios_antes": []}
+            try: tree.heading("desc", text="Descrição (até 50)")
+            except Exception: pass
             est["linhas"] = [{"tipo": "linha", "sub": "", "seq": "1", "desc": "", "cods": "", "com": ""}]
             est["arquivo"] = None; var_nchars.set("2"); var_tipo.set("Normal")
             est["alterado"] = False; _titulo(); _redesenhar(0); _ao_selecionar()
@@ -9657,7 +9950,7 @@ class TabWonApp:
             if c["nchars"] < 1:
                 messagebox.showerror("Salvar CNV", "Informe o número de caracteres do código.", parent=top); return False
             try:
-                with open(caminho, "w", encoding="latin-1", errors="replace", newline="") as f:
+                with open(caminho, "w", encoding=c.get("codificacao") or "latin-1", errors="replace", newline="") as f:
                     f.write(_montar_texto_cnv(c, est["linhas"]))
             except Exception as ex:
                 messagebox.showerror("Salvar CNV", str(ex), parent=top); return False
@@ -10533,7 +10826,7 @@ class TabWonApp:
             _rodar("validar")
 
         def _exportar():
-            p = filedialog.asksaveasfilename(parent=top, title="Exportar resultado", defaultextension=".xlsx",
+            p = self._pedir_arquivo_exportacao(parent=top, title="Exportar resultado", defaultextension=".xlsx",
                                              filetypes=[("Excel", "*.xlsx"), ("CSV (;)", "*.csv")])
             if p: _rodar("exportar", destino=p)
 
@@ -13033,6 +13326,36 @@ class TabWonApp:
         try: _tb.print_exception(tipo, valor, tb)
         except Exception: pass
 
+    def _exportacao_restrita(self, caminho):
+        if (self._cfg or {}).get("exportacao", {}).get("pastatabwon"): return None
+        for pasta in dict.fromkeys((PASTA_SCRIPT, PASTA_TABWIN)):
+            if _caminho_dentro(caminho, pasta): return pasta
+        return None
+
+    def _pasta_exportacao_inicial(self):
+        p = (self._prefs or {}).get("pasta_exportacao", "")
+        if p and os.path.isdir(p) and not self._exportacao_restrita(os.path.join(p, "arquivo")): return p
+        return _pasta_downloads()
+
+    def _avisar_pasta_proibida(self, pasta, parent=None):
+        messagebox.showwarning("Salvar arquivo", "Não é permitido salvar arquivos nesta pasta.\n\nEscolha outra.",
+                               parent=parent or self.root)
+
+    def _pedir_arquivo_exportacao(self, parent=None, **kw):
+        kw.setdefault("initialdir", self._pasta_exportacao_inicial())
+        while True:
+            c = filedialog.asksaveasfilename(parent=parent or self.root, **kw)
+            if not c: return ""
+            proibida = self._exportacao_restrita(c)
+            if not proibida:
+                pasta = os.path.dirname(os.path.abspath(c))
+                if (self._prefs or {}).get("pasta_exportacao") != pasta:
+                    self._prefs = dict(self._prefs or {}); self._prefs["pasta_exportacao"] = pasta
+                    _gravar_prefs_usuario(self._prefs)
+                return c
+            self._avisar_pasta_proibida(proibida, parent)
+            kw["initialdir"] = _pasta_downloads(); kw["initialfile"] = os.path.basename(c)
+
     def _motivo_pedir_pasta_tabwin(self):
         if self._pasta_tabwin_inacessivel: return "inacessivel"
         if self._pasta_tabwin_dispensada: return ""
@@ -13684,7 +14007,7 @@ class TabWonApp:
                   f"DEF={self.def_path or '(não selecionado)'}"]
         if self.def_data:
             try:
-                with open(self.def_path, "r", encoding="latin-1", errors="ignore") as f:
+                with open(self.def_path, "r", encoding=_codificacao_texto(self.def_path), errors="ignore") as f:
                     for l in f:
                         if l.strip().upper().startswith("A"):
                             linhas.append(f"PATH={l.strip()[1:]}"); break
@@ -14196,7 +14519,10 @@ class TabWonApp:
         lb.bind("<<ListboxSelect>>", _cont)
         fp = tk.Frame(corpo, bg=COR_FUNDO); fp.pack(fill="x", pady=(10, 0))
         tk.Label(fp, text="Salvar na pasta:", bg=COR_FUNDO, font=("Arial", 10, "bold")).pack(side="left")
-        var_pasta = tk.StringVar(value=(self._prefs or {}).get("pasta_lote", "") or os.path.expanduser("~"))
+        pasta_lote = (self._prefs or {}).get("pasta_lote", "")
+        if not pasta_lote or self._exportacao_restrita(os.path.join(pasta_lote, "arquivo")):
+            pasta_lote = self._pasta_exportacao_inicial()
+        var_pasta = tk.StringVar(value=pasta_lote)
         tk.Entry(fp, textvariable=var_pasta, width=48, font=("Arial", 10)).pack(side="left", padx=6, fill="x", expand=True)
 
         def _escolher():
@@ -14215,6 +14541,9 @@ class TabWonApp:
             pasta = var_pasta.get().strip()
             if not pasta or not os.path.isdir(pasta):
                 messagebox.showwarning("Rodar consultas em lote", "Escolha uma pasta que exista.", parent=top); return
+            proibida = self._exportacao_restrita(os.path.join(pasta, "arquivo"))
+            if proibida:
+                self._avisar_pasta_proibida(proibida, top); var_pasta.set(_pasta_downloads()); return
             self._prefs = dict(self._prefs or {}); self._prefs["pasta_lote"] = pasta
             _gravar_prefs_usuario(self._prefs)
             top.destroy()
@@ -14400,16 +14729,17 @@ class TabWonApp:
                 messagebox.showwarning("Aviso", "Selecione uma consulta.", parent=top); return
             i = sel[0]; atual = self.saved_logs_entries[i]['nome']
             t = tk.Toplevel(top, bg=COR_FUNDO)
-            t.title("Renomear"); t.geometry("500x180")
+            t.title("Renomear")
             t.transient(top); t.grab_set()
             t.protocol("WM_DELETE_WINDOW", lambda: (t.destroy(), _reassumir_foco()))
             tk.Label(t, text="Novo nome:", font=("Arial", 11, "bold"),
                      bg=COR_FUNDO).pack(anchor="w", padx=30, pady=(20, 6))
-            e = tk.Entry(t, font=("Arial", 11), width=50, bd=2, relief="solid")
-            e.pack(padx=30, ipady=4, fill="x"); e.insert(0, atual); e.focus_set()
+            campos = _campos_nome_consulta(t, atual)
+            campos.pack(anchor="w", padx=30)
+            e = campos.entrada; e.focus_set()
             def fechar(ev=None): t.destroy(); _reassumir_foco()
             def ok(ev=None):
-                novo = e.get().strip()
+                novo = campos.obter().strip()
                 if not novo or novo == atual: fechar(); return
                 existentes = {en['nome'] for k, en in enumerate(self.saved_logs_entries) if k != i}
                 if novo in existentes:
@@ -14558,7 +14888,7 @@ class TabWonApp:
         self.mostrar_campos(True)
         self.def_path = os.path.join(PASTA_TABWIN, nome_def)
         try:
-            with open(self.def_path, "r", encoding="latin-1", errors="ignore") as f:
+            with open(self.def_path, "r", encoding=_codificacao_texto(self.def_path), errors="ignore") as f:
                 linhas = f.readlines()
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao ler DEF: {e}"); return
@@ -14932,6 +15262,10 @@ class TabWonApp:
             'ignorar_linhas': ign_l, 'ignorar_colunas': ign_c,
             'nao_class': int(self.var_nao_class.get()),
         }
+        try:
+            self._linha_alvo_log = linha_nome
+            self._coluna_alvo_log = coluna_info["nome"] if coluna_info else None
+        except Exception: pass
         self._modo_nc_exec = int(self.var_nao_class.get())
         try: self._salvar_registros_exec = bool(self.var_salvar_registros.get())
         except Exception: self._salvar_registros_exec = False
@@ -15218,7 +15552,13 @@ class TabWonApp:
                 if ign_colunas: pivot_df = pivot_df.loc[:, pivot_df.sum(axis=0) > 0]
                 pivot_df = pivot_df.fillna(0)
                 if len(pivot_df) > 0: pivot_df.loc["TOTAL"] = _somar_sem_subtotais(pivot_df, subtotais)
-                self._resultado_meta = {"subtotais": subtotais, "ordem_cnv": bool(cnv_l and not cnv_l["dbf"])}
+                colunas_originais = list(pivot_df.columns); coluna_total = None
+                if coluna_info and len(colunas_originais) > 1 and len(pivot_df) > 0:
+                    coluna_total = next(n for n in (NOME_COLUNA_TOTAL, "Total tabulado (linha)", "Σ Total tabulado")
+                                        if n not in pivot_df.columns)
+                    pivot_df[coluna_total] = pivot_df[colunas_originais].sum(axis=1, numeric_only=True)
+                self._resultado_meta = {"subtotais": subtotais, "ordem_cnv": bool(cnv_l and not cnv_l["dbf"]),
+                                        "coluna_total": coluna_total, "colunas_originais": colunas_originais}
                 fim = time.time(); tempo_seg = int(fim - inicio)
                 tempo_str = _formatar_hhmmss(tempo_seg)
                 self.root.after(0, lambda: self.finalizar_sucesso(
@@ -15240,6 +15580,9 @@ class TabWonApp:
             self.root.after(500, self._abrir_escolha_campos_registros)
         meta = getattr(self, "_resultado_meta", None) or {}
         self._subtotais = meta.get("subtotais") or {}
+        self._coluna_total = meta.get("coluna_total") if not getattr(self, "_resultado_sql", None) else None
+        self._colunas_originais = list(meta.get("colunas_originais") or [])
+        self.mostrar_coluna_total = bool(self._coluna_total)
         self._ordem_cnv = bool(meta.get("ordem_cnv"))
         self._ordenado_por_ato = False
         rsql = getattr(self, "_resultado_sql", None)
@@ -15806,7 +16149,7 @@ class TabWonApp:
                         if isinstance(p, int) and 0 <= p < len(cols_reais):
                             cols_sel.append(cols_reais[p])
                 if not cols_sel:
-                    cols_sel = list(cols_num_all)
+                    cols_sel = [c for c in cols_num_all if c != getattr(self, "_coluna_total", None)]
                 if not cols_sel:
                     ax.text(0.5, 0.5, _t("Sem colunas numéricas para plotar"),
                             ha="center", va="center", transform=ax.transAxes)
@@ -16776,6 +17119,7 @@ class TabWonApp:
         for c in df_sem.columns:
             f = self.formatos_colunas.get(c) or {}
             if f.get("formula") or f.get("porcento"): excluir.add(c)
+        if getattr(self, "_coluna_total", None): excluir.add(self._coluna_total)
         base = [c for c in self._obter_colunas_numericas() if c in df_sem.columns and c not in excluir]
         base = list(dict.fromkeys(base + list(cols_sel)))
         if modo == "colunas":
@@ -17174,9 +17518,9 @@ class TabWonApp:
         def _on_xscroll(*args):
             sbx.set(*args); self.root.after_idle(self._redesenhar_letras)
         self.tree.config(xscrollcommand=_on_xscroll)
-        for c in cols:
+        for i_c, c in enumerate(cols):
             texto = str(c)
-            if self._ordem_atual and self._ordem_atual[0] == c:
+            if self._ordem_atual and (self._ordem_atual[0] == c or (i_c == 0 and self._ordem_atual[0] == COLUNA_PRIMEIRA)):
                 seta = " ▲" if self._ordem_atual[1] else " ▼"; texto = texto + seta
             self.tree.heading(c, text=texto, command=lambda cc=c: self._ordenar_por(cc))
         self._drag_col = None; self._dragging = False
@@ -17248,6 +17592,16 @@ class TabWonApp:
                 else:
                     m.add_command(label=f"🗑 Excluir linha \"{label_linha}\"",
                                   command=lambda: self._ctx_excluir_linha(label_linha))
+            if regiao == "cell" and row_id and col_id:
+                m.add_separator()
+                m.add_command(label="📋 Copiar valor", command=lambda: self._copiar_valor_celula(row_id, col_id))
+                m.add_command(label="🔎 Selecionar texto", command=lambda: self._selecionar_texto_celula(row_id, col_id))
+            if getattr(self, "_coluna_total", None) and not getattr(self, "transposto", False):
+                m.add_separator()
+                if getattr(self, "mostrar_coluna_total", False):
+                    m.add_command(label="👁 Ocultar coluna Total tabulado", command=lambda: self._alternar_coluna_total(False))
+                else:
+                    m.add_command(label="👁 Mostrar coluna Total tabulado", command=lambda: self._alternar_coluna_total(True))
             if nome_col:
                 m.add_separator()
                 m.add_command(label=f"🗑 Excluir coluna \"{nome_col}\"",
@@ -17304,9 +17658,59 @@ class TabWonApp:
     def _on_tree_double_click(self, event):
         try:
             if self.tree is None: return
-            if self.tree.identify_region(event.x, event.y) == "separator":
+            regiao = self.tree.identify_region(event.x, event.y)
+            if regiao == "separator":
                 self._autoajustar_colunas_tree()
+            elif regiao in ("cell", "tree"):
+                row_id = self.tree.identify_row(event.y); col_id = self.tree.identify_column(event.x)
+                if row_id and col_id: self._selecionar_texto_celula(row_id, col_id)
         except Exception: pass
+
+    def _texto_celula(self, row_id, col_id):
+        try:
+            idx = int(str(col_id).replace("#", "")) - 1
+            vals = self.tree.item(row_id, "values")
+            return str(vals[idx]) if 0 <= idx < len(vals) else ""
+        except Exception: return ""
+
+    def _copiar_valor_celula(self, row_id, col_id):
+        try:
+            self.root.clipboard_clear(); self.root.clipboard_append(self._texto_celula(row_id, col_id))
+        except Exception as ex: _log(f"_copiar_valor_celula: {ex}")
+
+    def _fechar_selecao_celula(self, *_):
+        e = getattr(self, "_entrada_celula", None)
+        self._entrada_celula = None
+        try:
+            if e is not None and e.winfo_exists(): e.destroy()
+        except Exception: pass
+
+    def _selecionar_texto_celula(self, row_id, col_id):
+        self._fechar_selecao_celula()
+        try:
+            bbox = self.tree.bbox(row_id, col_id)
+            if not bbox: return
+            x, y, w, h = bbox
+            var = tk.StringVar(value=self._texto_celula(row_id, col_id))
+            e = tk.Entry(self.tree, textvariable=var, state="readonly", font=self._fonte_tabela(), relief="solid",
+                         bd=1, readonlybackground="#FFFDE7", fg="#000000", highlightthickness=0)
+            e._var = var
+            e.place(x=x, y=y, width=max(w, 80), height=h)
+            self._entrada_celula = e
+            e.focus_set(); e.select_range(0, "end"); e.icursor("end")
+            for ev in ("<Escape>", "<Return>", "<FocusOut>"): e.bind(ev, self._fechar_selecao_celula)
+
+            def _acompanhar():
+                if getattr(self, "_entrada_celula", None) is not e: return
+                try:
+                    if not e.winfo_exists(): return
+                    b = self.tree.bbox(row_id, col_id)
+                    if not b: self._fechar_selecao_celula(); return
+                    e.place_configure(x=b[0], y=b[1], width=max(b[2], 80), height=b[3])
+                    e.after(150, _acompanhar)
+                except Exception: self._fechar_selecao_celula()
+            e.after(150, _acompanhar)
+        except Exception as ex: _log(f"_selecionar_texto_celula: {ex}")
 
     def _on_heading_press(self, event):
         try:
@@ -17369,11 +17773,18 @@ class TabWonApp:
                 offset = int(xview[0] * total_w)
             except Exception: offset = 0
             x = -offset
+            nomes_df = [None] + [str(c) for c in (list(self.df_resultado.columns) if self.df_resultado is not None else [])]
+            col_total = getattr(self, "_coluna_total", None) if getattr(self, "mostrar_coluna_total", False) else None
             for i, c in enumerate(cols):
                 w = self.tree.column(c, "width")
                 if x + w >= 0 and x <= cv.winfo_width():
-                    cv.create_text(x + w // 2, 9, text=_letra_coluna(i),
-                                    fill="#AAAAAA", font=("Arial", 7))
+                    if col_total and i < len(nomes_df) and nomes_df[i] == str(col_total) and not getattr(self, "transposto", False):
+                        cv.create_rectangle(x + 1, 1, x + w - 1, 17, fill="#FFE082", outline="")
+                        cv.create_text(x + w // 2, 9, text=f"{_letra_coluna(i)} · Total", fill="#6D4C00",
+                                       font=("Arial", 7, "bold"))
+                    else:
+                        cv.create_text(x + w // 2, 9, text=_letra_coluna(i),
+                                       fill="#AAAAAA", font=("Arial", 7))
                     cv.create_line(x + w, 2, x + w, 16, fill="#EEEEEE")
                 x += w
         except Exception: pass
@@ -17400,8 +17811,32 @@ class TabWonApp:
                                     fill="#AAAAAA", font=("Arial", max(7, 7 + int(getattr(self, "_zoom", 0) or 0) // 2)), anchor="w")
         except Exception: pass
 
+    def _ordenar_pela_primeira(self, asc):
+        total_row = None
+        if "TOTAL" in self.df_resultado.index:
+            total_row = self.df_resultado.loc[["TOTAL"]]
+            df_sem = self.df_resultado.drop(index="TOTAL")
+        else: df_sem = self.df_resultado
+
+        def chave(v):
+            partes = re.split(r"(\d+)", _normalizar_texto(str(v)))
+            return [(0, int(x), "") if x.isdigit() else (1, 0, x) for x in partes if x != ""]
+        ordem = sorted(range(len(df_sem)), key=lambda i: chave(df_sem.index[i]), reverse=not asc)
+        df_sem = df_sem.iloc[ordem]
+        self.df_resultado = pd.concat([df_sem, total_row]) if total_row is not None else df_sem
+        self._ordem_atual = (COLUNA_PRIMEIRA, asc)
+
     def _ordenar_por(self, coluna):
-        if self.df_resultado is None or coluna not in self.df_resultado.columns: return
+        if self.df_resultado is None: return
+        if self.tree is not None and coluna == self.tree["columns"][0]:
+            self._ordenado_por_ato = True
+            asc = not self._ordem_atual[1] if (self._ordem_atual and self._ordem_atual[0] == COLUNA_PRIMEIRA) else True
+            self._ordenar_pela_primeira(asc)
+            self._registrar_ajuste(f"Ato=ordenar | coluna={COLUNA_PRIMEIRA} | ordem={'asc' if asc else 'desc'}"
+                                   f"  # ordenar a primeira coluna {'ascendente' if asc else 'descendente'}")
+            self._refresh_log_text_widget(); self._render_resultado()
+            return
+        if coluna not in self.df_resultado.columns: return
         self._ordenado_por_ato = True
         asc = not self._ordem_atual[1] if (self._ordem_atual and self._ordem_atual[0] == coluna) else True
         self._ordem_atual = (coluna, asc)
@@ -17502,6 +17937,10 @@ class TabWonApp:
                        bg=COR_FUNDO, activebackground=COR_FUNDO, font=("Arial", 10)).pack(anchor="w")
         tk.Label(corpo, text="Tabela:", font=("Arial", 10, "bold"),
                  bg=COR_FUNDO).pack(anchor="w", pady=(12, 2))
+        var_col_total = tk.BooleanVar(value=bool(getattr(self, "mostrar_coluna_total", False)))
+        if getattr(self, "_coluna_total", None):
+            tk.Checkbutton(corpo, text="Mostrar coluna Total tabulado", variable=var_col_total,
+                           bg=COR_FUNDO, activebackground=COR_FUNDO, font=("Arial", 10)).pack(anchor="w", pady=(0, 4))
         var_transpor = tk.BooleanVar(value=bool(getattr(self, "transposto", False)))
         chk_tr = tk.Checkbutton(corpo, text="Trocar as linhas pelas colunas", variable=var_transpor,
                                 bg=COR_FUNDO, activebackground=COR_FUNDO, font=("Arial", 10))
@@ -17563,6 +18002,9 @@ class TabWonApp:
                 if novo_intercalar != self.intercalar_linhas:
                     self._registrar_ajuste(self._ato_set_detalhes("intercalar_linhas", novo_intercalar))
                     self.intercalar_linhas = novo_intercalar
+                if getattr(self, "_coluna_total", None) and bool(var_col_total.get()) != bool(self.mostrar_coluna_total):
+                    if self._ato_exec_mostrar_coluna_total({"mostrar": "true" if var_col_total.get() else "false"}):
+                        self._registrar_ajuste(f"Ato=mostrar coluna total | mostrar={'true' if var_col_total.get() else 'false'}")
                 if novo_total != self.mostrar_total:
                     if novo_total:
                         self._recalcular_total()
@@ -18360,6 +18802,13 @@ class TabWonApp:
         lf.pack(fill="x", pady=(10, 0))
         chk(lf, "renomear", "Permitir renomear consultas", cfg["consultas"]["renomear"], "")
         chk(lf, "excluir", "Permitir excluir consultas", cfg["consultas"]["excluir"], "")
+        lf = tk.LabelFrame(a1, text=" Arquivos exportados (XLSX e CSV) ", bg=COR_FUNDO, fg=COR_CABECALHO,
+                           font=("Arial", 10, "bold"), padx=10, pady=6)
+        lf.pack(fill="x", pady=(10, 0))
+        chk(lf, "exportpasta", "Permitir salvar na pasta do TabWon e do TabWin (e subpastas)",
+            cfg.get("exportacao", {}).get("pastatabwon", False),
+            "Desmarcado (padrão): para manter a organização, o TabWon não deixa salvar exportações nessas pastas "
+            "e sugere a pasta Downloads")
         lf = tk.LabelFrame(a1, text=" Identificadores das consultas salvas ", bg=COR_FUNDO,
                            fg=COR_CABECALHO, font=("Arial", 10, "bold"), padx=10, pady=6)
         lf.pack(fill="both", expand=True, pady=(10, 0))
@@ -18518,6 +18967,8 @@ class TabWonApp:
                        ("menu", "conversor", b("conversor"), "1|0 exibe ou oculta no menu o conversor DBF ⟺ DBC"),
                        ("consultas", "renomear", b("renomear"), "1|0 exibe ou oculta no gerenciador a opção renomear"),
                        ("consultas", "excluir", b("excluir"), "1|0 exibe ou oculta no gerenciador a opção excluir"),
+                       ("exportacao", "pastatabwon", b("exportpasta"),
+                        "1|0 permite salvar XLSX e CSV na pasta do TabWon e na pasta do TabWin (e subpastas); 0 = não permite"),
                        ("cores", "paletas", ";".join(pals), "Lista de estilos de cores disponíveis"),
                        ("cores", "corpadrao", padrao, "Arquivo de paleta de cores do sistema"),
                        ("cores", "modopadrao", V["modo"].get(),
@@ -19482,7 +19933,7 @@ class TabWonApp:
         if not self.log_texto:
             messagebox.showwarning("Aviso", "Nenhum log para salvar."); return
         top = tk.Toplevel(self.root, bg=COR_FUNDO)
-        top.title("Salvar consulta"); top.geometry("560x420")
+        top.title("Salvar consulta"); top.geometry("570x355")
         top.transient(self.root); top.grab_set()
         top.protocol("WM_DELETE_WINDOW", top.destroy); top.bind("<Escape>", lambda e: top.destroy())
         tk.Label(top, text="💾 Salvar Consulta", font=("Arial", 14, "bold"),
@@ -19545,6 +19996,8 @@ class TabWonApp:
                   font=("Arial", 11), width=14).pack(side="left", padx=8)
         tk.Button(fb, text="💾 Salvar", command=confirmar, bg="#4CAF50", fg="white",
                   font=("Arial", 11, "bold"), width=14).pack(side="left", padx=8)
+        top.update_idletasks()
+        top.geometry(f"{max(570, top.winfo_reqwidth())}x{max(355, top.winfo_reqheight())}")
         centralizar(top, self.root)
         try: top.after_idle(lambda: (top.focus_force(), entry.focus_force(),
                                        entry.icursor(tk.END)))
@@ -19752,7 +20205,7 @@ class TabWonApp:
     def _montar_log(self, regs, tempo, erros):
         linhas = [f"TabWon versão {VERSAO}", "", "[Opções]", f"DEF={self.def_path}"]
         try:
-            with open(self.def_path, "r", encoding="latin-1", errors="ignore") as f:
+            with open(self.def_path, "r", encoding=_codificacao_texto(self.def_path), errors="ignore") as f:
                 for l in f:
                     if l.strip().upper().startswith("A"):
                         linhas.append(f"PATH={l.strip()[1:]}"); break
@@ -19943,7 +20396,7 @@ class TabWonApp:
         self._janela_campos_registros = d
         self.root.wait_window(d)
         if not res["campos"]: return
-        caminho = filedialog.asksaveasfilename(
+        caminho = self._pedir_arquivo_exportacao(
             parent=self.root, title="Salvar registros", defaultextension=".xlsx", filetypes=[("Excel", "*.xlsx")],
             initialfile=datetime.now().strftime("%Y-%m-%d_%H-%M_registros_tabwon.xlsx"))
         if not caminho: return
@@ -20117,6 +20570,8 @@ class TabWonApp:
     def _exportar_com_log(self, caminho, formato):
         if formato == "xlsx":
             df = self.df_resultado.reset_index(); cols = list(df.columns)
+            col_total = (getattr(self, "_coluna_total", None) if getattr(self, "mostrar_coluna_total", False)
+                         and not getattr(self, "transposto", False) else None)
             wb = Workbook(); ws = wb.active
             ws.title = self._sanitizar_nome_planilha(self.titulo_tabulacao)
             start_row = 1
@@ -20150,7 +20605,7 @@ class TabWonApp:
                     else:
                         if isinstance(v, float): c.number_format = '#,##0.00'
                         elif isinstance(v, int): c.number_format = '#,##0'
-                    if tot:
+                    if tot or (col_total is not None and ci > 1 and df.columns[ci - 1] == col_total):
                         c.fill = PatternFill("solid", fgColor="FFF2CC"); c.font = Font(bold=True)
             for ci in range(1, len(cols) + 1):
                 ml = 10
@@ -20210,7 +20665,7 @@ class TabWonApp:
 
     def exportar_xlsx(self):
         if self.df_resultado is None: return
-        c = filedialog.asksaveasfilename(defaultextension=".xlsx",
+        c = self._pedir_arquivo_exportacao(defaultextension=".xlsx",
             filetypes=[("Excel", "*.xlsx")],
             initialfile=datetime.now().strftime("%Y-%m-%d_%H-%M_tabwon.xlsx"))
         if c:
@@ -20227,7 +20682,7 @@ class TabWonApp:
 
     def exportar_csv(self):
         if self.df_resultado is None: return
-        c = filedialog.asksaveasfilename(defaultextension=".csv",
+        c = self._pedir_arquivo_exportacao(defaultextension=".csv",
             filetypes=[("CSV", "*.csv")],
             initialfile=datetime.now().strftime("%Y-%m-%d_%H-%M_tabwon.csv"))
         if c:
@@ -20244,6 +20699,8 @@ class TabWonApp:
 
     def _html_tabela(self, incluir_log=True):
         df = self.df_resultado.reset_index(); cols = list(df.columns)
+        col_total = (getattr(self, "_coluna_total", None) if getattr(self, "mostrar_coluna_total", False)
+                     and not getattr(self, "transposto", False) else None)
         h = '<html><body style="font-family:Arial;font-size:10pt;">'
         if self.titulo_tabulacao:
             h += f'<h2 style="color:{COR_CABECALHO};">{self.titulo_tabulacao}</h2>'
@@ -20268,7 +20725,9 @@ class TabWonApp:
                     fmt = self.formatos_colunas.get(col_name)
                     t = self._valor_para_exibir(v, fmt, tot)
                 cor = self.cor_texto_conteudo if not tot else "#000000"
-                h += f'<td style="padding:4px;text-align:{"left" if i == 0 else "right"};color:{cor};">{t}</td>'
+                extra = "background-color:#FFF2CC;font-weight:bold;" if (col_total is not None and i > 0
+                                                                          and df.columns[i] == col_total) else ""
+                h += f'<td style="padding:4px;text-align:{"left" if i == 0 else "right"};color:{cor};{extra}">{t}</td>'
             h += '</tr>'
         h += '</table>'
         if incluir_log:
@@ -20324,9 +20783,10 @@ class TabWonApp:
                 sel_colunas = list(self.lb_colunas.curselection())
                 sel_inc = list(self.lb_incremento.curselection())
                 sel_dbcs = list(self.lb_dbcs.curselection())
+                ant = self.estado_anterior or {}
                 snapshot = {
-                    'linha_idx': sel_linhas[0] if sel_linhas else 0,
-                    'coluna_idx': sel_colunas[0] if sel_colunas else 0,
+                    'linha_idx': sel_linhas[0] if sel_linhas else ant.get('linha_idx', 0),
+                    'coluna_idx': sel_colunas[0] if sel_colunas else ant.get('coluna_idx', 0),
                     'incrementos_idx': sel_inc, 'dbcs_idx': sel_dbcs,
                     'filtros': dict(self.filtros_ativos),
                     'selecoes_ativas_nomes': [s["nome"] for s in self.selecoes_ativas],
@@ -20358,16 +20818,22 @@ class TabWonApp:
             try:
                 if self._linha_alvo_log:
                     alvo = _normalizar_texto(self._linha_alvo_log)
-                    for i, it in enumerate(self.def_data['linhas']):
-                        if _normalizar_texto(it['nome']) == alvo:
-                            self.lb_linhas.selection_clear(0, tk.END)
-                            self.lb_linhas.selection_set(i); break
+                    cur = self.lb_linhas.curselection()
+                    if not (cur and _normalizar_texto(self.lb_linhas.get(cur[0])) == alvo):
+                        for i, it in enumerate(self.def_data['linhas']):
+                            if _normalizar_texto(it['nome']) == alvo:
+                                self.lb_linhas.selection_clear(0, tk.END)
+                                self.lb_linhas.selection_set(i); self.lb_linhas.see(i); break
                 if self._coluna_alvo_log:
                     alvo = _normalizar_texto(self._coluna_alvo_log)
-                    self.lb_colunas.selection_clear(0, tk.END)
-                    for i, it in enumerate(self.def_data['colunas']):
-                        if _normalizar_texto(it['nome']) == alvo:
-                            self.lb_colunas.selection_set(i + 1); break
+                    cur = self.lb_colunas.curselection()
+                    if not (cur and _normalizar_texto(self.lb_colunas.get(cur[0])) == alvo):
+                        self.lb_colunas.selection_clear(0, tk.END)
+                        for i, it in enumerate(self.def_data['colunas']):
+                            if _normalizar_texto(it['nome']) == alvo:
+                                self.lb_colunas.selection_set(i + 1); self.lb_colunas.see(i + 1); break
+                cur = self.lb_linhas.curselection()
+                if cur: self.lb_linhas.see(cur[0])
             except Exception:
                 pass
             self.validar_botao_executar()

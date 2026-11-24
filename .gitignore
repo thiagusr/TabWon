@@ -22,6 +22,9 @@ TabWonDBC/obj/
 # --- Loader (TabWon.exe): saida da compilacao ---
 loader/saida/
 
+# --- Pasta de trabalho do compilar.bat ---
+Compilado/
+
 # --- Criados pelo TabWon durante o uso (pessoais de cada instalacao) ---
 TabWon_configs/.usuarios/
 TabWon_configs/.cache_dbc/

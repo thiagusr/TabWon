@@ -1,6 +1,6 @@
 # TabWon — loader (`TabWon.exe`)
 
-O loader é o programa que abre o TabWon na versão compilada. Ele aparece na tela no mesmo instante do clique, mostra o logotipo, uma mensagem de andamento e uma barra animada, e inicia o tabulador (`TabWon_tabulador.exe`). Quando a janela do TabWon fica pronta, o loader se fecha sozinho.
+O loader é o programa que abre o TabWon na versão compilada. Ele aparece na tela no mesmo instante do clique, mostra o logotipo animado (as letras de "tabwon" pulam em onda e a molécula do "w" pulsa), a frase "Tabulador Código Aberto para dados SUS", uma mensagem de andamento e uma barra animada, e inicia o tabulador (`TabWon_tabulador.exe`). Quando a janela do TabWon fica pronta, o loader se fecha sozinho.
 
 Ele existe porque o tabulador precisa carregar as bibliotecas da pasta `TabWon_dependencias` antes de mostrar a janela. Na primeira abertura, ou quando o TabWon está numa pasta da rede, isso pode levar cerca de um minuto, e sem o loader o usuário não via nada acontecer.
 
@@ -9,11 +9,12 @@ O loader só existe na versão compilada. Quem roda o `TabWon.py` direto pelo Py
 ## Como funciona
 
 1. Os atalhos e o instalador apontam sempre para o **`TabWon.exe`**, que é o loader.
-2. Assim que a tela aparece, o loader cria um sinal do Windows (evento nomeado), guarda o nome dele na variável de ambiente `TABWON_LOADER_EVENTO` e inicia o `TabWon_tabulador.exe` da mesma pasta, repassando os argumentos recebidos.
-3. Quando termina de montar a janela, o `TabWon.py` aciona esse sinal (função `_avisar_loader`), e o loader se fecha.
-4. O loader também se fecha se o tabulador for encerrado, se a janela do TabWon estiver aberta há mais de 20 segundos sem o sinal ou depois de 5 minutos.
+2. Assim que a tela aparece, o loader confere se o usuário pode gravar na pasta do programa (e na `TabWon_configs`). Se não puder, mostra "Seu usuário não tem permissão de escrita, contate o suporte técnico." e não abre o TabWon.
+3. Em seguida, o loader cria um sinal do Windows (evento nomeado), guarda o nome dele na variável de ambiente `TABWON_LOADER_EVENTO` e inicia o `TabWon_tabulador.exe` da mesma pasta, repassando os argumentos recebidos.
+4. Quando termina de montar a janela, o `TabWon.py` aciona esse sinal (função `_avisar_loader`), e o loader se fecha.
+5. O loader também se fecha se o tabulador for encerrado, se a janela do TabWon estiver aberta há mais de 20 segundos sem o sinal ou depois de 5 minutos.
 
-A tela aparece centralizada no monitor onde está o mouse, com os textos em português do Brasil. O loader mostra a tela primeiro e só depois inicia o tabulador, para que ela apareça logo após o clique. O loader não mostra a versão do TabWon. A versão que aparece nas propriedades do arquivo (1.0.0.0) é a do próprio loader.
+A tela aparece centralizada no monitor onde está o mouse, com os textos em português do Brasil. O loader mostra a tela primeiro e só depois inicia o tabulador, para que ela apareça logo após o clique. O loader não mostra a versão na tela, mas as propriedades do arquivo trazem a mesma versão do TabWon (1.00.2).
 
 ## Arquivos desta pasta
 
@@ -21,7 +22,8 @@ A tela aparece centralizada no monitor onde está o mouse, com os textos em port
 |---|---|
 | `TabWon_loader.cs` | Código-fonte em C#. |
 | `TabWon_loader.manifest` | Manifesto do Windows: roda sem administrador e com nitidez em telas com zoom. |
-| `TabWon_loader.png` | Logotipo exibido na tela de carregamento (vai embutido no `.exe`). |
+| `TabWon_loader.png` | Logotipo sem a molécula, exibido na tela de carregamento (vai embutido no `.exe`). |
+| `TabWon_loader_molecula.png` | Molécula do logotipo, desenhada por cima e animada enquanto o TabWon carrega (vai embutida no `.exe`). |
 | `compilar_loader.bat` | Compila o loader com um duplo clique. |
 | `saida\` | Onde o `TabWon.exe` é gerado. Fica fora do repositório. |
 
@@ -37,7 +39,7 @@ O ícone é o mesmo do programa, `TabWon_configs\TabWon_icos.ico`, e também vai
 
 O compilador do Windows pode mostrar um aviso de que só aceita até o C# 5. É normal: o código foi escrito para essa versão.
 
-O `compilar.bat` da pasta principal já compila o loader no fim da compilação do TabWon e copia o `TabWon.exe` para `dist\TabWon`. O `compilar_loader.bat` serve para compilar só o loader.
+O `compilar.bat` da pasta principal já compila o loader no fim da compilação do TabWon, dentro da pasta `Compilado`, e o junta aos demais arquivos. O `compilar_loader.bat` serve para compilar só o loader; para gerar o `.exe` em outra pasta, defina antes a variável `TABWON_LOADER_SAIDA` com o caminho desejado.
 
 ## Onde o loader fica
 

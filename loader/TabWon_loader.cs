@@ -16,8 +16,9 @@ using System.Windows.Forms;
 [assembly: AssemblyProduct("TabWon")]
 [assembly: AssemblyCopyright("Copyright (C) 2026 Thiago Rodrigues - GNU GPL v3")]
 [assembly: AssemblyTrademark("TabWon")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.2.0")]
+[assembly: AssemblyFileVersion("1.0.2.0")]
+[assembly: AssemblyInformationalVersion("1.00.2")]
 [assembly: ComVisible(false)]
 
 namespace TabWonLoader
@@ -37,13 +38,18 @@ namespace TabWonLoader
     {
         const string Tabulador = "TabWon_tabulador.exe";
         const string VariavelEvento = "TABWON_LOADER_EVENTO";
-        const string Subtitulo = "Tabulador Livre de dados do SUS";
+        const string Subtitulo = "Tabulador Código Aberto para dados SUS";
         const string Aviso = "A primeira abertura pode levar cerca de um minuto.";
         const string Iniciando = "Iniciando o TabWon...";
         const string Carregando = "Carregando as bibliotecas...";
         const string Demorando = "Ainda carregando: pela rede ou na primeira abertura demora mais.";
         const string Preparando = "Preparando a janela...";
+        const string SemPermissao = "Seu usuário não tem permissão de escrita, contate o suporte técnico.";
         const int LimiteSegundos = 300;
+        const float MolX = 245f / 580f, MolY = 1f / 211f, MolL = 248f / 580f, MolA = 206f / 211f;
+        static readonly int[] CorteLetras = { 0, 69, 167, 300, 483, 580 };
+        const int PosicaoMolecula = 3;
+        const double CicloOndaMs = 2600, AtrasoLetraMs = 110, PuloMs = 420;
         const int FolgaJanelaSegundos = 20;
         static readonly Color Azul = Color.FromArgb(31, 95, 168);
         static readonly Color AzulClaro = Color.FromArgb(220, 231, 241);
@@ -57,7 +63,7 @@ namespace TabWonLoader
         readonly float esc = 1f;
         Process proc;
         EventWaitHandle pronto;
-        Image logo;
+        Image logo, molecula;
         Font fonteSub, fonteAviso, fonteStatus;
         long janelaVistaEm = -1;
         long ultimaConsulta = -1000;
@@ -82,8 +88,10 @@ namespace TabWonLoader
             {
                 Stream st = Assembly.GetExecutingAssembly().GetManifestResourceStream("TabWon_loader.png");
                 if (st != null) logo = Image.FromStream(st);
+                Stream sm = Assembly.GetExecutingAssembly().GetManifestResourceStream("TabWon_loader_molecula.png");
+                if (sm != null) molecula = Image.FromStream(sm);
             }
-            catch { logo = null; }
+            catch { logo = null; molecula = null; }
             fonteSub = new Font("Segoe UI", 11f);
             fonteAviso = new Font("Segoe UI", 8.5f);
             fonteStatus = new Font("Segoe UI", 9f);
@@ -129,6 +137,14 @@ namespace TabWonLoader
                 Close();
                 return;
             }
+            if (!PodeGravar(pasta) || (Directory.Exists(Path.Combine(pasta, "TabWon_configs"))
+                                       && !PodeGravar(Path.Combine(pasta, "TabWon_configs"))))
+            {
+                Hide();
+                MessageBox.Show(SemPermissao, "TabWon", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Close();
+                return;
+            }
             string nomeEvento = "Local\\TabWon_pronto_" + Guid.NewGuid().ToString("N");
             pronto = new EventWaitHandle(false, EventResetMode.ManualReset, nomeEvento);
             ProcessStartInfo psi = new ProcessStartInfo(alvo, JuntarArgumentos(argumentos));
@@ -149,6 +165,26 @@ namespace TabWonLoader
             }
             try { AllowSetForegroundWindow(proc.Id); } catch { }
             timer.Start();
+        }
+
+        static bool PodeGravar(string pasta)
+        {
+            string teste = Path.Combine(pasta, ".tabwon_permissao_" + Guid.NewGuid().ToString("N") + ".tmp");
+            try
+            {
+                using (FileStream fs = new FileStream(teste, FileMode.CreateNew, FileAccess.Write, FileShare.None,
+                                                      16, FileOptions.DeleteOnClose))
+                {
+                    fs.WriteByte(1);
+                    fs.Flush();
+                }
+                return true;
+            }
+            catch
+            {
+                try { if (File.Exists(teste)) File.Delete(teste); } catch { }
+                return false;
+            }
         }
 
         static string JuntarArgumentos(string[] args)
@@ -210,6 +246,13 @@ namespace TabWonLoader
             return Demorando;
         }
 
+        float Pulo(int ordem, int alturaLogo)
+        {
+            double p = (relogio.ElapsedMilliseconds - ordem * AtrasoLetraMs) % CicloOndaMs;
+            if (p < 0 || p > PuloMs) return 0f;
+            return (float)(Math.Sin(p / PuloMs * Math.PI) * alturaLogo * 0.12);
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -222,7 +265,28 @@ namespace TabWonLoader
             {
                 int lw = S(290);
                 int lh = (int)Math.Round(lw * (double)logo.Height / logo.Width);
-                g.DrawImage(logo, new Rectangle((w - lw) / 2, y, lw, lh));
+                int lx = (w - lw) / 2;
+                float fx = (float)lw / logo.Width, fy = (float)lh / logo.Height;
+                for (int i = 0; i + 1 < CorteLetras.Length; i++)
+                {
+                    int ordem = i < PosicaoMolecula ? i : i + 1;
+                    int sx = CorteLetras[i], sl = CorteLetras[i + 1] - sx;
+                    RectangleF destino = new RectangleF(lx + sx * fx, y - Pulo(ordem, lh), sl * fx, lh);
+                    g.DrawImage(logo, destino, new RectangleF(sx, 0, sl, logo.Height), GraphicsUnit.Pixel);
+                }
+                if (molecula != null)
+                {
+                    float mx = lx + lw * MolX, my = y + lh * MolY - Pulo(PosicaoMolecula, lh), mw = lw * MolL, mh = lh * MolA;
+                    double t = relogio.ElapsedMilliseconds / 1400.0 * 2 * Math.PI;
+                    float escala = 1f + 0.05f * (float)(0.5 - 0.5 * Math.Cos(t));
+                    float angulo = 4f * (float)Math.Sin(t / 2);
+                    GraphicsState estado = g.Save();
+                    g.TranslateTransform(mx + mw / 2, my + mh / 2);
+                    g.RotateTransform(angulo);
+                    g.ScaleTransform(escala, escala);
+                    g.DrawImage(molecula, new RectangleF(-mw / 2, -mh / 2, mw, mh));
+                    g.Restore(estado);
+                }
                 y += lh + S(12);
             }
             else
@@ -271,6 +335,7 @@ namespace TabWonLoader
             timer.Dispose();
             if (pronto != null) pronto.Dispose();
             if (logo != null) logo.Dispose();
+            if (molecula != null) molecula.Dispose();
             fonteSub.Dispose(); fonteAviso.Dispose(); fonteStatus.Dispose();
             base.OnFormClosed(e);
         }

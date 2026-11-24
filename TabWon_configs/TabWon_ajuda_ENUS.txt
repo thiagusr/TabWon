@@ -1,6 +1,6 @@
 TabWon — Help Guide
 
-Version: 1.00.1
+Version: 1.00.2
 
 
 === About this guide
@@ -88,7 +88,9 @@ The full list is also in *⚙ → Keyboard shortcuts* (F1).
   a) *Double-click the table title* — opens the Details window;
   b) *Double-click a column in "Edit / Move columns"* — applies
      formatting;
-  c) *Double-click a saved query* — loads the query.
+  c) *Double-click a saved query* — loads the query;
+  d) *Double-click a result cell* — lets you select and copy part of
+     the text or value, without editing.
 
 
 === Practical tabulation example
@@ -214,6 +216,16 @@ automatically, making the table much easier to read.
 You do not need to worry about the CNV: if the DEF already points to
 the file, TabWon applies it by itself.
 *Just make sure the .cnv file is in the same folder as the .def*.
+
+*New TabWin format:* TabWon also reads CNVs in the latest TabWin
+format, with *N* at the start of the header (e.g. N 95 6 L),
+descriptions of up to 100 characters and UTF-8 files. The CNV editor
+opens and saves these files in the same format.
+
+*Same category number on more than one line:* the lines form a single
+category, which uses the description of the last line, as in TabWin.
+Code ranges (e.g. 000000-999999) also apply to codes ending with blank
+spaces.
 
 *Tip:* on the first reading of a DBC, TabWon creates a cache (see the
 *DBC cache* section). Later readings are much faster.
@@ -363,7 +375,11 @@ After the tabulation, you see:
   e) The "New Query" button on the right.
 
 *Double-clicking the table title* opens the details window (title,
-text color, show/hide TOTAL).
+text color, show/hide TOTAL and the Total tabulado column).
+
+*Copying a part:* *double-click a cell* to select the text or value
+and copy just a part (Ctrl+C). Nothing changes in the table. The right
+click menu also has *📋 Copy value*.
 
 
 === How to read the table
@@ -383,8 +399,8 @@ the database.
 If you chose more than one increment (possible with Columns set to
 "Não ativa"), the table has one column for each increment.
 
-*Tip:* sort a column by clicking its heading. TabWon toggles between
-ascending and descending on each click.
+*Tip:* sort a column by clicking its heading, including the first
+column. TabWon toggles between ascending and descending on each click.
 
 
 === TOTAL row
@@ -403,6 +419,23 @@ You can:
 *Careful:* if you run operations after deleting the TOTAL, the total is
 not recalculated automatically. Use "Details" → "Show TOTAL row" to
 recalculate.
+
+
+=== Total tabulado column
+
+When a *Column* is active (other than "Não ativa") and the result has
+more than one column, TabWon adds the *Total tabulado* column, with the sum of
+each row. It comes right after the tabulation columns and is
+highlighted (in the letter bar above the table, in the XLSX export and
+in the formatted copy).
+
+  a) Columns created later (operations, functions etc.) come after the
+     Total tabulado column;
+  b) Moving the tabulation columns does not change the Total tabulado;
+     deleting one of them recalculates it;
+  c) To *hide* or *show* the Total tabulado column: right click on the
+     table or Details window → "Show Total tabulado column". The choice goes into the
+     superlog.
 
 
 === Toolbar (result)
@@ -759,7 +792,7 @@ the charts.
 === Save query
 
 The "Save query" button opens a window where you give the query a
-*unique name*. There are two options:
+*unique name* (up to 30 characters). There are two options:
 
   a) *Save DBC selection* — includes the chosen files in the log;
   b) *Save Super Log* — includes the adjustments and charts.
@@ -824,6 +857,13 @@ of the sheet.
 *Tip:* the Excel tab has the tabulation name. If the name has invalid
 characters, TabWon removes them automatically.
 
+*Where to save:* to keep things organized, by default TabWon does not
+allow saving XLSX and CSV files in the TabWon folder, in the TabWin
+folder or in their subfolders. The save window already opens in the
+*Downloads* folder (or in the last folder used). This also applies to
+Save records, batch queries and the SQL Consultant. It can be allowed
+in Advanced settings → Menu and queries.
+
 
 === CSV export
 
@@ -834,6 +874,8 @@ BOM, compatible with Brazilian Excel).
 
 *Attention:* the CSV uses a *semicolon* as separator (Brazilian
 standard). If your program expects a comma, adjust it when importing.
+
+*Where to save:* the same rules as the XLSX export.
 
 
 === Copy table
@@ -879,6 +921,12 @@ automatically invalidated and the file is converted again.
 
 The files are in *TabWon_configs/.cache_dbc/*, in the TabWon folder
 itself, and the index in *TabWon_configs/.cache_dbc/_index.json*.
+
+*Several users on the network:* the cache is shared: a DBC converted
+by one user serves everybody. If your user cannot read or write the
+network *.cache_dbc/* folder, TabWon automatically uses a local cache on
+your computer (in *%LOCALAPPDATA%\TabWon\cache_dbc*), which is cleaned
+up by itself after 7 days without use.
 
 *To clear the cache manually:* delete the *.cache_dbc/* folder. The next
 time you tabulate, TabWon rebuilds the cache from scratch.
@@ -1028,7 +1076,8 @@ Colors tab).
      user preferences (see the *TabWin folder* section);
   b) *Menu and queries* — show or hide in the menu the DEF and CNV
      editors, the SQL Consultant and the converter; allow renaming and
-     deleting saved queries; list of identifiers (one per line);
+     deleting saved queries; list of identifiers (one per line); allow
+     saving XLSX and CSV in the TabWon and TabWin folders;
   c) *Colors* — available palettes (check and sort), default palette
      and default mode;
   d) *Users* — list of who has saved preferences, with the option to
@@ -1058,7 +1107,9 @@ settings):
 
   a) Lists the CNVs used by the chosen DEF;
   b) Edits line by line (sequence number, subtotal, description up to
-     50 characters, codes and ranges);
+     50 characters, or 100 in the new format, codes and ranges). The
+     sort buttons switch between ascending and descending on each click,
+     and *Text* sorts by description ignoring the leading numbers;
   c) Generates a CNV from a DBC field or from a DBF table;
   d) "✔ Validate" points out problems and offers guided fixing.
 

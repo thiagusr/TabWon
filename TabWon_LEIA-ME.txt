@@ -1,0 +1,62 @@
+﻿TabWon - Tabulador Livre de dados do SUS
+========================================
+
+Autor: Thiago Rodrigues (thiagusr) - Porto Alegre/RS
+Site: https://tabwon.org
+Código-fonte: https://github.com/thiagusr/TabWon
+Licença: GNU General Public License, versão 3 (GPL-3.0)
+         texto completo em TabWon_configs\LICENSE; leia também o AVISO.md
+
+COMO USAR (VERSÃO PORTÁTIL, SEM INSTALADOR)
+-------------------------------------------
+1. Copie ou extraia TODO o conteúdo diretamente na pasta do TabWin
+   (por exemplo, C:\TABWIN), sem criar subpasta. Assim o TabWon
+   encontra os mesmos DEFs e CNVs que você já usa.
+   Também funciona em qualquer outra pasta em que você possa gravar:
+   se ela não tiver DEFs, na primeira abertura o TabWon pede a pasta
+   do TabWin, que pode ser da rede. Nela ficam também as consultas
+   salvas e as preferências dos usuários, compartilhadas por todos.
+2. Abra o TabWon.exe. Ele mostra uma tela de carregamento e abre o
+   TabWon_tabulador.exe, que é o programa principal.
+   A primeira execução pode demorar cerca de um minuto, enquanto o
+   Windows prepara o programa (e o antivírus o verifica). As
+   seguintes são bem mais rápidas.
+
+Não precisa de administrador, mas o usuário precisa de permissão de
+gravação na pasta do TabWon. Nada do TabWin é apagado ou alterado:
+o TabWon só acrescenta TabWon.exe, TabWon_tabulador.exe,
+TabWon_dependencias\, TabWon_configs\ e este arquivo.
+
+ATUALIZANDO UMA VERSÃO ANTERIOR
+-------------------------------
+Se você já usa o TabWon nesta pasta, NÃO substitua o arquivo
+TabWon_configs\TabWon_configs.ini, para manter as suas configurações.
+As consultas salvas e os seus dados continuam no lugar.
+
+COMO REMOVER
+------------
+Apague TabWon.exe, TabWon_tabulador.exe, TabWon_dependencias\ e este
+arquivo. Apague TabWon_configs\ somente se não quiser guardar as suas
+configurações e consultas salvas.
+
+PREFERE INSTALAR?
+-----------------
+Use o instalador do TabWon (TabWon_<versão>_instalador.exe): ele cria
+atalhos na Área de Trabalho e no menu Iniciar e o TabWon_desinstalar.
+
+SOBRE O PROJETO
+---------------
+O TabWon é software livre, inspirado no TabWin e SEM VÍNCULO com o
+DATASUS ou com o Ministério da Saúde. Lê os mesmos arquivos DEF, CNV,
+DBF e DBC. Funciona 100% no seu computador: nenhum dado é enviado
+para fora.
+
+Você pode usar, estudar, copiar, modificar e redistribuir o TabWon,
+desde que mantenha a mesma licença, disponibilize o código-fonte e
+mantenha a autoria original (TabWon, de Thiago Rodrigues), os
+arquivos de licença e de aviso e a tela "Sobre" do programa.
+O programa é fornecido SEM NENHUMA GARANTIA.
+
+Versão em fase de testes. Baixe somente das fontes oficiais:
+https://tabwon.org e https://github.com/thiagusr/TabWon
+Confira a impressão digital (SHA-256) publicada junto do arquivo.
