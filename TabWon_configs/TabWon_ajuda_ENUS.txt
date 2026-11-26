@@ -1,6 +1,6 @@
 TabWon — Help Guide
 
-Version: 1.00.2
+Version: 1.00.3
 
 
 === About this guide
@@ -226,6 +226,13 @@ opens and saves these files in the same format.
 category, which uses the description of the last line, as in TabWin.
 Code ranges (e.g. 000000-999999) also apply to codes ending with blank
 spaces.
+
+*DBF table in the DEF* (e.g. Grupo Procedimento with TB_GRUPO.DBF): as
+in TabWin, the start of the field is compared with the table code. If
+the DBF code has 2 characters, group 04 gathers all procedures
+04xxxxxxxx. In the tabulation and in the selections, each category
+appears as "code - description" (e.g. 04 - Procedimentos cirúrgicos); a
+log that brings only the description is still recognized.
 
 *Tip:* on the first reading of a DBC, TabWon creates a cache (see the
 *DBC cache* section). Later readings are much faster.
@@ -1112,6 +1119,16 @@ settings):
      and *Text* sorts by description ignoring the leading numbers;
   c) Generates a CNV from a DBC field or from a DBF table;
   d) "✔ Validate" points out problems and offers guided fixing.
+  e) *DBF tables* (such as TB_GRUPO.DBF) open in the same editor: the
+     list shows the code next to the description ("04 -
+     Procedimentos cirúrgicos"). "💾 Save" writes in the original format
+     and "💾 Save as" offers DBF or CNV;
+  f) Line breaks pasted into the description (e.g. copied from Excel)
+     are removed. A CNV with broken lines opens normally: the pieces are
+     joined and saving fixes the file;
+  g) When saving, the header follows the sequence numbers. If there are
+     gaps (missing sequence numbers), TabWon offers to renumber from 1
+     to the total number of categories.
 
 
 === SQL Consultant

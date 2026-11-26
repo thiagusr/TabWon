@@ -16,9 +16,9 @@ using System.Windows.Forms;
 [assembly: AssemblyProduct("TabWon")]
 [assembly: AssemblyCopyright("Copyright (C) 2026 Thiago Rodrigues - GNU GPL v3")]
 [assembly: AssemblyTrademark("TabWon")]
-[assembly: AssemblyVersion("1.0.2.0")]
-[assembly: AssemblyFileVersion("1.0.2.0")]
-[assembly: AssemblyInformationalVersion("1.00.2")]
+[assembly: AssemblyVersion("1.0.3.0")]
+[assembly: AssemblyFileVersion("1.0.3.0")]
+[assembly: AssemblyInformationalVersion("1.00.3")]
 [assembly: ComVisible(false)]
 
 namespace TabWonLoader

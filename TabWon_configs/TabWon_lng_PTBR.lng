@@ -23,7 +23,7 @@
 
 [idioma]
 Idioma_nome = "Português (Brasil)"
-Idioma_versao = "1.00.2"
+Idioma_versao = "1.00.3"
 
 # ----------------------------------------------------------------------
 # TEXTOS GERAIS, BOTÕES E MENSAGENS
@@ -1700,3 +1700,34 @@ TT_ORDENAR_PELA_DESCRICAO_IGNORANDO = "Ordenar pela descrição ignorando os nú
 TT_ORDENAR_PELO_CODIGO_CLIQUE       = "Ordenar as linhas pelo código (clique de novo para inverter)"
 TX_NOV_ORDENAR_PRIMEIRA_COLUNA      = "No resultado, a primeira coluna também pode ser ordenada, clicando no título."
 TX_NOV_ORDENACAO_EDITOR_CNV         = "Editor de CNV: os botões de ordenação alternam entre crescente e decrescente, e o novo botão Texto ordena pela descrição ignorando os números do início."
+
+# ----------------------------------------------------------------------
+# VERSÃO 1.00.3
+# ----------------------------------------------------------------------
+[versao_1_00_3]
+MSG_CNV_OU_DBF                      = "CNV ou DBF"
+LB_TABELA_DBF_CODIGO_DESCRICAO      = "Tabela DBF  ·  código: {1} ({2})  ·  descrição: {3} ({4})"
+LB_REGISTROS_N                      = "Registros: {1}"
+TT_CNV_LINHAS_QUEBRADAS             = "CNV com linhas quebradas"
+MSG_LINHAS_QUEBRADAS_JUNTADAS       = "{1} linha(s) estavam quebradas (código na linha de baixo) e foram juntadas à linha anterior."
+MSG_CONFIRA_E_SALVE_CORRIGIR        = "Confira e salve para corrigir o arquivo."
+TT_SEQUENCIAIS_COM_LACUNAS          = "Sequenciais com lacunas"
+MSG_SEQUENCIAIS_VAO_ATE             = "Os sequenciais vão até {1}, mas há {2} categorias (faltam {3})."
+MSG_SIM_RENUMERAR_ANTES             = "Sim: renumerar de 1 a {1} antes de salvar (o cabeçalho fica com {2})."
+MSG_NAO_SALVAR_ASSIM                = "Não: salvar assim (o cabeçalho fica com {1}, o maior sequencial)."
+TT_SALVAR_DBF                       = "Salvar DBF"
+MSG_NAO_FOI_POSSIVEL_SALVAR_DBF     = "Não foi possível salvar como DBF:"
+MSG_LINHA_DBF_UM_CODIGO             = "linha {1} ({2}): a tabela DBF aceita um único código por linha"
+TX_SEM_DESCRICAO                    = "sem descrição"
+MSG_FAIXA_NAO_VIRA_DBF              = "faixa '{1}' (seq {2}) não pode virar registros de DBF"
+MSG_CODIGO_MAIS_DE_N                = "código '{1}' tem mais de {2} caracteres"
+MSG_SEQUENCIAL_GRANDE_DEMAIS        = "sequencial '{1}' grande demais: parece um código numa linha quebrada"
+MSG_DBF_UM_CODIGO_POR_LINHA         = "a tabela DBF aceita um único código por linha"
+MSG_CODIGO_TEM_N_MAXIMO             = "código '{1}' tem {2} caracteres (máximo {3})"
+MSG_CODIGO_REPETIDO_LINHA           = "código '{1}' repetido na linha #{2}"
+TX_NOV_TABELA_DBF_PREFIXO           = "Itens do DEF com tabela DBF (como TB_GRUPO.DBF) comparam o início do campo com o código da tabela, como o TabWin: o grupo 04 reúne os procedimentos 04xxxxxxxx."
+TX_NOV_EDITOR_CNV_DBF               = "Editor de CNV: tabelas DBF abrem no mesmo editor, com o código junto da descrição; Salvar grava no formato de origem e Salvar como oferece DBF ou CNV."
+TX_NOV_CNV_QUEBRADA                 = "Editor de CNV: quebras de linha coladas na descrição são removidas, CNVs com linhas quebradas abrem sem travar e são consertados, e ao salvar o cabeçalho acompanha os sequenciais (com opção de renumerar lacunas)."
+TX_NOV_CNVS_DEF_ORDEM               = "Editor de CNV: a lista de CNVs usados pelo DEF fica em ordem alfabética, e a lista de linhas mantém a posição de rolagem ao incluir ou alterar itens."
+TX_NOV_LOG_ROLAGEM                  = "O quadro do log na tela inicial mantém a posição de rolagem enquanto a consulta é montada."
+TX_NOV_DBF_CODIGO_DESCRICAO         = "Itens do DEF com tabela DBF mostram \"código - descrição\" (ex.: 04 - Procedimentos cirúrgicos) na tabulação e nas seleções; logs que trazem só a descrição continuam funcionando."

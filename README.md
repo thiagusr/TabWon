@@ -5,7 +5,7 @@
 <h3 align="center">Tabulador Livre de dados do SUS</h3>
 
 <p align="center">
-  Versão 1.00.2 · Windows · Código aberto (GPL-3.0) · Funciona 100% no seu computador
+  Versão 1.00.3 · Windows · Código aberto (GPL-3.0) · Funciona 100% no seu computador
 </p>
 
 ---
@@ -58,7 +58,7 @@ existiria.
 
 ### Fase de testes e versão oficial
 
-O TabWon está na **versão 1.00.2, em fase de testes**. Antes da versão oficial, o programa passa
+O TabWon está na **versão 1.00.3, em fase de testes**. Antes da versão oficial, o programa passa
 por **três etapas de testes**, cada uma com um número mínimo de pessoas:
 
 |Etapa|Testadores (mínimo)|Objetivo|

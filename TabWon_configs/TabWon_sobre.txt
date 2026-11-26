@@ -1,6 +1,6 @@
 TabWon — Tabulador Livre
 
-Versão: 1.00.2
+Versão: 1.00.3
 
 === Sobre o programa
 

@@ -65,7 +65,7 @@ class _DuckDBSobDemanda:
 
 duckdb = _DuckDBSobDemanda()
 
-VERSAO = "1.00.2"
+VERSAO = "1.00.3"
 COR_FUNDO = "#F5F5F5"
 COR_SUPER_LOG = "#1565C0"
 COR_TRAVADO = "#ECECEC"
@@ -2076,6 +2076,32 @@ TEXTOS_PT = {
     'TT_ORDENAR_PELO_CODIGO_CLIQUE': 'Ordenar as linhas pelo código (clique de novo para inverter)',
     'TX_NOV_ORDENAR_PRIMEIRA_COLUNA': 'No resultado, a primeira coluna também pode ser ordenada, clicando no título.',
     'TX_NOV_ORDENACAO_EDITOR_CNV': 'Editor de CNV: os botões de ordenação alternam entre crescente e decrescente, e o novo botão Texto ordena pela descrição ignorando os números do início.',
+    'MSG_CNV_OU_DBF': 'CNV ou DBF',
+    'LB_TABELA_DBF_CODIGO_DESCRICAO': 'Tabela DBF  ·  código: {1} ({2})  ·  descrição: {3} ({4})',
+    'LB_REGISTROS_N': 'Registros: {1}',
+    'TT_CNV_LINHAS_QUEBRADAS': 'CNV com linhas quebradas',
+    'MSG_LINHAS_QUEBRADAS_JUNTADAS': '{1} linha(s) estavam quebradas (código na linha de baixo) e foram juntadas à linha anterior.',
+    'MSG_CONFIRA_E_SALVE_CORRIGIR': 'Confira e salve para corrigir o arquivo.',
+    'TT_SEQUENCIAIS_COM_LACUNAS': 'Sequenciais com lacunas',
+    'MSG_SEQUENCIAIS_VAO_ATE': 'Os sequenciais vão até {1}, mas há {2} categorias (faltam {3}).',
+    'MSG_SIM_RENUMERAR_ANTES': 'Sim: renumerar de 1 a {1} antes de salvar (o cabeçalho fica com {2}).',
+    'MSG_NAO_SALVAR_ASSIM': 'Não: salvar assim (o cabeçalho fica com {1}, o maior sequencial).',
+    'TT_SALVAR_DBF': 'Salvar DBF',
+    'MSG_NAO_FOI_POSSIVEL_SALVAR_DBF': 'Não foi possível salvar como DBF:',
+    'MSG_LINHA_DBF_UM_CODIGO': 'linha {1} ({2}): a tabela DBF aceita um único código por linha',
+    'TX_SEM_DESCRICAO': 'sem descrição',
+    'MSG_FAIXA_NAO_VIRA_DBF': "faixa '{1}' (seq {2}) não pode virar registros de DBF",
+    'MSG_CODIGO_MAIS_DE_N': "código '{1}' tem mais de {2} caracteres",
+    'MSG_SEQUENCIAL_GRANDE_DEMAIS': "sequencial '{1}' grande demais: parece um código numa linha quebrada",
+    'MSG_DBF_UM_CODIGO_POR_LINHA': 'a tabela DBF aceita um único código por linha',
+    'MSG_CODIGO_TEM_N_MAXIMO': "código '{1}' tem {2} caracteres (máximo {3})",
+    'MSG_CODIGO_REPETIDO_LINHA': "código '{1}' repetido na linha #{2}",
+    'TX_NOV_TABELA_DBF_PREFIXO': 'Itens do DEF com tabela DBF (como TB_GRUPO.DBF) comparam o início do campo com o código da tabela, como o TabWin: o grupo 04 reúne os procedimentos 04xxxxxxxx.',
+    'TX_NOV_EDITOR_CNV_DBF': 'Editor de CNV: tabelas DBF abrem no mesmo editor, com o código junto da descrição; Salvar grava no formato de origem e Salvar como oferece DBF ou CNV.',
+    'TX_NOV_CNV_QUEBRADA': 'Editor de CNV: quebras de linha coladas na descrição são removidas, CNVs com linhas quebradas abrem sem travar e são consertados, e ao salvar o cabeçalho acompanha os sequenciais (com opção de renumerar lacunas).',
+    'TX_NOV_CNVS_DEF_ORDEM': 'Editor de CNV: a lista de CNVs usados pelo DEF fica em ordem alfabética, e a lista de linhas mantém a posição de rolagem ao incluir ou alterar itens.',
+    'TX_NOV_LOG_ROLAGEM': 'O quadro do log na tela inicial mantém a posição de rolagem enquanto a consulta é montada.',
+    'TX_NOV_DBF_CODIGO_DESCRICAO': 'Itens do DEF com tabela DBF mostram "código - descrição" (ex.: 04 - Procedimentos cirúrgicos) na tabulação e nas seleções; logs que trazem só a descrição continuam funcionando.',
 }
 
 
@@ -3176,6 +3202,14 @@ def _anexar_consultas(texto):
 
 
 HISTORICO_VERSOES = [
+    ("1.00.3", "26/11/2026", [
+        'Itens do DEF com tabela DBF (como TB_GRUPO.DBF) comparam o início do campo com o código da tabela, como o TabWin: o grupo 04 reúne os procedimentos 04xxxxxxxx.',
+        'Itens do DEF com tabela DBF mostram "código - descrição" (ex.: 04 - Procedimentos cirúrgicos) na tabulação e nas seleções; logs que trazem só a descrição continuam funcionando.',
+        'Editor de CNV: tabelas DBF abrem no mesmo editor, com o código junto da descrição; Salvar grava no formato de origem e Salvar como oferece DBF ou CNV.',
+        'Editor de CNV: quebras de linha coladas na descrição são removidas, CNVs com linhas quebradas abrem sem travar e são consertados, e ao salvar o cabeçalho acompanha os sequenciais (com opção de renumerar lacunas).',
+        'Editor de CNV: a lista de CNVs usados pelo DEF fica em ordem alfabética, e a lista de linhas mantém a posição de rolagem ao incluir ou alterar itens.',
+        'O quadro do log na tela inicial mantém a posição de rolagem enquanto a consulta é montada.',
+    ]),
     ("1.00.2", "23/11/2026", [
         'CNVs no formato novo do TabWin (cabeçalho com N, descrições de até 100 caracteres e arquivos em UTF-8) agora são lidos, tabulados e editados corretamente. DEFs em UTF-8 também são lidos.',
         'Nova consulta: a Linha e a Coluna voltam selecionadas exatamente como na última tabulação.',
@@ -3188,8 +3222,7 @@ HISTORICO_VERSOES = [
         'CNVs: linhas com o mesmo número de categoria ficam numa só categoria, com a descrição da última linha, e as faixas de códigos também valem para códigos com espaços no fim, como no TabWin.',
         'Editor de CNV: a lista de CNVs do DEF mostra primeiro o nome no DEF e depois o arquivo; a coluna Comentário saiu da edição das linhas.',
         'No resultado, a primeira coluna também pode ser ordenada, clicando no título.',
-        'Editor de CNV: os botões de ordenação alternam entre crescente e decrescente, e o novo botão Texto ordena pela descrição ignorando os números do início.',
-    ]),
+        'Editor de CNV: os botões de ordenação alternam entre crescente e decrescente, e o novo botão Texto ordena pela descrição ignorando os números do início.',    ]),
     ("1.00.1", "21/11/2026", [
         'Pasta do TabWin: na primeira abertura, se não houver DEFs na pasta do TabWon, o programa pede a pasta do TabWin, que pode ser da rede.',
         'DEFs, consultas salvas, últimas pesquisas e preferências dos usuários ficam na pasta do TabWin, compartilhados por todos que a usam. A pasta pode ser trocada em Configurações avançadas.',
@@ -4040,7 +4073,23 @@ _RE_CAB_CNV = re.compile(r"^\s*(?:([A-Za-z])\s+)?(\d+)\s+(\d+)\s*([A-Za-z]*)")
 
 
 def _limite_desc_cnv(cab):
+    if (cab or {}).get("limite_desc"): return int(cab["limite_desc"])
     return 100 if str((cab or {}).get("prefixo", "")).upper() == "N" else 50
+
+
+def _sequenciais_faltando(seqs, limite=16):
+    faltam = []; total = 0; ant = 0
+    for v in sorted(seqs):
+        if v - ant > 1:
+            total += v - ant - 1
+            k = ant + 1
+            while k < v and len(faltam) < limite: faltam.append(k); k += 1
+        ant = v
+    return faltam, total
+
+
+def _texto_uma_linha(v):
+    return re.sub(r"\s*[\r\n\t]+\s*", " ", str(v or "")).strip()
 
 
 def _coluna_codigos_cnv(linhas, largo):
@@ -4142,24 +4191,93 @@ def _cnv_existe(spec):
     return os.path.exists(_dividir_spec(spec)[0])
 
 
-def _ler_dbf_tabela(caminho):
+_CODEPAGES_DBF = {0x01: "cp437", 0x02: "cp850", 0x03: "cp1252", 0x57: "cp1252", 0x64: "cp852"}
+
+
+def _ler_dbf_estrutura(caminho):
     import struct
     with open(caminho, "rb") as f: dados = f.read()
     n_reg, tam_cab, tam_reg = struct.unpack("<IHH", dados[4:12])
-    cp = {0x01: "cp437", 0x02: "cp850", 0x03: "cp1252", 0x57: "cp1252", 0x64: "cp852"}.get(dados[29], "latin-1")
+    cp = _CODEPAGES_DBF.get(dados[29], "latin-1")
     campos = []; pos = 1; i = 32
     while i + 32 <= tam_cab and dados[i] != 0x0D:
         nome = dados[i:i + 11].split(b"\0")[0].decode("latin-1").strip()
-        tam = dados[i + 16]
-        campos.append((nome, pos, tam)); pos += tam; i += 32
+        campos.append({"nome": nome, "tipo": chr(dados[i + 11]), "pos": pos, "tam": dados[i + 16], "dec": dados[i + 17]})
+        pos += dados[i + 16]; i += 32
     regs = []
     for r in range(n_reg):
         ini = tam_cab + r * tam_reg
         bloco = dados[ini:ini + tam_reg]
         if len(bloco) < tam_reg: break
         if bloco[:1] == b"*": continue
-        regs.append({n: bloco[p:p + t].decode(cp, errors="replace").strip() for n, p, t in campos})
-    return [c[0] for c in campos], regs
+        regs.append({c["nome"]: bloco[c["pos"]:c["pos"] + c["tam"]].decode(cp, errors="replace").strip() for c in campos})
+    return {"cabecalho": dados[:tam_cab], "tam_reg": tam_reg, "cp": cp, "campos": campos, "regs": regs}
+
+
+def _ler_dbf_tabela(caminho):
+    e = _ler_dbf_estrutura(caminho)
+    return [c["nome"] for c in e["campos"]], e["regs"]
+
+
+def _nova_estrutura_dbf(campos):
+    import struct, datetime as _dt
+    hoje = _dt.date.today()
+    tam_cab = 32 + 32 * len(campos) + 1; tam_reg = 1 + sum(t for _, t in campos)
+    cab = bytearray(32)
+    cab[0] = 0x03; cab[1:4] = bytes([hoje.year % 100, hoje.month, hoje.day])
+    cab[8:12] = struct.pack("<HH", tam_cab, tam_reg); cab[29] = 0x02
+    pos = 1; lista = []
+    for nome, tam in campos:
+        d = bytearray(32)
+        d[0:11] = nome.encode("ascii")[:10].ljust(11, b"\0"); d[11] = ord("C")
+        d[12:16] = struct.pack("<I", pos); d[16] = tam
+        cab += d; lista.append({"nome": nome, "tipo": "C", "pos": pos, "tam": tam, "dec": 0}); pos += tam
+    cab += b"\x0d"
+    return {"cabecalho": bytes(cab), "tam_reg": tam_reg, "cp": "cp850", "campos": lista, "regs": []}
+
+
+def _campos_dbf_edicao(estrutura, chave=None, desc=None):
+    nomes = [c["nome"] for c in estrutura["campos"]]
+    maiusc = {n.upper(): n for n in nomes}
+    cod = maiusc.get((chave or "").upper()) or (nomes[0] if nomes else None)
+    des = maiusc.get((desc or "").upper())
+    if not des:
+        cands = [c for c in estrutura["campos"] if c["nome"] != cod and c["tipo"] == "C"]
+        pref = [c for c in cands if re.match(r"(NO|DS|DE|NM|DESC)", c["nome"].upper())]
+        escolha = pref or sorted(cands, key=lambda c: -c["tam"])
+        des = escolha[0]["nome"] if escolha else cod
+    return cod, des
+
+
+def _ler_dbf_para_edicao(caminho, chave=None, desc=None):
+    est = _ler_dbf_estrutura(caminho)
+    cod, des = _campos_dbf_edicao(est, chave, desc)
+    tam = {c["nome"]: c["tam"] for c in est["campos"]}
+    cab = {"ncat": 0, "nchars": tam.get(cod) or 1, "flag": "L", "prefixo": ("N" if (tam.get(des) or 0) > 50 else ""),
+           "codificacao": "latin-1", "comentarios": [], "comentarios_antes": [], "limite_desc": tam.get(des) or 50,
+           "dbf": {"estrutura": est, "cod": cod, "desc": des}}
+    linhas = [{"tipo": "linha", "sub": "", "seq": str(i), "desc": str(r.get(des, "")), "cods": str(r.get(cod, "")),
+               "com": "", "_reg": r} for i, r in enumerate(est["regs"], 1)]
+    return cab, linhas
+
+
+def _gravar_dbf_estrutura(caminho, estrutura, regs):
+    import struct, datetime as _dt
+    cab = bytearray(estrutura["cabecalho"]); hoje = _dt.date.today()
+    cab[1:4] = bytes([hoje.year % 100, hoje.month, hoje.day])
+    cab[4:8] = struct.pack("<I", len(regs))
+    corpo = bytearray()
+    for reg in regs:
+        bloco = bytearray(b" " * estrutura["tam_reg"])
+        for c in estrutura["campos"]:
+            v = str(reg.get(c["nome"], "") or "")
+            b = v.encode(estrutura["cp"], errors="replace")[:c["tam"]]
+            b = b.rjust(c["tam"]) if c["tipo"] in "NF" else b.ljust(c["tam"])
+            bloco[c["pos"]:c["pos"] + c["tam"]] = b
+        corpo += bloco
+    provisorio = caminho + ".tmp_tabwon"
+    with open(provisorio, "wb") as f: f.write(bytes(cab) + bytes(corpo) + b"\x1a")
+    os.replace(provisorio, caminho)
 
 
 def _campos_do_dbc(caminho):
@@ -4217,19 +4335,21 @@ def ler_cnv(spec):
            "codigos": {}, "intervalos": [], "pai": {}, "limites": [], "dbf": False}
     if caminho.lower().endswith(".dbf"):
         try:
-            nomes, regs = _ler_dbf_tabela(caminho)
+            est = _ler_dbf_estrutura(caminho)
         except Exception as ex:
             _log(f"Tabela DBF ilegível {caminho}: {ex}"); _CNV_RICO[ch] = res; return res
+        nomes, regs = [c["nome"] for c in est["campos"]], est["regs"]
         chave = next((n for n in nomes if chave_dbf and n.upper() == chave_dbf.upper()), nomes[0] if nomes else None)
         descc = next((n for n in nomes if desc_dbf and n.upper() == desc_dbf.upper()), None)
         if descc is None: descc = nomes[1] if len(nomes) > 1 else chave
         res["dbf"] = True; res["literal"] = True
-        vistos = {}
+        res["largura_chave"] = next((c["tam"] for c in est["campos"] if c["nome"] == chave), None)
+        res["apelidos"] = {}
         for r in sorted(regs, key=lambda r: r.get(chave, "")):
-            cod = r.get(chave, ""); desc = " ".join(str(r.get(descc, "")).split()) or cod
+            cod = r.get(chave, ""); texto = " ".join(str(r.get(descc, "")).split())
             if not cod or cod in res["mapa"]: continue
-            if desc in vistos and vistos[desc] != cod: desc = f"{desc} ({cod})"
-            vistos.setdefault(desc, cod)
+            desc = f"{cod} - {texto}" if texto and descc != chave else cod
+            if texto and descc != chave: res["apelidos"].setdefault(texto, []).append(desc)
             res["mapa"][cod] = desc
             if desc not in res["codigos"]:
                 res["codigos"][desc] = []; res["cats"].append(desc)
@@ -4393,7 +4513,8 @@ def aplicar_cnv(serie, caminho_cnv, pos=1):
         s = serie.astype(str)
         if pos and pos > 1: s = s.str.slice(pos - 1)
         s = s.str.strip()
-        if cnv["n_chars"] and not cnv["dbf"]: s = s.str.slice(0, cnv["n_chars"])
+        largura = cnv.get("largura_chave") if cnv["dbf"] else cnv["n_chars"]
+        if largura: s = s.str.slice(0, largura)
     else:
         s = _normalizar_codigos(serie, cnv["n_chars"], pos)
     out = s.map(cnv["mapa"])
@@ -4462,7 +4583,11 @@ def _resolver_descricoes_cnv(descs, spec):
     def nz(t): return re.sub(r"\s+", " ", _normalizar_texto(t))
     por_nz = {}
     for r in rot_cod: por_nz.setdefault(nz(r), []).append(r)
-    descs = _reunir_rotulos(descs, list(rot_cod))
+    apelidos = (cnv or {}).get("apelidos") or {}
+    for ap, rs in apelidos.items():
+        for r in rs:
+            if r in rot_cod and r not in por_nz.setdefault(nz(ap), []): por_nz[nz(ap)].append(r)
+    descs = _reunir_rotulos(descs, list(rot_cod) + list(apelidos))
     rotulos, codigos, faltando = [], set(), []
 
     def usar(rs):
@@ -4735,6 +4860,20 @@ def _ler_cnv_para_edicao(caminho):
             continue
         inicio = False
         m1 = re.match(r"\s*(\d+)", l)
+        ant = linhas_dados[-1] if linhas_dados and linhas_dados[-1]["tipo"] == "linha" else None
+        recuo = len(l) - len(l.lstrip())
+        if ant is not None and not ant["cods"] and (not m1 or recuo > lim_seq or len(l.split()) == 1):
+            txt = l.strip()
+            if ";" in txt:
+                txt, com = txt.split(";", 1); txt = txt.strip(); ant["com"] = com.strip()
+            partes = re.split(r"\s{2,}", txt)
+            parte_desc, parte_cod = txt, ""
+            if re.fullmatch(r"[\w.\-]+(,[\w.\-]+)*", partes[-1]) and (len(partes) > 1 or re.search(r"\d", partes[-1])):
+                parte_desc, parte_cod = " ".join(partes[:-1]), partes[-1]
+            ant["desc"] = (ant["desc"] + " " + parte_desc).strip()
+            ant["cods"] = parte_cod.replace(" ", "")
+            cab["reparadas"] = cab.get("reparadas", 0) + 1
+            continue
         if not m1:
             linhas_dados.append({"tipo": "comentario", "sub": "", "seq": "", "desc": ";" + l.strip(), "cods": "", "com": ""})
             continue
@@ -4761,8 +4900,9 @@ def _ler_cnv_para_edicao(caminho):
 
 
 def _montar_texto_cnv(cab, linhas, ncat=None):
-    seqs = {r["seq"] for r in linhas if r["tipo"] == "linha" and str(r["seq"]).strip()}
-    ncat = ncat if ncat is not None else len(seqs)
+    seqs = {str(r["seq"]).strip() for r in linhas if r["tipo"] == "linha" and str(r["seq"]).strip()}
+    if ncat is None:
+        ncat = max(int(s) for s in seqs) if seqs and all(s.isdigit() for s in seqs) else len(seqs)
     out = list(cab.get("comentarios_antes", []))
     flag = (" " + cab["flag"]) if cab.get("flag") else ""
     largo = str(cab.get("prefixo", "")).upper() == "N"
@@ -4770,12 +4910,13 @@ def _montar_texto_cnv(cab, linhas, ncat=None):
     out.extend(cab.get("comentarios", []))
     for r in linhas:
         if r["tipo"] == "comentario":
-            t = r["desc"]; out.append(t if t.startswith(";") else ";" + t); continue
+            t = _texto_uma_linha(r["desc"]); out.append(t if t.startswith(";") else ";" + t); continue
+        desc = _texto_uma_linha(r["desc"])
         if largo:
-            pref = f"{str(r['sub']).strip():>4}{str(r['seq']).strip():>5}  {r['desc'][:100]:<100} "
+            pref = f"{str(r['sub']).strip():>4}{str(r['seq']).strip():>5}  {desc[:100]:<100} "
         else:
-            pref = f"{str(r['sub']).strip():>3}{str(r['seq']).strip():>4}  {r['desc'][:50]:<50} "
-        cods = [c for c in str(r["cods"]).replace(" ", "").split(",") if c]
+            pref = f"{str(r['sub']).strip():>3}{str(r['seq']).strip():>4}  {desc[:50]:<50} "
+        cods = [c for c in re.sub(r"\s+", "", str(r["cods"])).split(",") if c]
         blocos = []; atual = ""
         for c in cods:
             prox = (atual + "," + c) if atual else c
@@ -4786,7 +4927,7 @@ def _montar_texto_cnv(cab, linhas, ncat=None):
         blocos.append(atual)
         for k, b in enumerate(blocos):
             linha = pref + b
-            if k == len(blocos) - 1 and r.get("com"): linha += f" ; {r['com']}"
+            if k == len(blocos) - 1 and r.get("com"): linha += f" ; {_texto_uma_linha(r['com'])}"
             out.append(linha.rstrip())
     return "\r\n".join(out) + "\r\n"
 
@@ -4834,7 +4975,7 @@ def _validar_linhas_cnv(cab, linhas):
                 except Exception: pass
         if lims != sorted(lims): rel.append("Aviso: limites das faixas não estão em ordem crescente pelos sequenciais.")
     if seqs:
-        faltam = sorted(set(range(1, max(seqs) + 1)) - seqs)
+        faltam, _tot = _sequenciais_faltando(seqs)
         if faltam: rel.append(f"Info: sequenciais sem linha: {', '.join(map(str, faltam[:15]))}{'…' if len(faltam) > 15 else ''}.")
     return rel
 
@@ -4870,17 +5011,28 @@ def _problemas_linhas_cnv(cab, linhas):
     literal = str(cab.get("flag", "")).upper().startswith("L")
     curto = bool(n) and n <= 4 and not literal
     lim = _limite_desc_cnv(cab)
+    eh_dbf = bool(cab.get("dbf"))
+    larg_seq = 5 if str(cab.get("prefixo", "")).upper() == "N" else 4
     if n < 1: gerais.append(("Erro", "informe o número de caracteres do código (≥ 1)"))
     seqs = set(); dono = {}
     for i, r in enumerate(linhas):
         if r["tipo"] != "linha": continue
         s = str(r["seq"]).strip()
         if not s.isdigit(): add(i, "Erro", f"sequencial '{s}' não é número"); continue
+        if not eh_dbf and len(s.lstrip("0")) > larg_seq:
+            add(i, "Erro", f"sequencial '{s}' grande demais: parece um código numa linha quebrada"); continue
         seqs.add(int(s))
         if not r["desc"].strip(): add(i, "Aviso", "descrição vazia")
         if len(r["desc"]) > lim: add(i, "Aviso", f"descrição com {len(r['desc'])} caracteres (máximo {lim})")
         cods = [c for c in r["cods"].split(",") if c]
         if not cods and not str(r["sub"]).strip(): add(i, "Aviso", "sem códigos")
+        if eh_dbf:
+            if len(cods) > 1: add(i, "Erro", "a tabela DBF aceita um único código por linha")
+            for c in cods:
+                if n and len(c) > n: add(i, "Erro", f"código '{c}' tem {len(c)} caracteres (máximo {n})")
+                if c in dono: add(i, "Aviso", f"código '{c}' repetido na linha #{dono[c] + 1}")
+                dono.setdefault(c, i)
+            continue
         for c in cods:
             if faixas:
                 try: float(c)
@@ -4909,7 +5061,7 @@ def _problemas_linhas_cnv(cab, linhas):
                 except Exception: pass
         if lims != sorted(lims): gerais.append(("Aviso", "os limites das faixas não estão em ordem crescente pelos sequenciais"))
     if seqs:
-        faltam = sorted(set(range(1, max(seqs) + 1)) - seqs)
+        faltam, _tot = _sequenciais_faltando(seqs)
         if faltam: gerais.append(("Info", f"sequenciais sem linha: {', '.join(map(str, faltam[:15]))}{'…' if len(faltam) > 15 else ''}"))
     return por_linha, gerais
 
@@ -9543,7 +9695,7 @@ class TabWonApp:
             try: itens = _ler_def_itens(os.path.join(PASTA_TABWIN, cb_def_cnv.get()))
             except Exception as ex:
                 messagebox.showerror("DEF", f"Não foi possível ler o DEF:\n{ex}", parent=top); return
-            vistos = []
+            vistos = []; pares = []
             for grupo in ("linhas", "colunas", "selecoes"):
                 for it in itens[grupo]:
                     if not it.get("cnv"): continue
@@ -9551,25 +9703,24 @@ class TabWonApp:
                     if arq.lower() in [v.lower() for v in vistos]: continue
                     vistos.append(arq)
                     rot = f"{it['nome']}  —  {os.path.basename(arq)}"
-                    if arq.lower().endswith(".dbf"): rot += "  (tabela DBF)"
-                    elif not os.path.exists(arq): rot += "  (não encontrado)"
-                    mapa_cnvs_def[rot] = arq
+                    if not os.path.exists(arq): rot += "  (não encontrado)"
+                    elif arq.lower().endswith(".dbf"): rot += "  (tabela DBF)"
+                    pares.append((rot, it["cnv"]))
+            for rot, spec in sorted(pares, key=lambda p_: _normalizar_texto(p_[0])): mapa_cnvs_def[rot] = spec
             cb_cnvs_def["values"] = list(mapa_cnvs_def)
             cb_cnvs_def.set(f"{len(mapa_cnvs_def)} arquivo(s) — escolha um" if mapa_cnvs_def else "nenhum CNV neste DEF")
             est["rot_cnv_def"] = cb_cnvs_def.get()
         cb_def_cnv.bind("<<ComboboxSelected>>", _listar_cnvs_do_def)
 
         def _abrir_cnv_do_def(_=None):
-            arq = mapa_cnvs_def.get(cb_cnvs_def.get())
-            if not arq: return
-            if arq.lower().endswith(".dbf"):
-                messagebox.showinfo("Tabela DBF", "Este item usa uma tabela DBF de descrições.\n"
-                                    "Use '🧩 Gerar de um DBF' para criar um CNV a partir dela.", parent=top); return
+            spec = mapa_cnvs_def.get(cb_cnvs_def.get())
+            if not spec: return
+            arq = _dividir_spec(spec)[0]
             if not _pode_descartar():
                 cb_cnvs_def.set(est.get("rot_cnv_def") or "")
                 return
             est["rot_cnv_def"] = cb_cnvs_def.get()
-            if os.path.exists(arq): _carregar(arq)
+            if os.path.exists(arq): _carregar(spec)
             else:
                 _novo(); est["sugerido"] = arq
                 lbl_arq.config(text=f"🗂 Novo CNV — não encontrado: {arq}")
@@ -9583,11 +9734,13 @@ class TabWonApp:
         var_nchars = tk.StringVar(value="2")
         var_tipo = tk.StringVar(value="Normal")
         lbl_ncat = tk.Label(f_cab, text="Categorias: 0", bg=COR_FUNDO, font=("Arial", 9, "bold"))
-        tk.Label(f_cab, text="Caracteres do código:", bg=COR_FUNDO, font=("Arial", 9)).pack(side="left")
-        tk.Spinbox(f_cab, from_=1, to=99, textvariable=var_nchars, width=5).pack(side="left", padx=(4, 14))
-        tk.Label(f_cab, text="Tipo:", bg=COR_FUNDO, font=("Arial", 9)).pack(side="left")
-        ttk.Combobox(f_cab, textvariable=var_tipo, state="readonly", width=24,
-                     values=["Normal", "Literal (L)", "Faixas de valor (F)"]).pack(side="left", padx=(4, 14))
+        lbl_dbf = tk.Label(f_cab, text="", bg=COR_FUNDO, fg="#6D4C41", font=("Arial", 9, "bold"))
+        wid_cab_cnv = [tk.Label(f_cab, text="Caracteres do código:", bg=COR_FUNDO, font=("Arial", 9)),
+                       tk.Spinbox(f_cab, from_=1, to=99, textvariable=var_nchars, width=5),
+                       tk.Label(f_cab, text="Tipo:", bg=COR_FUNDO, font=("Arial", 9)),
+                       ttk.Combobox(f_cab, textvariable=var_tipo, state="readonly", width=24,
+                                    values=["Normal", "Literal (L)", "Faixas de valor (F)"])]
+        for w_, pad_ in zip(wid_cab_cnv, ((0, 0), (4, 14), (0, 0), (4, 14))): w_.pack(side="left", padx=pad_)
         lbl_ncat.pack(side="left", padx=(6, 14))
         tk.Label(f_cab, text="🔎 Localizar:", bg=COR_FUNDO, font=("Arial", 9)).pack(side="left")
         var_busca = tk.StringVar()
@@ -9649,10 +9802,11 @@ class TabWonApp:
         vars_ed = {k: tk.StringVar() for k in cols}
         rotulos = {"sub": "Subtotal de (seq):", "seq": "Sequencial:", "desc": "Descrição:",
                    "cods": "Códigos (vírgulas, faixas a-b):", "com": "Comentário:"}
-        entradas = {}
+        entradas = {}; rotulos_ed = {}
         for i, k in enumerate(cols):
             if k == "com": continue
-            tk.Label(f_ed, text=rotulos[k], bg=COR_FUNDO, font=("Arial", 9), anchor="w").grid(row=i * 2, column=0, sticky="w")
+            rotulos_ed[k] = tk.Label(f_ed, text=rotulos[k], bg=COR_FUNDO, font=("Arial", 9), anchor="w")
+            rotulos_ed[k].grid(row=i * 2, column=0, sticky="w")
             e = tk.Entry(f_ed, textvariable=vars_ed[k], width=(8 if k in ("sub", "seq") else 38), font=("Arial", 10))
             e.grid(row=i * 2 + 1, column=0, sticky="w" if k in ("sub", "seq") else "we", pady=(0, 4))
             entradas[k] = e
@@ -9667,6 +9821,25 @@ class TabWonApp:
         def _titulo():
             nome = est["arquivo"] or "Novo CNV (não salvo)"
             lbl_arq.config(text=f"🗂 {nome}{'  •  alterado' if est['alterado'] else ''}")
+
+        def _eh_dbf():
+            return bool(est["cab"].get("dbf"))
+
+        def _modo_dbf():
+            info = est["cab"].get("dbf")
+            if info:
+                for w_ in wid_cab_cnv: w_.pack_forget()
+                lbl_dbf.config(text=f"Tabela DBF  ·  código: {info['cod']} ({est['cab'].get('nchars')})  ·  "
+                                    f"descrição: {info['desc']} ({_limite_desc_cnv(est['cab'])})")
+                lbl_dbf.pack(side="left", padx=(0, 14), before=lbl_ncat)
+                tree.configure(displaycolumns=("desc", "cods"))
+                for k_ in ("sub", "seq"): rotulos_ed[k_].grid_remove(); entradas[k_].grid_remove()
+            else:
+                lbl_dbf.pack_forget()
+                for w_, pad_ in zip(wid_cab_cnv, ((0, 0), (4, 14), (0, 0), (4, 14))):
+                    w_.pack(side="left", padx=pad_, before=lbl_ncat)
+                tree.configure(displaycolumns=("num", "sub", "seq", "desc", "cods"))
+                for k_ in ("sub", "seq"): rotulos_ed[k_].grid(); entradas[k_].grid()
 
         def _marcar():
             est["alterado"] = True; _titulo()
@@ -9687,22 +9860,30 @@ class TabWonApp:
             return c
 
         def _redesenhar(manter=None):
+            try: topo = tree.yview()[0]
+            except Exception: topo = 0
             tree.delete(*tree.get_children())
             busca = _normalizar_texto(var_busca.get())
+            dbf = _eh_dbf()
             try: est["prob"], est["prob_gerais"] = _problemas_linhas_cnv(_cab_atual(), est["linhas"])
             except Exception: est["prob"], est["prob_gerais"] = {}, []
             for i, r in enumerate(est["linhas"]):
-                achado = busca and (busca in _normalizar_texto(r["desc"]) or busca in _normalizar_texto(r["cods"]))
+                desc_vis = f"{r['cods']} - {r['desc']}" if dbf and r["tipo"] == "linha" and r["cods"] else r["desc"]
+                achado = busca and (busca in _normalizar_texto(desc_vis) or busca in _normalizar_texto(r["cods"]))
                 if achado: tags = ["achado"]
                 elif any(nv in ("Erro", "Aviso") for nv, _ in est["prob"].get(i, [])): tags = ["problema"]
                 else: tags = ["par" if i % 2 == 0 else "impar"]
                 if r["tipo"] == "comentario": tags.append("comentario")
-                tree.insert("", "end", iid=str(i), values=(i + 1, r["sub"], r["seq"], r["desc"], r["cods"], r["com"]),
+                tree.insert("", "end", iid=str(i), values=(i + 1, r["sub"], r["seq"], desc_vis, r["cods"], r["com"]),
                             tags=tags)
             seqs = {r["seq"] for r in est["linhas"] if r["tipo"] == "linha" and str(r["seq"]).strip()}
             nprob = sum(1 for v in est["prob"].values() if any(nv in ("Erro", "Aviso") for nv, _ in v))
-            lbl_ncat.config(text=f"Categorias: {len(seqs)}" + (f"   ⚠ {nprob} linha(s) com problema" if nprob else ""),
+            ncat_txt = (f"Registros: {sum(1 for r in est['linhas'] if r['tipo'] == 'linha')}" if dbf
+                        else f"Categorias: {len(seqs)}")
+            lbl_ncat.config(text=ncat_txt + (f"   ⚠ {nprob} linha(s) com problema" if nprob else ""),
                             fg=("#C62828" if nprob else "#000000"))
+            try: tree.yview_moveto(topo)
+            except Exception: pass
             if manter is not None and 0 <= manter < len(est["linhas"]):
                 tree.selection_set(str(manter)); tree.see(str(manter))
             if est.get("corrigindo"): _atualizar_corr()
@@ -9729,8 +9910,9 @@ class TabWonApp:
             r = est["linhas"][s[0]]
             for k in cols:
                 v = vars_ed[k].get()
-                if k == "cods": v = v.replace(" ", "")
-                if k in ("sub", "seq"): v = v.strip()
+                if k == "cods": v = re.sub(r"\s+", "", v)
+                elif k in ("sub", "seq"): v = re.sub(r"\s+", "", v)
+                else: v = _texto_uma_linha(v) if r["tipo"] == "linha" or k != "desc" else v.replace("\n", " ")
                 r[k] = v
             if r["tipo"] == "comentario" and r["seq"]: r["tipo"] = "linha"
             _marcar(); _redesenhar(s[0])
@@ -9834,18 +10016,26 @@ class TabWonApp:
                             anchor="w", wraplength=250)
         lbl_prob.grid(row=14, column=0, sticky="we", pady=(8, 0))
 
-        def _carregar(caminho):
+        def _carregar(spec):
+            caminho, chave_, desc_ = _dividir_spec(spec)
             try:
-                c, linhas = _ler_cnv_para_edicao(caminho)
+                if caminho.lower().endswith(".dbf"): c, linhas = _ler_dbf_para_edicao(caminho, chave_, desc_)
+                else: c, linhas = _ler_cnv_para_edicao(caminho)
             except Exception as ex:
                 messagebox.showerror("Abrir CNV", str(ex), parent=top); return
-            est["cab"] = c; est["linhas"] = linhas; est["arquivo"] = caminho
+            est["cab"] = c; est["linhas"] = linhas; est["arquivo"] = caminho; est["ordem_cnv"] = None
             try: tree.heading("desc", text=f"Descrição (até {_limite_desc_cnv(c)})")
             except Exception: pass
             var_nchars.set(str(c.get("nchars", 2)))
             f = str(c.get("flag", "")).upper()
             var_tipo.set("Literal (L)" if f.startswith("L") else ("Faixas de valor (F)" if f.startswith("F") else "Normal"))
-            est["alterado"] = False; _titulo(); _redesenhar()
+            _modo_dbf()
+            est["alterado"] = False; tree.yview_moveto(0); _titulo(); _redesenhar()
+            if c.get("reparadas"):
+                _marcar()
+                messagebox.showwarning("CNV com linhas quebradas",
+                                       f"{c['reparadas']} linha(s) estavam quebradas (código na linha de baixo) e foram "
+                                       "juntadas à linha anterior.\n\nConfira e salve para corrigir o arquivo.", parent=top)
 
         def _pode_descartar():
             if not est["alterado"]: return True
@@ -9854,7 +10044,8 @@ class TabWonApp:
         def _abrir():
             if not _pode_descartar(): return
             p = filedialog.askopenfilename(parent=top, title="Abrir CNV", initialdir=PASTA_TABWIN,
-                                           filetypes=[("Arquivos CNV", "*.cnv *.CNV"), ("Todos", "*.*")])
+                                           filetypes=[("CNV ou DBF", "*.cnv *.CNV *.dbf *.DBF"), ("Arquivos CNV", "*.cnv *.CNV"),
+                                                      ("Tabela DBF", "*.dbf *.DBF"), ("Todos", "*.*")])
             if p: _carregar(p)
 
         def _novo():
@@ -9864,7 +10055,7 @@ class TabWonApp:
             try: tree.heading("desc", text="Descrição (até 50)")
             except Exception: pass
             est["linhas"] = [{"tipo": "linha", "sub": "", "seq": "1", "desc": "", "cods": "", "com": ""}]
-            est["arquivo"] = None; var_nchars.set("2"); var_tipo.set("Normal")
+            est["arquivo"] = None; var_nchars.set("2"); var_tipo.set("Normal"); _modo_dbf()
             est["alterado"] = False; _titulo(); _redesenhar(0); _ao_selecionar()
 
         def _gerar_de_dbc():
@@ -9893,7 +10084,7 @@ class TabWonApp:
                           "comentarios_antes": [f"; {info[0]} - gerado pelo TabWon a partir de {os.path.basename(p)}"]}
             est["linhas"] = [{"tipo": "linha", "sub": "", "seq": str(i), "desc": v, "cods": v, "com": ""}
                              for i, v in enumerate(valores, 1)]
-            est["arquivo"] = None; var_nchars.set(str(info[2])); var_tipo.set("Normal")
+            est["arquivo"] = None; var_nchars.set(str(info[2])); var_tipo.set("Normal"); _modo_dbf()
             _marcar(); _redesenhar()
             messagebox.showinfo("Gerar CNV", f"{len(valores)} códigos distintos. Preencha as descrições.", parent=top)
 
@@ -9939,31 +10130,112 @@ class TabWonApp:
                 est["linhas"] = [{"tipo": "linha", "sub": "", "seq": str(i), "desc": d[:50], "cods": c, "com": ""}
                                  for i, (c, d) in enumerate(itens, 1)]
                 est["arquivo"] = None; var_nchars.set(str(nch)); var_tipo.set("Literal (L)" if nch > 4 else "Normal")
-                j.destroy(); _marcar(); _redesenhar()
+                _modo_dbf(); j.destroy(); _marcar(); _redesenhar()
                 messagebox.showinfo("Gerar CNV", f"{len(itens)} categorias geradas. Revise e salve o CNV.", parent=top)
             tk.Button(j, text="✓ Gerar", command=_ok, bg="#4CAF50", fg="white", font=("Arial", 9, "bold"),
                       width=12).grid(row=5, column=1, sticky="e", pady=(10, 0))
             centralizar(j, top)
 
+        def _registros_dbf(c, dados):
+            info = c.get("dbf")
+            if info:
+                estrutura, cod_f, des_f = info["estrutura"], info["cod"], info["desc"]
+            else:
+                larg = max([c["nchars"]] + [len(x) for r in dados for x in r["cods"].split(",") if x and "-" not in x])
+                estrutura = _nova_estrutura_dbf([("CODIGO", min(254, larg)), ("DESCRICAO", _limite_desc_cnv(c))])
+                cod_f, des_f = "CODIGO", "DESCRICAO"
+            tam = {f_["nome"]: f_["tam"] for f_ in estrutura["campos"]}
+            modelo = {k: v for k, v in (estrutura["regs"][0] if estrutura["regs"] else {}).items() if k not in (cod_f, des_f)}
+            regs = []; erros = []
+            for n_, r in enumerate(dados, 1):
+                cods = [x for x in re.split(r"[,\s]+", r["cods"]) if x]
+                expand = []
+                for x in cods:
+                    m_ = re.fullmatch(r"(\d+)-(\d+)", x)
+                    if m_ and len(m_.group(1)) == len(m_.group(2)) and 0 <= int(m_.group(2)) - int(m_.group(1)) <= 100000:
+                        expand += [str(v).zfill(len(m_.group(1))) for v in range(int(m_.group(1)), int(m_.group(2)) + 1)]
+                    elif "-" in x and not info: erros.append(f"faixa '{x}' (seq {r['seq']}) não pode virar registros de DBF")
+                    else: expand.append(x)
+                if info and len(expand) != 1:
+                    erros.append(f"linha {n_} ({r['desc'][:30] or 'sem descrição'}): a tabela DBF aceita um único código por linha"); continue
+                for x in expand:
+                    if len(x) > tam[cod_f]: erros.append(f"código '{x}' tem mais de {tam[cod_f]} caracteres")
+                    reg = dict(r.get("_reg") or modelo) if info else {}
+                    reg[cod_f] = x; reg[des_f] = _texto_uma_linha(r["desc"])
+                    regs.append(reg)
+            return estrutura, cod_f, des_f, regs, erros
+
         def _gravar(caminho):
             c = _cab_atual()
             if c["nchars"] < 1:
                 messagebox.showerror("Salvar CNV", "Informe o número de caracteres do código.", parent=top); return False
-            try:
-                with open(caminho, "w", encoding=c.get("codificacao") or "latin-1", errors="replace", newline="") as f:
-                    f.write(_montar_texto_cnv(c, est["linhas"]))
-            except Exception as ex:
-                messagebox.showerror("Salvar CNV", str(ex), parent=top); return False
-            est["cab"] = c; est["arquivo"] = caminho; est["alterado"] = False; _titulo()
+            dados = [r for r in est["linhas"] if r["tipo"] == "linha"]
+            para_dbf = caminho.lower().endswith(".dbf")
+            mudou_formato = para_dbf != bool(c.get("dbf"))
+            if para_dbf:
+                estrutura, cod_f, des_f, regs, erros = _registros_dbf(c, dados)
+                if erros:
+                    messagebox.showerror("Salvar DBF", "Não foi possível salvar como DBF:\n\n" + "\n".join(erros[:12])
+                                         + ("\n…" if len(erros) > 12 else ""), parent=top); return False
+                try: _gravar_dbf_estrutura(caminho, estrutura, regs)
+                except Exception as ex:
+                    messagebox.showerror("Salvar DBF", str(ex), parent=top); return False
+                spec_novo = f"{caminho}|{cod_f}|{des_f}"
+            else:
+                linhas_cnv = est["linhas"]
+                if c.get("dbf"):
+                    linhas_cnv = [dict(r, seq=str(i), sub="") for i, r in enumerate(dados, 1)]
+                    c = {k: v for k, v in c.items() if k not in ("dbf", "limite_desc")}
+                    c["flag"] = "L" if c["nchars"] > 4 else ""
+                    c["prefixo"] = "N" if any(len(r["desc"]) > 50 for r in dados) else ""
+                    c["codificacao"] = "utf-8" if c["prefixo"] == "N" else "latin-1"
+                else:
+                    seqs = sorted({int(r["seq"]) for r in dados if str(r["seq"]).strip().isdigit()})
+                    if seqs and seqs != list(range(1, len(seqs) + 1)) and len(seqs) == len({str(r["seq"]).strip() for r in dados}):
+                        faltam, total = _sequenciais_faltando(seqs, 8)
+                        resp = messagebox.askyesnocancel(
+                            "Sequenciais com lacunas",
+                            f"Os sequenciais vão até {seqs[-1]}, mas há {len(seqs)} categorias "
+                            f"(faltam {', '.join(map(str, faltam))}{'…' if total > len(faltam) else ''}).\n\n"
+                            f"Sim: renumerar de 1 a {len(seqs)} antes de salvar (o cabeçalho fica com {len(seqs)}).\n"
+                            f"Não: salvar assim (o cabeçalho fica com {seqs[-1]}, o maior sequencial).", parent=top)
+                        if resp is None: return False
+                        if resp:
+                            mapa = {}
+                            for r in est["linhas"]:
+                                if r["tipo"] == "linha" and r["seq"] not in mapa: mapa[r["seq"]] = str(len(mapa) + 1)
+                            for r in est["linhas"]:
+                                if r["tipo"] == "linha":
+                                    r["seq"] = mapa.get(r["seq"], r["seq"])
+                                    if str(r["sub"]).strip(): r["sub"] = mapa.get(str(r["sub"]).strip(), r["sub"])
+                            _redesenhar()
+                try:
+                    with open(caminho, "w", encoding=c.get("codificacao") or "latin-1", errors="replace", newline="") as f:
+                        f.write(_montar_texto_cnv(c, linhas_cnv))
+                except Exception as ex:
+                    messagebox.showerror("Salvar CNV", str(ex), parent=top); return False
+                spec_novo = caminho
             for k in [k for k in _CNV_RICO if _dividir_spec(k[0])[0] == caminho]: _CNV_RICO.pop(k, None)
+            if mudou_formato:
+                _carregar(spec_novo); return True
+            if para_dbf:
+                for r, reg in zip(dados, regs): r["_reg"] = reg
+                c["dbf"] = dict(c["dbf"], estrutura=dict(estrutura, regs=regs))
+            est["cab"] = c; est["arquivo"] = caminho; est["alterado"] = False; _titulo()
             return True
 
         def _salvar_como():
-            p = filedialog.asksaveasfilename(parent=top, title="Salvar CNV como", defaultextension=".cnv",
+            tipos = [("Arquivos CNV", "*.cnv"), ("Tabela DBF", "*.dbf")]
+            if _eh_dbf(): tipos.reverse()
+            var_tipo_arq = tk.StringVar(value=tipos[0][0])
+            p = filedialog.asksaveasfilename(parent=top, title="Salvar CNV como", defaultextension=tipos[0][1][1:],
                                              initialdir=os.path.dirname(est.get("arquivo") or est.get("sugerido") or os.path.join(PASTA_TABWIN, "x")) or PASTA_TABWIN,
-                                             initialfile=os.path.basename(est.get("arquivo") or est.get("sugerido") or "NOVO.cnv"),
-                                             filetypes=[("Arquivos CNV", "*.cnv"), ("Todos", "*.*")])
-            return _gravar(p) if p else False
+                                             initialfile=os.path.splitext(os.path.basename(est.get("arquivo") or est.get("sugerido") or "NOVO.cnv"))[0],
+                                             filetypes=tipos, typevariable=var_tipo_arq)
+            if not p: return False
+            if os.path.splitext(p)[1].lower() not in (".cnv", ".dbf"):
+                p += ".dbf" if var_tipo_arq.get() == "Tabela DBF" else ".cnv"
+            return _gravar(p)
 
         def _salvar():
             if est["arquivo"]: return _gravar(est["arquivo"])
@@ -10070,8 +10342,8 @@ class TabWonApp:
         b_.pack(side="right", padx=2); _adicionar_tooltip(b_, "Fechar o editor (pergunta se houver alterações)")
         top.protocol("WM_DELETE_WINDOW", _fechar)
         top.bind("<Control-s>", lambda e: (_salvar(), "break")[1])
-        if caminho and os.path.exists(_dividir_spec(caminho)[0]) and not _dividir_spec(caminho)[0].lower().endswith(".dbf"):
-            _carregar(_dividir_spec(caminho)[0])
+        if caminho and os.path.exists(_dividir_spec(caminho)[0]):
+            _carregar(caminho if _dividir_spec(caminho)[0].lower().endswith(".dbf") else _dividir_spec(caminho)[0])
         else:
             _novo()
             if caminho:
@@ -13997,11 +14269,7 @@ class TabWonApp:
             if not hasattr(self, 'txt_log_preview') or not self.txt_log_preview.winfo_exists(): return
         except Exception: return
         if getattr(self, "_log_colado_pendente", None):
-            try:
-                self.txt_log_preview.delete("1.0", tk.END)
-                self.txt_log_preview.insert(tk.END, self._log_colado_pendente)
-                self.txt_log_preview.config(fg=(COR_SUPER_LOG if self._atos_log_origem else "black"))
-            except Exception: pass
+            self._reescrever_log_preview(self._log_colado_pendente)
             return
         linhas = [f"TabWon v{VERSAO}", "", "[Opções]",
                   f"DEF={self.def_path or '(não selecionado)'}"]
@@ -14048,10 +14316,23 @@ class TabWonApp:
             for g in self.graficos:
                 try: linhas.append("Grafico=" + json.dumps(g.get("cfg", {}), ensure_ascii=False))
                 except Exception: pass
+        self._reescrever_log_preview("\n".join(linhas))
+
+    def _reescrever_log_preview(self, texto):
+        w = self.txt_log_preview
         try:
-            self.txt_log_preview.delete("1.0", tk.END)
-            self.txt_log_preview.insert(tk.END, "\n".join(linhas))
-            self.txt_log_preview.config(fg=(COR_SUPER_LOG if self._atos_log_origem else "black"))
+            if w.get("1.0", "end-1c") == texto:
+                w.config(fg=(COR_SUPER_LOG if self._atos_log_origem else "black")); return
+            topo = w.yview()[0]; esq = w.xview()[0]
+            try: cursor = w.index("insert")
+            except Exception: cursor = None
+            w.delete("1.0", tk.END)
+            w.insert(tk.END, texto)
+            w.config(fg=(COR_SUPER_LOG if self._atos_log_origem else "black"))
+            if cursor:
+                try: w.mark_set("insert", cursor)
+                except Exception: pass
+            w.yview_moveto(topo); w.xview_moveto(esq)
         except Exception: pass
 
     def _match_incremento(self, nome_log):
@@ -15363,12 +15644,13 @@ class TabWonApp:
             rot.update(cnv["mapa"][c] for c in codigos if c in cnv["mapa"])
             return cache_series[chave], rot
         if cnv and (cnv["literal"] or cnv["dbf"]):
-            chave = ("literal", item["coluna"], pos, cnv["n_chars"] if not cnv["dbf"] else None)
+            largura = cnv.get("largura_chave") if cnv["dbf"] else cnv["n_chars"]
+            chave = ("literal", item["coluna"], pos, largura)
             if chave not in cache_series:
                 s = df[item["coluna"]].astype(str)
                 if pos > 1: s = s.str.slice(pos - 1)
                 s = s.str.strip()
-                if cnv["n_chars"] and not cnv["dbf"]: s = s.str.slice(0, cnv["n_chars"])
+                if largura: s = s.str.slice(0, largura)
                 cache_series[chave] = s
             return cache_series[chave], codigos
         n_chars = cnv["n_chars"] if cnv else None

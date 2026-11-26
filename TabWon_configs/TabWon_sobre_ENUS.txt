@@ -1,6 +1,6 @@
 TabWon — Free Tabulator
 
-Version: 1.00.2
+Version: 1.00.3
 
 === About the program
 

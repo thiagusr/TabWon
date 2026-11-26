@@ -23,7 +23,7 @@
 
 [idioma]
 Idioma_nome = "English (United States)"
-Idioma_versao = "1.00.2"
+Idioma_versao = "1.00.3"
 
 # ----------------------------------------------------------------------
 # GENERAL TEXTS, BUTTONS AND MESSAGES
@@ -1700,3 +1700,34 @@ TT_ORDENAR_PELA_DESCRICAO_IGNORANDO = "Sort by description ignoring the leading 
 TT_ORDENAR_PELO_CODIGO_CLIQUE       = "Sort the lines by code (click again to reverse)"
 TX_NOV_ORDENAR_PRIMEIRA_COLUNA      = "In the result, the first column can also be sorted by clicking its title."
 TX_NOV_ORDENACAO_EDITOR_CNV         = "CNV editor: the sort buttons switch between ascending and descending, and the new Text button sorts by description ignoring the leading numbers."
+
+# ----------------------------------------------------------------------
+# VERSION 1.00.3
+# ----------------------------------------------------------------------
+[versao_1_00_3]
+MSG_CNV_OU_DBF                      = "CNV or DBF"
+LB_TABELA_DBF_CODIGO_DESCRICAO      = "DBF table  ·  code: {1} ({2})  ·  description: {3} ({4})"
+LB_REGISTROS_N                      = "Records: {1}"
+TT_CNV_LINHAS_QUEBRADAS             = "CNV with broken lines"
+MSG_LINHAS_QUEBRADAS_JUNTADAS       = "{1} line(s) were broken (code on the line below) and were joined to the previous line."
+MSG_CONFIRA_E_SALVE_CORRIGIR        = "Check and save to fix the file."
+TT_SEQUENCIAIS_COM_LACUNAS          = "Sequence numbers with gaps"
+MSG_SEQUENCIAIS_VAO_ATE             = "The sequence numbers go up to {1}, but there are {2} categories (missing {3})."
+MSG_SIM_RENUMERAR_ANTES             = "Yes: renumber from 1 to {1} before saving (the header becomes {2})."
+MSG_NAO_SALVAR_ASSIM                = "No: save as is (the header becomes {1}, the largest sequence number)."
+TT_SALVAR_DBF                       = "Save DBF"
+MSG_NAO_FOI_POSSIVEL_SALVAR_DBF     = "Could not save as DBF:"
+MSG_LINHA_DBF_UM_CODIGO             = "line {1} ({2}): the DBF table accepts a single code per line"
+TX_SEM_DESCRICAO                    = "no description"
+MSG_FAIXA_NAO_VIRA_DBF              = "range '{1}' (seq {2}) cannot become DBF records"
+MSG_CODIGO_MAIS_DE_N                = "code '{1}' has more than {2} characters"
+MSG_SEQUENCIAL_GRANDE_DEMAIS        = "sequence number '{1}' is too large: it looks like a code on a broken line"
+MSG_DBF_UM_CODIGO_POR_LINHA         = "the DBF table accepts a single code per line"
+MSG_CODIGO_TEM_N_MAXIMO             = "code '{1}' has {2} characters (maximum {3})"
+MSG_CODIGO_REPETIDO_LINHA           = "code '{1}' repeated on line #{2}"
+TX_NOV_TABELA_DBF_PREFIXO           = "DEF items with a DBF table (such as TB_GRUPO.DBF) compare the start of the field with the table code, like TabWin: group 04 gathers procedures 04xxxxxxxx."
+TX_NOV_EDITOR_CNV_DBF               = "CNV editor: DBF tables open in the same editor, with the code next to the description; Save writes in the original format and Save as offers DBF or CNV."
+TX_NOV_CNV_QUEBRADA                 = "CNV editor: line breaks pasted into the description are removed, CNVs with broken lines open without freezing and are repaired, and when saving the header follows the sequence numbers (with an option to renumber gaps)."
+TX_NOV_CNVS_DEF_ORDEM               = "CNV editor: the list of CNVs used by the DEF is in alphabetical order, and the line list keeps its scroll position when items are added or changed."
+TX_NOV_LOG_ROLAGEM                  = "The log box on the start screen keeps its scroll position while the query is being built."
+TX_NOV_DBF_CODIGO_DESCRICAO         = "DEF items with a DBF table show \"code - description\" (e.g. 04 - Procedimentos cirúrgicos) in the tabulation and in the selections; logs that bring only the description keep working."

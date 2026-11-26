@@ -14,7 +14,7 @@ O loader só existe na versão compilada. Quem roda o `TabWon.py` direto pelo Py
 4. Quando termina de montar a janela, o `TabWon.py` aciona esse sinal (função `_avisar_loader`), e o loader se fecha.
 5. O loader também se fecha se o tabulador for encerrado, se a janela do TabWon estiver aberta há mais de 20 segundos sem o sinal ou depois de 5 minutos.
 
-A tela aparece centralizada no monitor onde está o mouse, com os textos em português do Brasil. O loader mostra a tela primeiro e só depois inicia o tabulador, para que ela apareça logo após o clique. O loader não mostra a versão na tela, mas as propriedades do arquivo trazem a mesma versão do TabWon (1.00.2).
+A tela aparece centralizada no monitor onde está o mouse, com os textos em português do Brasil. O loader mostra a tela primeiro e só depois inicia o tabulador, para que ela apareça logo após o clique. O loader não mostra a versão na tela, mas as propriedades do arquivo trazem a mesma versão do TabWon (1.00.3).
 
 ## Arquivos desta pasta
 

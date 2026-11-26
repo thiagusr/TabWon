@@ -1,6 +1,6 @@
 TabWon — Guia de Ajuda
 
-Versão: 1.00.2
+Versão: 1.00.3
 
 
 === Sobre este guia
@@ -222,6 +222,13 @@ abre e salva esses arquivos no mesmo formato.
 só categoria, que usa a descrição da última linha, como no TabWin. As
 faixas de códigos (ex.: 000000-999999) também valem para códigos que
 terminam com espaços em branco.
+
+*Tabela DBF no DEF* (ex.: Grupo Procedimento com TB_GRUPO.DBF): como
+no TabWin, o início do campo é comparado com o código da tabela. Se o
+código da DBF tem 2 caracteres, o grupo 04 reúne todos os
+procedimentos 04xxxxxxxx. Na tabulação e nas seleções, cada categoria
+aparece como "código - descrição" (ex.: 04 - Procedimentos cirúrgicos);
+um log que traz só a descrição continua sendo reconhecido.
 
 *Dica:* na primeira leitura de um DBC, o TabWon cria um cache (veja a
 seção *Cache de DBC*). As próximas leituras são muito mais rápidas.
@@ -1108,6 +1115,16 @@ avançadas):
      e *Texto* ordena pela descrição ignorando os números do início;
   c) Gera um CNV a partir de um campo do DBC ou de uma tabela DBF;
   d) "✔ Validar" aponta problemas e oferece correção guiada.
+  e) *Tabelas DBF* (como TB_GRUPO.DBF) abrem no mesmo editor: a lista
+     mostra o código junto da descrição ("04 - Procedimentos
+     cirúrgicos"). "💾 Salvar" grava no formato de origem e "💾 Salvar
+     como" oferece DBF ou CNV;
+  f) Quebras de linha coladas na descrição (ex.: copiando do Excel) são
+     removidas. Um CNV com linhas quebradas abre normalmente: as partes
+     são juntadas e basta salvar para consertar o arquivo;
+  g) Ao salvar, o cabeçalho acompanha os sequenciais. Se houver
+     lacunas (sequenciais que faltam), o TabWon oferece renumerar de 1
+     até o total de categorias.
 
 
 === Consultor SQL
